@@ -1,0 +1,42 @@
+{
+  id: "deltics.strings",
+  summary: "Strings support framework to facilitate creation of code that supports versions of Delphi with different standard 'String' types (i.e. Unicode vs ANSI).",
+  tags: [
+    "deltics",
+    "strings",
+    "unicode"
+  ],
+  copyright: "\u00A92019 Jolyon Direnko-Smith",
+  language: "en",
+  content: "source",
+  dependencies: [
+    "deltics.rtl:0.2.0-beta.17"
+  ],
+  source: {
+      files: [
+        "src\\deltics.strings.inc",
+        "src\\Deltics.Strings.pas",
+        "src\\Deltics.Strings.ANSI.pas",
+        "src\\Deltics.Strings.UTF8.pas",
+        "src\\Deltics.Strings.WIDE.pas",
+        "src\\Deltics.Strings.Encoding.pas",
+        "src\\Deltics.Strings.Encoding.ASCII.pas",
+        "src\\Deltics.Strings.Encoding.UTF16.pas",
+        "src\\Deltics.Strings.Encoding.UTF32.pas",
+        "src\\Deltics.Strings.Encoding.UTF8.pas",
+        "src\\Deltics.Strings.Parsers.ANSI.pas",
+        "src\\Deltics.Strings.Parsers.ANSI.AsBoolean.pas",
+        "src\\Deltics.Strings.Parsers.ANSI.AsDatetime.pas",
+        "src\\Deltics.Strings.Parsers.ANSI.AsInteger.pas",
+        "src\\Deltics.Strings.Parsers.WIDE.pas",
+        "src\\Deltics.Strings.Parsers.WIDE.AsBoolean.pas",
+        "src\\Deltics.Strings.Parsers.WIDE.AsDatetime.pas",
+        "src\\Deltics.Strings.Parsers.WIDE.AsInteger.pas",
+        "src\\Deltics.Strings.StringBuilder.pas",
+        "src\\Deltics.Strings.StringList.pas",
+        "src\\Deltics.Strings.Templates.pas",
+        "src\\Deltics.Strings.Types.pas",
+        "src\\Deltics.Strings.Utils.pas"
+      ]
+    }
+}

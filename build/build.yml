@@ -1,0 +1,21 @@
+trigger:
+- develop*
+- feature*
+- master
+
+pr:
+- develop*
+- feature*
+
+resources:
+  repositories:
+    - repository: congress
+      type: git
+      name: congress/templates
+
+pool:
+  name: $(AgentPool)
+  demands: Delphi
+
+jobs:
+- template: build.yml@congress
