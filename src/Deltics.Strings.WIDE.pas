@@ -19,7 +19,6 @@ interface
     WIDEFn = class
     private
       class function AddressOfByte(aBase: Pointer; aByteIndex: Integer): PWIDEChar; overload; {$ifdef InlineMethods} inline; {$endif}
-      class function AddressOfIndex(aBase: PWIDEChar; aIndex: Integer): PWIDEChar; overload; {$ifdef InlineMethods} inline; {$endif}
       class function AddressOfIndex(var aString: UnicodeString; aIndex: Integer): PWIDEChar; overload; {$ifdef InlineMethods} inline; {$endif}
       class procedure FastCopy(const aString: UnicodeString; aDest: PWIDEChar); overload; {$ifdef InlineMethods} inline; {$endif}
       class procedure FastCopy(const aString: UnicodeString; aDest: PWIDEChar; aLen: Integer); overload; {$ifdef InlineMethods} inline; {$endif}
@@ -441,13 +440,12 @@ interface
 implementation
 
   uses
-    Deltics.Contracts,
-    Deltics.Memory,
+//    Deltics.Memory,
     Deltics.Strings,
+    Deltics.Strings.Contracts,
     Deltics.Strings.Encoding,
     Deltics.Strings.Utils,
-    Deltics.SysUtils,
-    Deltics.Types;
+    Deltics.SysUtils;
 
 
   const
@@ -571,31 +569,16 @@ implementation
                                       aByteIndex: Integer): PWIDEChar;
   var
     ibase: IntPointer absolute aBase;
-    iaddr: IntPointer absolute result;
   begin
-    iaddr := ibase + NativeUInt(aByteIndex);
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.AddressOfIndex(aBase: PWIDEChar;
-                                       aIndex: Integer): PWIDEChar;
-  var
-    ibase: IntPointer absolute aBase;
-    iaddr: IntPointer absolute result;
-  begin
-    iaddr := ibase + ((NativeUInt(aIndex) - 1) * 2);
+    result := PWideChar(ibase + aByteIndex);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class function WIDEFn.AddressOfIndex(var aString: UnicodeString;
                                            aIndex: Integer): PWIDEChar;
-  var
-    istr: IntPointer absolute aString;
-    iaddr: IntPointer absolute result;
   begin
-    iaddr := istr + ((NativeUInt(aIndex) - 1) * 2);
+    result := @aString[aIndex];
   end;
 
 
@@ -2660,7 +2643,7 @@ implementation
     bufPos := Pred(aPos);
 
     // Shift the previous end of the string to make room for the infix
-    Memory.CopyWIDEChars(Pointer(result), bufPos, bufPos + ifxlen, strLen - aPos + 1);
+    Utils.CopyChars(result, bufPos, bufPos + ifxlen, strLen - aPos + 1);
 
     // Copy the infix into the space left by shifting the previous end of the string
     WIDE.CopyToBuffer(aInfix, ifxlen, Pointer(result), bufPos * 2);
@@ -2691,7 +2674,7 @@ implementation
     bufPos := Pred(aPos);
 
     // Shift the previous end of the string to make room for the infix
-    Memory.CopyWIDEChars(Pointer(result), bufPos, bufPos + ifxLen + 2, strLen - aPos + 1);
+    Utils.CopyChars(result, bufPos, bufPos + ifxLen + 2, strLen - aPos + 1);
 
     // Copy the infix into the space left by shifting the previous end of the string
     WIDE.CopyToBuffer(aInfix, ifxLen, Pointer(result), aPos * 2);
@@ -2728,7 +2711,7 @@ implementation
       bufPos := Pred(aPos);
 
       // Shift the previous end of the string to make room for the infix
-      Memory.CopyWIDEChars(Pointer(result), bufPos, bufPos + ifxLen + (2 * sepLen), strLen - aPos + 1);
+      Utils.CopyChars(result, bufPos, bufPos + ifxLen + (2 * sepLen), strLen - aPos + 1);
 
       // Copy the infix into the space left by shifting the previous end of the string
       WIDE.CopyToBuffer(aInfix, ifxLen, Pointer(result), (bufPos + sepLen) * 2);

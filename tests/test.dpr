@@ -3,12 +3,16 @@
 
   program test;
 
+{%File '    Deltics.Strings.Utils;
+'}
+
 uses
   Deltics.Smoketest,
   Deltics.Strings in '..\src\Deltics.Strings.pas',
   Deltics.Strings.ANSI in '..\src\Deltics.Strings.ANSI.pas',
   Deltics.Strings.UTF8 in '..\src\Deltics.Strings.UTF8.pas',
   Deltics.Strings.WIDE in '..\src\Deltics.Strings.WIDE.pas',
+  Deltics.Strings.Contracts in '..\src\Deltics.Strings.Contracts.pas',
   Deltics.Strings.Encoding in '..\src\Deltics.Strings.Encoding.pas',
   Deltics.Strings.Encoding.ASCII in '..\src\Deltics.Strings.Encoding.ASCII.pas',
   Deltics.Strings.Encoding.UTF8 in '..\src\Deltics.Strings.Encoding.UTF8.pas',
@@ -30,7 +34,8 @@ uses
   Test.Consts in 'Test.Consts.pas',
   Test.Runtime in 'Test.Runtime.pas',
   Test.AllocRoutines in 'Test.AllocRoutines.pas',
-  Test.Transcoding in 'Test.Transcoding.pas';
+  Test.Transcoding in 'Test.Transcoding.pas',
+  Test.Utils in 'Test.Utils.pas';
 
 const
   DELPHI_VERSION = {$ifdef VER80}  '1' {$endif}
@@ -68,7 +73,8 @@ const
                    {$ifdef VER330} '10.3' {$endif};
 
 begin
-  TestRun.Test(TRuntimeTests, DELPHI_VERSION);
-  TestRun.Test([TAllocTests,
-                TTranscodingTests]);
+  TestRun.Test(RuntimeTests, DELPHI_VERSION);
+  TestRun.Test([AllocTests,
+                TranscodingTests,
+                UtilsTests]);
 end.

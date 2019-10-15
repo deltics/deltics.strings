@@ -11,7 +11,7 @@ interface
 
 
   type
-    TRuntimeTests = class(TTest)
+    RuntimeTests = class(TTest)
       procedure SizeOfCharIsCorrect;
       procedure SizeOfUtf8CharIsOneByte;
       procedure SizeOfAnsiCharIsOneByte;
@@ -34,31 +34,31 @@ implementation
 
 { TRuntimeTests ---------------------------------------------------------------------------------- }
 
-  procedure TRuntimeTests.SizeOfCharIsCorrect;
+  procedure RuntimeTests.SizeOfCharIsCorrect;
   begin
     AssertEqual('sizeof(Char) is {expected} bytes', sizeof(Char), {$ifdef UNICODE} 2 {$else} 1 {$endif});
   end;
 
 
-  procedure TRuntimeTests.SizeOfAnsiCharIsOneByte;
+  procedure RuntimeTests.SizeOfAnsiCharIsOneByte;
   begin
     AssertEqual('sizeof(AnsiChar) is 1 byte', sizeof(AnsiChar), 1);
   end;
 
 
-  procedure TRuntimeTests.SizeOfUtf8CharIsOneByte;
+  procedure RuntimeTests.SizeOfUtf8CharIsOneByte;
   begin
     AssertEqual('sizeof(Utf8Char) is 1 byte', sizeof(Utf8Char), 1);
   end;
 
 
-  procedure TRuntimeTests.SizeOfWideCharIsTwoBytes;
+  procedure RuntimeTests.SizeOfWideCharIsTwoBytes;
   begin
     AssertEqual('sizeof(WideChar) is 2 bytes', sizeof(WideChar), 2);
   end;
 
 
-  procedure TRuntimeTests.STRIsImplementedCorrectly;
+  procedure RuntimeTests.STRIsImplementedCorrectly;
   begin
   {$ifdef __DELPHI2007}
     Assert('STR implements Ansi routines', STR.InheritsFrom(Deltics.Strings.ANSI.ANSIFn), 'STR does not inherit from ANSIFn');
@@ -69,7 +69,7 @@ implementation
   end;
 
 
-  procedure TRuntimeTests.UNICODEIsDefinedCorrectly;
+  procedure RuntimeTests.UNICODEIsDefinedCorrectly;
   begin
   {$ifdef __DELPHI2007}
     Assert('UNICODE is not $defined', {$ifdef UNICODE}FALSE{$else}TRUE{$endif});

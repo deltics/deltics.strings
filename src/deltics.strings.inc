@@ -1,5 +1,5 @@
 
-{$i deltics.inc}
+{$i deltics.rtl.inc}
 
 {$debuginfo OFF}
 

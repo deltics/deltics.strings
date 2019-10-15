@@ -51,7 +51,7 @@ implementation
                                       aLen: Integer): Integer;
   begin
     if NOT ParseInteger(aBuffer, aLen, result) then
-      raise EConvertError.CreateFmt('''%s'' is not a valid integer expression', [WIDE.FromBuffer(aBuffer, aLen)]);
+      raise EConvertError.CreateFmt('''%s'' is not a valid integer expression', [WIDE(aBuffer, aLen)]);
   end;
 
 
@@ -92,7 +92,7 @@ implementation
                                       aLen: Integer): Boolean;
   begin
     if NOT ParseBoolean(aBuffer, aLen, result) then
-      raise EConvertError.CreateFmt('''%s'' is not a valid boolean expression', [WIDE.FromBuffer(aBuffer, aLen)]);
+      raise EConvertError.CreateFmt('''%s'' is not a valid boolean expression', [WIDE(aBuffer, aLen)]);
   end;
 
 

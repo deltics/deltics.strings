@@ -19,15 +19,12 @@ interface
     ANSIFn = class
     private
       class function AddressOfByte(aBase: Pointer; aByteIndex: Integer): PANSIChar; overload; {$ifdef InlineMethods} inline; {$endif}
-      class function AddressOfIndex(aBase: PANSIChar; aIndex: Integer): PANSIChar; overload; {$ifdef InlineMethods} inline; {$endif}
       class function AddressOfIndex(const aString: ANSIString; aIndex: Integer): PANSIChar; overload; {$ifdef InlineMethods} inline; {$endif}
-      class procedure FastCopy(const aString: ANSIString; aDest: PANSIChar); overload; {$ifdef InlineMethods} inline; {$endif}
       class procedure FastCopy(const aString: ANSIString; aDest: PANSIChar; aLen: Integer); overload; {$ifdef InlineMethods} inline; {$endif}
       class procedure FastCopy(const aString: ANSIString; var aDest: ANSIString; aDestIndex: Integer); overload; {$ifdef InlineMethods} inline; {$endif}
       class procedure FastCopy(const aString: ANSIString; var aDest: ANSIString; aDestIndex: Integer; aLen: Integer); overload; {$ifdef InlineMethods} inline; {$endif}
       class procedure FastMove(var aString: ANSIString; aFromIndex, aToIndex, aCount: Integer); overload; {$ifdef InlineMethods} inline; {$endif}
-      class procedure FastWrite(const aString: ANSIString; var aDest: PANSIChar); overload; {$ifdef InlineMethods} inline; {$endif}
-      class procedure FastWrite(const aString: ANSIString; var aDest: PANSIChar; aLen: Integer); overload; {$ifdef InlineMethods} inline; {$endif}
+      class procedure FastWrite(const aString: ANSIString; var aDest: PANSIChar; aLen: Integer); overload; {$ifdef InlineMethods} inline; {$endif}
       class function CheckCase(const aString: ANSIString; aCaseFn: TANSITestCharFn): Boolean;
       class procedure CopyToBuffer(const aString: ANSIString; aMaxBytes: Integer; aBuffer: Pointer; aOffset: Integer); overload;
 
@@ -36,7 +33,7 @@ interface
 
       // Transcoding
       class function Encode(const aString: String): ANSIString;
-      class function FromANSI(aBuffer: PAnsiChar; aMaxLen: Integer = -1): AnsiString; overload;
+      class function FromANSI(const aBuffer: PAnsiChar; aMaxLen: Integer = -1): AnsiString; overload;
       class function FromString(const aString: String): ANSIString;
       class function FromUTF8(const aString: UTF8String): ANSIString; overload;
       class function FromUTF8(const aBuffer: PUTF8Char; aMaxLen: Integer = -1): ANSIString; overload;
@@ -434,18 +431,16 @@ implementation
 
   uses
   { vcl: }
-  {$ifdef DELPHIXE4__}
+  {$ifdef DELPHI2009__}
     ANSIStrings,
   {$endif}
   { deltics: }
-    Deltics.Contracts,
-    Deltics.Memory,
     Deltics.Strings,
+    Deltics.Strings.Contracts,
     Deltics.Strings.UTF8,
     Deltics.Strings.WIDE,
     Deltics.Strings.Utils,
-    Deltics.SysUtils,
-    Deltics.Types;
+    Deltics.SysUtils;
 
 
 
@@ -467,41 +462,27 @@ implementation
                                       aByteIndex: Integer): PANSIChar;
   var
     ibase: IntPointer absolute aBase;
-    iaddr: IntPointer absolute result;
   begin
-    iaddr := ibase + NativeUInt(aByteIndex);
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function ANSIFn.AddressOfIndex(aBase: PANSIChar;
-                                       aIndex: Integer): PANSIChar;
-  var
-    ibase: IntPointer absolute aBase;
-    iaddr: IntPointer absolute result;
-  begin
-    iaddr := ibase + (NativeUInt(aIndex) - 1);
+    result := PAnsiChar(ibase + aByteIndex);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class function ANSIFn.AddressOfIndex(const aString: ANSIString;
                                              aIndex: Integer): PANSIChar;
-  var
-    istr: Integer absolute aString;
-    iaddr: Integer absolute result;
   begin
-    iaddr := istr + aIndex - 1;
+    result := @aString[aIndex];
   end;
 
 
+(*
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class procedure ANSIFn.FastCopy(const aString: ANSIString;
                                         aDest: PANSIChar);
   begin
     CopyMemory(aDest, PANSIChar(aString), Length(aString));
   end;
-
+*)
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class procedure ANSIFn.FastCopy(const aString: ANSIString;
@@ -544,20 +525,6 @@ implementation
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class procedure ANSIFn.FastWrite(const aString: ANSIString;
-                                   var   aDest: PANSIChar);
-  var
-    strLen: Integer;
-  begin
-    if NOT HasLength(aString, strLen) then
-      EXIT;
-
-    CopyMemory(aDest, PANSIChar(aString), strLen);
-    aDest := AddressOfIndex(aDest, strLen + 1);
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class procedure ANSIFn.FastWrite(const aString: ANSIString;
                                    var   aDest: PANSIChar;
                                          aLen: Integer);
   var
@@ -872,7 +839,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function ANSIFn.FromANSI(aBuffer: PAnsiChar;
+  class function ANSIFn.FromANSI(const aBuffer: PAnsiChar;
                                  aMaxLen: Integer): AnsiString;
   begin
     if aMaxLen = -1 then
@@ -1334,7 +1301,7 @@ implementation
   class function ANSIFn.Format(const aString: ANSIString;
                                const aArgs: array of const): ANSIString;
   begin
-  {$ifdef DELPHIXE4__}
+  {$ifdef DELPHI2009__}
     result := ANSIStrings.Format(aString, aArgs);
   {$else}
     result := SysUtils.Format(aString, aArgs);
@@ -2597,7 +2564,7 @@ implementation
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class procedure ANSIFn.DeleteLeft(var aString: ANSIString;
-                                     aCount: Integer);
+                                        aCount: Integer);
   var
     len: Integer;
   begin
@@ -2609,7 +2576,7 @@ implementation
     Dec(len, aCount);
 
     if len > 0 then
-      Memory.CopyBytes(@(aString[1]), aCount, 0, len) // _VAR_ aString - cannot case as pointer, must supply the address of char 1
+      Utils.CopyChars(aString, aCount, 0, len) // _VAR_ aString - cannot case as pointer, must supply the address of char 1
     else
       len := 0;
 
@@ -5232,7 +5199,7 @@ implementation
     SetLength(result, strLen + 1);
 
     // Shift the previous end of the string to make room for the infix
-    Memory.CopyBytes(Pointer(result), aPos - 1, aPos, strLen - aPos + 1);
+    Utils.CopyChars(result, aPos - 1, aPos, strLen - aPos + 1);
 
     result[aPos] := aChar;
   end;
@@ -5261,7 +5228,7 @@ implementation
     bufPos := Pred(aPos);
 
     // Shift the previous end of the string to make room for the infix
-    Memory.CopyBytes(Pointer(result), bufPos, bufPos + ifxlen, strLen - aPos + 1);
+    Utils.CopyChars(result, bufPos, bufPos + ifxlen, strLen - aPos + 1);
 
     // Copy the infix into the space left by shifting the previous end of the string
     ANSI.CopyToBuffer(aInfix, ifxlen, Pointer(result), bufPos);
@@ -5292,7 +5259,7 @@ implementation
     bufPos := Pred(aPos);
 
     // Shift the previous end of the string to make room for the infix
-    Memory.CopyBytes(Pointer(result), bufPos, bufPos + ifxLen + 2, strLen - aPos + 1);
+    Utils.CopyChars(result, bufPos, bufPos + ifxLen + 2, strLen - aPos + 1);
 
     // Copy the infix into the space left by shifting the previous end of the string
     ANSI.CopyToBuffer(aInfix, ifxLen, Pointer(result), aPos);
@@ -5329,7 +5296,7 @@ implementation
       bufPos := Pred(aPos);
 
       // Shift the previous end of the string to make room for the infix
-      Memory.CopyBytes(Pointer(result), bufPos, bufPos + ifxLen + (2 * sepLen), strLen - aPos + 1);
+      Utils.CopyChars(result, bufPos, bufPos + ifxLen + (2 * sepLen), strLen - aPos + 1);
 
       // Copy the infix into the space left by shifting the previous end of the string
       ANSI.CopyToBuffer(aInfix, ifxLen, Pointer(result), bufPos + sepLen);
@@ -5355,7 +5322,7 @@ implementation
 
       SetLength(result, strLen + 1);
 
-      Memory.CopyBytes(Pointer(result), 0, 1, strLen);
+      Utils.CopyChars(result, 0, 1, strLen);
     end
     else
       SetLength(result, 1);
@@ -5379,7 +5346,7 @@ implementation
       begin
         SetLength(result, strLen + pfxLen);
 
-        Memory.CopyBytes(Pointer(result), 0, pfxLen, Length(aString));
+        Utils.CopyChars(result, 0, pfxLen, Length(aString));
 
         CopyToBuffer(aPrefix, pfxLen, PANSIChar(result), 0);
       end;
@@ -5405,7 +5372,7 @@ implementation
       begin
         SetLength(result, strLen + pfxLen + 1);
 
-        Memory.CopyBytes(Pointer(result), 0, pfxLen + 1, Length(aString));
+        Utils.CopyChars(result, 0, pfxLen + 1, Length(aString));
 
         CopyToBuffer(aPrefix, pfxLen, PANSIChar(result), 0);
 
@@ -5437,7 +5404,7 @@ implementation
       begin
         SetLength(result, strLen + pfxLen + sepLen);
 
-        Memory.CopyBytes(Pointer(result), 0, pfxLen + sepLen, Length(aString));
+        Utils.CopyChars(result, 0, pfxLen + sepLen, Length(aString));
 
         CopyToBuffer(aPrefix,     pfxLen, PANSIChar(result), 0);
         CopyToBuffer(aSeparator,  sepLen, PANSIChar(result), pfxLen);

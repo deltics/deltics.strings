@@ -9,7 +9,7 @@ interface
 
 
   type
-    TTranscodingTests = class(TTest)
+    TranscodingTests = class(TTest)
       procedure STRFromAnsiTranscodesToString;
       procedure STRFromAnsiBufferTranscodesToString;
       procedure STRFromPartialAnsiBufferTranscodesToStringOfCorrectLength;
@@ -74,63 +74,63 @@ implementation
 { TTranscodingTests ------------------------------------------------------------------------------ }
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  procedure TTranscodingTests.STRFromAnsiTranscodesToString;
+  procedure TranscodingTests.STRFromAnsiTranscodesToString;
   begin
     AssertEqual('STR.FromAnsi transcodes to String', STR.FromAnsi(SRCA), SRCS);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  procedure TTranscodingTests.STRFromAnsiBufferTranscodesToString;
+  procedure TranscodingTests.STRFromAnsiBufferTranscodesToString;
   begin
-    AssertEqual('STR.FromAnsi buffer transcodes to String', STR.FromAnsi(PAnsiChar(@SRCA[1])), SRCS);
+    AssertEqual('STR.FromAnsi buffer transcodes to String', STR.FromAnsi(@SRCA[1]), SRCS);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  procedure TTranscodingTests.STRFromPartialAnsiBufferTranscodesToStringOfCorrectLength;
+  procedure TranscodingTests.STRFromPartialAnsiBufferTranscodesToStringOfCorrectLength;
   begin
     AssertEqual('STR.FromAnsi partial buffer transcodes to String of correct length', STR.FromAnsi(PAnsiChar(@SRCA[1]), 3), Copy(SRCS, 1, 3));
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  procedure TTranscodingTests.STRFromUtf8TranscodesToString;
+  procedure TranscodingTests.STRFromUtf8TranscodesToString;
   begin
     AssertEqual('STR.FromUtf8 transcodes to String', STR.FromUtf8(SRCU), SRCS);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  procedure TTranscodingTests.STRFromUtf8BufferTranscodesToString;
+  procedure TranscodingTests.STRFromUtf8BufferTranscodesToString;
   begin
     AssertEqual('STR.FromUtf8 buffer transcodes to String', STR.FromUtf8(PUtf8Char(@SRCU[1])), SRCS);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  procedure TTranscodingTests.STRFromPartialUtf8BufferTranscodesToStringOfCorrectLength;
+  procedure TranscodingTests.STRFromPartialUtf8BufferTranscodesToStringOfCorrectLength;
   begin
     AssertEqual('STR.FromUtf8 partial buffer transcodes to String of correct length', STR.FromUtf8(PUtf8Char(@SRCU[1]), 3), Copy(SRCS, 1, 3));
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  procedure TTranscodingTests.STRFromWideTranscodesToString;
+  procedure TranscodingTests.STRFromWideTranscodesToString;
   begin
     AssertEqual('STR.FromWide transcodes to String', STR.FromWide(SRCW), SRCS);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  procedure TTranscodingTests.STRFromWideBufferTranscodesToString;
+  procedure TranscodingTests.STRFromWideBufferTranscodesToString;
   begin
     AssertEqual('STR.FromWide buffer transcodes to String', STR.FromWide(PWideChar(@SRCW[1])), SRCS);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  procedure TTranscodingTests.STRFromPartialWideBufferTranscodesToStringOfCorrectLength;
+  procedure TranscodingTests.STRFromPartialWideBufferTranscodesToStringOfCorrectLength;
   begin
     AssertEqual('STR.FromWide partial buffer transcodes to String of correct length', STR.FromWide(PWideChar(@SRCW[1]), 3), Copy(SRCS, 1, 3));
   end;
@@ -141,133 +141,133 @@ implementation
 { Transcoding to ANSI String --------------------------------------------------------------------- }
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  procedure TTranscodingTests.ANSIEncodeYieldsAnsi;
+  procedure TranscodingTests.ANSIEncodeYieldsAnsi;
   begin
     AssertEqual('ANSI.Encode yields Ansi', ANSI.Encode(SRCS), SRCA);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  procedure TTranscodingTests.ANSIFromStringTranscodesToANSI;
+  procedure TranscodingTests.ANSIFromStringTranscodesToANSI;
   begin
     AssertEqual('ANSI.FromString transcodes to ANSI', ANSI.FromString(SRCS), SRCA);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  procedure TTranscodingTests.ANSIFromAnsiBufferYieldsAnsi;
+  procedure TranscodingTests.ANSIFromAnsiBufferYieldsAnsi;
   begin
     AssertEqual('ANSI.FromAnsi (buffer) yields Ansi', ANSI.FromAnsi(PAnsiChar(@SRCA[1])), SRCA);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  procedure TTranscodingTests.ANSIFromPartialAnsiBufferYieldsAnsi;
+  procedure TranscodingTests.ANSIFromPartialAnsiBufferYieldsAnsi;
   begin
     AssertEqual('ANSI.FromAnsi (partial buffer) yields Ansi of correct length', ANSI.FromAnsi(PAnsiChar(@SRCA[1]), 3), Copy(SRCA, 1, 3));
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  procedure TTranscodingTests.ANSIFromOverrunAnsiBufferYieldsAnsi;
+  procedure TranscodingTests.ANSIFromOverrunAnsiBufferYieldsAnsi;
   begin
     AssertEqual('ANSI.FromAnsi (overrun buffer) yields Ansi of correct length', ANSI.FromAnsi(PAnsiChar(@SRCA[1]), 12), SRCA);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  procedure TTranscodingTests.ANSIFromEmptyAnsiBufferYieldsEmptyAnsiString;
+  procedure TranscodingTests.ANSIFromEmptyAnsiBufferYieldsEmptyAnsiString;
   begin
     AssertEqual('ANSI.FromAnsi (empty buffer) yields empty string', ANSI.FromAnsi(PAnsiChar(@EMPTYA[1]), 10), EMPTYA);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  procedure TTranscodingTests.ANSIFromAnsiBufferWithZeroLengthYieldsEmptyAnsiString;
+  procedure TranscodingTests.ANSIFromAnsiBufferWithZeroLengthYieldsEmptyAnsiString;
   begin
     AssertEqual('ANSI.FromAnsi (buffer with zero max length) yields empty string', ANSI.FromAnsi(PAnsiChar(@SRCA[1]), 0), EMPTYA);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  procedure TTranscodingTests.ANSIFromUtf8YieldsAnsi;
+  procedure TranscodingTests.ANSIFromUtf8YieldsAnsi;
   begin
     AssertEqual('ANSI.FromUtf8 yields Ansi', ANSI.FromUtf8(SRCU), SRCA);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  procedure TTranscodingTests.ANSIFromUtf8BufferYieldsAnsi;
+  procedure TranscodingTests.ANSIFromUtf8BufferYieldsAnsi;
   begin
     AssertEqual('ANSI.FromUtf8 (buffer) yields Ansi', ANSI.FromUtf8(PUtf8Char(@SRCU[1])), SRCA);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  procedure TTranscodingTests.ANSIFromPartialUtf8BufferYieldsAnsi;
+  procedure TranscodingTests.ANSIFromPartialUtf8BufferYieldsAnsi;
   begin
     AssertEqual('ANSI.FromUtf8 (partial buffer) yields Ansi', ANSI.FromUtf8(PUtf8Char(@SRCU[1])), SRCA);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  procedure TTranscodingTests.ANSIFromOverrunUtf8BufferYieldsAnsi;
+  procedure TranscodingTests.ANSIFromOverrunUtf8BufferYieldsAnsi;
   begin
     AssertEqual('ANSI.FromUtf8 (buffer overrun) yields Ansi of correct length', ANSI.FromUtf8(PUtf8Char(@SRCU[1]), 12), SRCA);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  procedure TTranscodingTests.ANSIFromEmptyUtf8BufferYieldsEmptyAnsiString;
+  procedure TranscodingTests.ANSIFromEmptyUtf8BufferYieldsEmptyAnsiString;
   begin
     AssertEqual('ANSI.FromUtf8 (empty buffer) yields empty string', ANSI.FromUtf8(PUtf8Char(@EMPTYU[1]), 10), EMPTYA);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  procedure TTranscodingTests.ANSIFromUtf8BufferWithZeroLengthYieldsEmptyAnsiString;
+  procedure TranscodingTests.ANSIFromUtf8BufferWithZeroLengthYieldsEmptyAnsiString;
   begin
     AssertEqual('ANSI.FromUtf8 (buffer with zero max length) yields empty string', ANSI.FromUtf8(PUtf8Char(@SRCU[1]), 0), EMPTYA);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  procedure TTranscodingTests.ANSIFromWideYieldsAnsi;
+  procedure TranscodingTests.ANSIFromWideYieldsAnsi;
   begin
     AssertEqual('ANSI.FromWide yields Ansi', ANSI.FromWide(SRCW), SRCA);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  procedure TTranscodingTests.ANSIFromWideBufferYieldsAnsi;
+  procedure TranscodingTests.ANSIFromWideBufferYieldsAnsi;
   begin
     AssertEqual('ANSI.FromWide (buffer) yields Ansi', ANSI.FromWide(PWideChar(@SRCW[1])), SRCA);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  procedure TTranscodingTests.ANSIFromPartialWideBufferYieldsAnsi;
+  procedure TranscodingTests.ANSIFromPartialWideBufferYieldsAnsi;
   begin
     AssertEqual('ANSI.FromWide (partial buffer) transcodes to Ansi of correct length', ANSI.FromWide(PWideChar(@SRCW[1]), 3), Copy(SRCA, 1, 3));
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  procedure TTranscodingTests.ANSIFromOverrunWideBufferYieldsAnsi;
+  procedure TranscodingTests.ANSIFromOverrunWideBufferYieldsAnsi;
   begin
     AssertEqual('ANSI.FromWide (buffer overrun) transcodes to Ansi of correct length', ANSI.FromWide(PWideChar(@SRCW[1]), 12), SRCA);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  procedure TTranscodingTests.ANSIFromEmptyWideBufferYieldsEmptyAnsiString;
+  procedure TranscodingTests.ANSIFromEmptyWideBufferYieldsEmptyAnsiString;
   begin
     AssertEqual('ANSI.FromWide (empty wide buffer) yields empty string', ANSI.FromWide(PWideChar(@EMPTYW[1]), 10), EMPTYA);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  procedure TTranscodingTests.ANSIFromWideBufferWithZeroLengthYieldsEmptyAnsiString;
+  procedure TranscodingTests.ANSIFromWideBufferWithZeroLengthYieldsEmptyAnsiString;
   begin
     AssertEqual('ANSI.FromWide (buffer with zero max length) yields empty string', ANSI.FromWide(PWideChar(@SRCW[1]), 0), EMPTYA);
   end;
@@ -280,133 +280,133 @@ implementation
 { Transcoding to WIDE String --------------------------------------------------------------------- }
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  procedure TTranscodingTests.WIDEEncodeYieldsWide;
+  procedure TranscodingTests.WIDEEncodeYieldsWide;
   begin
     AssertEqual('WIDE.Encode yields Wide', WIDE.Encode(SRCS), SRCW);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  procedure TTranscodingTests.WIDEFromStringTranscodesToWide;
+  procedure TranscodingTests.WIDEFromStringTranscodesToWide;
   begin
     AssertEqual('WIDE.FromString transcodes to WIDE', WIDE.FromString(SRCS), SRCW);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  procedure TTranscodingTests.WIDEFromAnsiYieldsWide;
+  procedure TranscodingTests.WIDEFromAnsiYieldsWide;
   begin
     AssertEqual('WIDE.FromAnsi yields Wide', WIDE.FromAnsi(SRCA), SRCW);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  procedure TTranscodingTests.WIDEFromAnsiBufferYieldsWide;
+  procedure TranscodingTests.WIDEFromAnsiBufferYieldsWide;
   begin
     AssertEqual('WIDE.FromAnsi (buffer) yields Wide', WIDE.FromAnsi(PAnsiChar(@SRCA[1])), SRCW);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  procedure TTranscodingTests.WIDEFromPartialAnsiBufferYieldsWide;
+  procedure TranscodingTests.WIDEFromPartialAnsiBufferYieldsWide;
   begin
     AssertEqual('WIDE.FromAnsi (partial buffer) yields Wide of correct length', WIDE.FromAnsi(PAnsiChar(@SRCA[1]), 3), Copy(SRCW, 1, 3));
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  procedure TTranscodingTests.WIDEFromOverrunAnsiBufferYieldsWide;
+  procedure TranscodingTests.WIDEFromOverrunAnsiBufferYieldsWide;
   begin
     AssertEqual('WIDE.FromAnsi (overrun buffer) yields Wide of correct length', WIDE.FromAnsi(PAnsiChar(@SRCA[1]), 12), SRCW);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  procedure TTranscodingTests.WIDEFromEmptyAnsiBufferYieldsEmptyWideString;
+  procedure TranscodingTests.WIDEFromEmptyAnsiBufferYieldsEmptyWideString;
   begin
     AssertEqual('WIDE.FromAnsi (empty buffer) yields empty string', WIDE.FromAnsi(PAnsiChar(@EMPTYA[1]), 10), EMPTYW);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  procedure TTranscodingTests.WIDEFromAnsiBufferWithZeroLengthYieldsEmptyWideString;
+  procedure TranscodingTests.WIDEFromAnsiBufferWithZeroLengthYieldsEmptyWideString;
   begin
     AssertEqual('WIDE.FromAnsi (buffer with zero max length) yields empty string', WIDE.FromAnsi(PAnsiChar(@SRCA[1]), 0), EMPTYW);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  procedure TTranscodingTests.WIDEFromUtf8YieldsWide;
+  procedure TranscodingTests.WIDEFromUtf8YieldsWide;
   begin
     AssertEqual('WIDE.FromUtf8 yields Wide', WIDE.FromUtf8(SRCU), SRCW);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  procedure TTranscodingTests.WIDEFromUtf8BufferYieldsWide;
+  procedure TranscodingTests.WIDEFromUtf8BufferYieldsWide;
   begin
     AssertEqual('WIDE.FromUtf8 (buffer) yields Wide', WIDE.FromUtf8(PUtf8Char(@SRCU[1])), SRCW);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  procedure TTranscodingTests.WIDEFromPartialUtf8BufferYieldsWide;
+  procedure TranscodingTests.WIDEFromPartialUtf8BufferYieldsWide;
   begin
     AssertEqual('WIDE.FromUtf8 (partial buffer) yields Wide', WIDE.FromUtf8(PUtf8Char(@SRCU[1])), SRCW);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  procedure TTranscodingTests.WIDEFromOverrunUtf8BufferYieldsWide;
+  procedure TranscodingTests.WIDEFromOverrunUtf8BufferYieldsWide;
   begin
     AssertEqual('WIDE.FromUtf8 (buffer overrun) yields Wide of correct length', WIDE.FromUtf8(PUtf8Char(@SRCU[1]), 12), SRCW);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  procedure TTranscodingTests.WIDEFromEmptyUtf8BufferYieldsEmptyWideString;
+  procedure TranscodingTests.WIDEFromEmptyUtf8BufferYieldsEmptyWideString;
   begin
     AssertEqual('WIDE.FromUtf8 (empty buffer) yields empty string', WIDE.FromUtf8(PUtf8Char(@EMPTYU[1]), 10), EMPTYW);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  procedure TTranscodingTests.WIDEFromUtf8BufferWithZeroLengthYieldsEmptyWideString;
+  procedure TranscodingTests.WIDEFromUtf8BufferWithZeroLengthYieldsEmptyWideString;
   begin
     AssertEqual('WIDE.FromUtf8 (buffer with zero max length) yields empty string', WIDE.FromUtf8(PUtf8Char(@SRCU[1]), 0), EMPTYW);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  procedure TTranscodingTests.WIDEFromWideBufferYieldsWide;
+  procedure TranscodingTests.WIDEFromWideBufferYieldsWide;
   begin
     AssertEqual('WIDE.FromWide (buffer) yields Wide', WIDE.FromWide(PWideChar(@SRCW[1])), SRCW);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  procedure TTranscodingTests.WIDEFromPartialWideBufferYieldsWide;
+  procedure TranscodingTests.WIDEFromPartialWideBufferYieldsWide;
   begin
     AssertEqual('WIDE.FromWide (partial buffer) transcodes to Ansi of correct length', WIDE.FromWide(PWideChar(@SRCW[1]), 3), Copy(SRCW, 1, 3));
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  procedure TTranscodingTests.WIDEFromOverrunWideBufferYieldsWide;
+  procedure TranscodingTests.WIDEFromOverrunWideBufferYieldsWide;
   begin
     AssertEqual('WIDE.FromWide (buffer overrun) transcodes to Ansi of correct length', WIDE.FromWide(PWideChar(@SRCW[1]), 12), SRCW);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  procedure TTranscodingTests.WIDEFromEmptyWideBufferYieldsEmptyWideString;
+  procedure TranscodingTests.WIDEFromEmptyWideBufferYieldsEmptyWideString;
   begin
     AssertEqual('WIDE.FromWide (empty wide buffer) yields empty string', WIDE.FromWide(PWideChar(@EMPTYW[1]), 10), EMPTYW);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  procedure TTranscodingTests.WIDEFromWideBufferWithZeroLengthYieldsEmptyWideString;
+  procedure TranscodingTests.WIDEFromWideBufferWithZeroLengthYieldsEmptyWideString;
   begin
     AssertEqual('WIDE.FromWide (buffer with zero max length) yields empty string', WIDE.FromWide(PWideChar(@SRCW[1]), 0), EMPTYW);
   end;

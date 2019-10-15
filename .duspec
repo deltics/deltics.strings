@@ -10,7 +10,8 @@
   language: "en",
   content: "source",
   dependencies: [
-    "deltics.rtl:0.2.0-beta.17"
+    "deltics.rtl:0.2.0-beta.17",
+    "deltics.contracts"
   ],
   source: {
       files: [
@@ -19,6 +20,7 @@
         "src\\Deltics.Strings.ANSI.pas",
         "src\\Deltics.Strings.UTF8.pas",
         "src\\Deltics.Strings.WIDE.pas",
+        "src\\Deltics.Strings.Contracts.pas",
         "src\\Deltics.Strings.Encoding.pas",
         "src\\Deltics.Strings.Encoding.ASCII.pas",
         "src\\Deltics.Strings.Encoding.UTF16.pas",

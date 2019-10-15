@@ -10,7 +10,7 @@ interface
 
 
   type
-    TAllocTests = class(TTest)
+    AllocTests = class(TTest)
       procedure StrAllocAnsiAllocatesNewAnsiBuffer;
       procedure StrAllocUtf8AllocatesNewUtf8Buffer;
       procedure StrAllocWideAllocatesNewWideBuffer;
@@ -30,7 +30,7 @@ implementation
 { TAllocTests ------------------------------------------------------------------------------------ }
 
   {-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - --}
-  procedure TAllocTests.StrAllocAnsiAllocatesNewAnsiBuffer;
+  procedure AllocTests.StrAllocAnsiAllocatesNewAnsiBuffer;
   var
     pAnsi: PAnsiChar;
   begin
@@ -46,7 +46,7 @@ implementation
 
 
   {-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - --}
-  procedure TAllocTests.StrAllocUtf8AllocatesNewUtf8Buffer;
+  procedure AllocTests.StrAllocUtf8AllocatesNewUtf8Buffer;
   var
     pUtf8: PUtf8Char;
   begin
@@ -62,7 +62,7 @@ implementation
 
 
   {-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - --}
-  procedure TAllocTests.StrAllocWideAllocatesNewWideBuffer;
+  procedure AllocTests.StrAllocWideAllocatesNewWideBuffer;
   var
     pWide: PWideChar;
   begin
