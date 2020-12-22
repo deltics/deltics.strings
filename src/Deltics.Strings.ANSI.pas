@@ -10,7 +10,6 @@ interface
   uses
     SysUtils,
     Windows,
-    Deltics.Classes,
     Deltics.Strings.Parsers.ANSI,
     Deltics.Strings.Types;
 
@@ -435,12 +434,15 @@ implementation
     ANSIStrings,
   {$endif}
   { deltics: }
+    Deltics.Contracts,
+    Deltics.Exchange,
+    Deltics.Math,
+    Deltics.Pointers,
+    Deltics.ReverseBytes,
     Deltics.Strings,
-    Deltics.Strings.Contracts,
     Deltics.Strings.UTF8,
     Deltics.Strings.WIDE,
-    Deltics.Strings.Utils,
-    Deltics.SysUtils;
+    Deltics.Strings.Utils;
 
 
 
@@ -463,7 +465,11 @@ implementation
   var
     ibase: IntPointer absolute aBase;
   begin
-    result := PAnsiChar(ibase + aByteIndex);
+      result := PAnsiChar(ByteOffset(aBase, aByteIndex));
+//    if aByteIndex > 0 then
+//      result := ibase + Cardinal(aByteIndex))
+//    else
+//      result := PAnsiChar(ibase - Cardinal(Abs(aByteIndex)));
   end;
 
 
@@ -578,8 +584,8 @@ implementation
   var
     len: Integer;
   begin
-    Contract.Assigned(aBuffer);
-    Contract.Minimum(aMaxBytes, 0);
+    Require('aBuffer', aBuffer).IsAssigned;
+    Require('aMaxBytes', aMaxBytes).IsPositiveOrZero;
 
     if  (aMaxBytes = 0)
      or NOT HasLength(aString, len) then
@@ -729,7 +735,7 @@ implementation
   var
     p, delimLen: Integer;
   begin
-    Contract.NotEmpty(aDelim, delimLen);
+    Require('aDelim', aDelim).IsNotEmpty.GetLength(delimLen);
 
     aLeft   := aString;
     aRight  := '';
@@ -794,7 +800,7 @@ implementation
     p: TCharIndexArray;
     plen, delimLen: Integer;
   begin
-    Contract.NotEmpty(aDelim, delimLen);
+    Require('aDelim', aDelim).IsNotEmpty.GetLength(delimLen);
 
     result := FindAll(aString, aDelim, p) > 0;
     if NOT result then
@@ -875,7 +881,7 @@ implementation
   class function ANSIFn.FromUTF8(const aBuffer: PUTF8Char;
                                        aMaxLen: Integer): ANSIString;
   begin
-    Contract.Minimum(aMaxLen, -1);
+    Require('aMaxLen', aMaxLen).IsGreaterThanOrEqual(-1);
 
     // TODO: Can we do this more directly / efficiently ?
     result := ANSI.FromWIDE(WIDE.FromUTF8(aBuffer, aMaxLen));
@@ -1530,7 +1536,8 @@ implementation
   var
     chars: PANSIChar absolute aString;
   begin
-    Contract.NotNull(aChar);
+    Require('aChar', aChar).IsNotNull;
+    Require('aCaseMode', aCaseMode in [csCaseSensitive, csIgnoreCase]);
 
     case aCaseMode of
 
@@ -1542,7 +1549,6 @@ implementation
                                                   chars, 1,
                                                   @aChar, 1) = CSTR_EQUAL);
     else
-      Contract.NotSupported;
       result := FALSE;
     end;
   end;
@@ -1564,7 +1570,7 @@ implementation
   var
     subLen: Integer;
   begin
-    Contract.NotEmpty(aSubstring, subLen);
+    Require('aSubstring', aSubstring).IsNotEmpty.GetLength(subLen);
 
     result := (subLen <= System.Length(aString))
           and (CompareStringA(LOCALE_USER_DEFAULT, CASEMODE_FLAG[aCaseMode],
@@ -1577,7 +1583,7 @@ implementation
   class function ANSIFn.BeginsWithText(const aString: ANSIString;
                                              aChar: ANSIChar): Boolean;
   begin
-    Contract.NotNull(aChar);
+    Require('aChar', aChar).IsNotNull;
 
     result := (aString <> '')
           and (CompareStringA(LOCALE_USER_DEFAULT, NORM_IGNORECASE,
@@ -1600,7 +1606,7 @@ implementation
   var
     subLen: Integer;
   begin
-    Contract.NotEmpty(aSubstring, subLen);
+    Require('aSubstring', aSubstring).IsNotEmpty.GetLength(subLen);
 
     result := (subLen <= System.Length(aString))
           and (CompareStringA(LOCALE_USER_DEFAULT, NORM_IGNORECASE,
@@ -1680,7 +1686,8 @@ implementation
     chars: PANSIChar absolute aString;
     strLen: Integer;
   begin
-    Contract.NotNull(aChar);
+    Require('aChar', aChar).IsNotNull;
+    Require('aCaseMode', aCaseMode in [csCaseSensitive, csIgnoreCase]);
 
     case aCaseMode of
 
@@ -1692,7 +1699,6 @@ implementation
                                                   PANSIChar(ByteOffset(Pointer(aString), strLen - 1)), 1,
                                                   @aChar, 1) = CSTR_EQUAL);
     else
-      Contract.NotSupported;
       result := FALSE;
     end;
   end;
@@ -1715,7 +1721,7 @@ implementation
     strLen: Integer;
     subLen: Integer;
   begin
-    Contract.NotEmpty(aSubString, subLen);
+    Require('aSubstring', aSubstring).IsNotEmpty.GetLength(subLen);
 
     strLen := Length(aString);
     result := (subLen <= strLen)
@@ -1731,7 +1737,7 @@ implementation
   var
     strLen: Integer;
   begin
-    Contract.NotNull(aChar);
+    Require('aChar', aChar).IsNotNull;
 
     result := HasLength(aString, strLen)
           and (CompareStringA(LOCALE_USER_DEFAULT, NORM_IGNORECASE,
@@ -1755,7 +1761,7 @@ implementation
     strLen: Integer;
     subLen: Integer;
   begin
-    Contract.NotEmpty(aSubString, subLen);
+    Require('aSubstring', aSubstring).IsNotEmpty.GetLength(subLen);
 
     strLen := Length(aString);
     result := (subLen <= strLen)
@@ -1909,7 +1915,7 @@ implementation
     first: PANSIChar;
     curr: PANSIChar;
   begin
-    Contract.NotNull(aChar);
+    Require('aChar', aChar).IsNotNull;
 
     curr   := NIL;
     first  := NIL;
@@ -1983,7 +1989,7 @@ implementation
     first: PANSIChar;
     curr: PANSIChar;
   begin
-    Contract.NotEmpty(aSubstring, subLen);
+    Require('aSubstring', aSubstring).IsNotEmpty.GetLength(subLen);
 
     curr   := NIL;
     first  := NIL;
@@ -2058,7 +2064,7 @@ implementation
     first: PANSIChar;
     curr: PANSIChar;
   begin
-    Contract.NotNull(aChar);
+    Require('aChar', aChar).IsNotNull;
 
     curr   := NIL;
     first  := NIL;
@@ -2129,15 +2135,14 @@ implementation
     first: PANSIChar;
     curr: PANSIChar;
   begin
-    Contract.NotEmpty(aSubstring);
+    Require('aSubstring', aSubstring).IsNotEmpty.GetLength(subLen);
 
     curr   := NIL;
     first  := NIL;
     result := FALSE;
     try
-      if  (aPos < 1)
-       or (NOT HasLength(aString, strLen))
-       or (NOT HasLength(aSubstring, subLen)) then
+      if  (aPos < 1) or (SubLen = 0)
+       or (NOT HasLength(aString, strLen)) then
         EXIT;
 
       aPos  := Min(aPos - 1, strLen - subLen + 1);
@@ -2203,7 +2208,7 @@ implementation
     firstChar: PANSIChar;
     currChar: PANSIChar;
   begin
-    Contract.NotNull(aChar);
+    Require('aChar', aChar).IsNotNull;
 
     result := 0;
     SetLength(aPos, 0);
@@ -2275,14 +2280,13 @@ implementation
     strLen: Integer;
     subLen: Integer;
   begin
-    Contract.NotEmpty(aSubstring);
+    Require('aSubstring', aSubstring).IsNotEmpty.GetLength(subLen);
 
     result := 0;
     SetLength(aPos, 0);
 
-    subLen  := System.Length(aSubstring);
     strLen  := System.Length(aString);
-    if (strLen = 0) or (subLen = 0) or (subLen > strLen)then
+    if (strLen = 0) or (subLen = 0) or (subLen > strLen)then
       EXIT;
 
     SetLength(aPos, strLen);
@@ -2339,8 +2343,8 @@ implementation
                                     aIndex: Integer;
                                     aLength: Integer);
   begin
-    Contract.ValidIndex(aString, aIndex);
-    Contract.Minimum(aLength, 0);
+    Require('aIndex', aIndex).IsValidIndexForString(aString);
+    Require('aLength', aLength).IsPositiveOrZero;
 
     if aLength = 0 then
       EXIT;
@@ -2354,8 +2358,8 @@ implementation
                                          aIndex: INteger;
                                          aEndIndex: Integer);
   begin
-    Contract.ValidIndex(aString, aIndex);
-    Contract.ValidIndex(aString, aEndIndex);
+    Require('aIndex', aIndex).IsValidIndexForString(aString);
+    Require('aEndIndex', aEndIndex).IsValidIndexForString(aString);
 
     if aIndex > aEndIndex then
       Exchange(aIndex, aEndIndex);
@@ -2568,7 +2572,7 @@ implementation
   var
     len: Integer;
   begin
-    Contract.Minimum(aCount, 0);
+    Require('aCount', aCount).IsPositiveOrZero;
 
     if (aCount = 0) or NOT HasLength(aString, len) then
       EXIT;
@@ -2609,7 +2613,7 @@ implementation
   var
     len: Integer;
   begin
-    Contract.Minimum(aCount, 0);
+    Require('aCount', aCount).IsPositiveOrZero;
 
     if (aCount > 0) and HasLength(aString, len) then
       SetLength(aString, len - aCount);
@@ -2849,8 +2853,8 @@ implementation
      or NOT HasLength(aString, strLen) then
       EXIT;
 
-    Contract.ValidIndex(aString, aIndex);
-    Contract.ValidIndex(aString, aIndex + aLength - 1);
+    Require('aIndex', aIndex).IsValidIndexForString(aString);
+    Require('aIndex + aLength - 1', aIndex + aLength - 1).IsValidIndexForString(aString);
 
     aExtract := self.Copy(aString, aIndex, aLength);
     Delete(aString, aIndex, aLength);
@@ -2872,7 +2876,7 @@ implementation
                                      aCount: Integer;
                                  var aExtract: ANSIString): Boolean;
   begin
-    Contract.Minimum(aCount, 0);
+    Require('aCount', aCount).IsPositiveOrZero;
 
     aExtract  := System.Copy(aString, 1, aCount);
     result    := NOT IsEmpty(aExtract);
@@ -3045,7 +3049,7 @@ implementation
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class function ANSIFn.ExtractRight(var aString: ANSIString; aCount: Integer): ANSIString;
   begin
-    Contract.Minimum(aCount, 0);
+    Require('aCount', aCount).IsPositiveOrZero;
 
     result := System.Copy(aString, Length(aString) - aCount + 1, aCount);
     SetLength(aString, Length(aString) - aCount);
@@ -3077,7 +3081,7 @@ implementation
   var
     strLen: Integer;
   begin
-    Contract.Minimum(aIndex, 0);
+    Require('aIndex', aIndex).IsPositiveOrZero;
 
     result := HasLength(aString, strLen) and (aIndex < strLen);
     if result then
@@ -3304,7 +3308,7 @@ implementation
   var
     subLen: Integer;
   begin
-    Contract.NotEmpty(aSubstring, subLen);
+    Require('aSubstring', aSubstring).IsNotEmpty.GetLength(subLen);
 
     result := BeginsWith(aString, aSubstring, aCaseMode);
     if result then
@@ -3318,7 +3322,7 @@ implementation
   var
     subLen: Integer;
   begin
-    Contract.NotEmpty(aSubstring, subLen);
+    Require('aSubstring', aSubstring).IsNotEmpty.GetLength(subLen);
 
     result := BeginsWith(aString, aSubstring, csIgnoreCase);
     if result then
@@ -3333,7 +3337,7 @@ implementation
   var
     subLen, strLen: Integer;
   begin
-    Contract.NotEmpty(aSubstring, subLen);
+    Require('aSubstring', aSubstring).IsNotEmpty.GetLength(subLen);
 
     result := HasLength(aString, strLen)
           and EndsWith(aString, aSubstring, aCaseMode);
@@ -3349,7 +3353,7 @@ implementation
   var
     subLen, strLen: Integer;
   begin
-    Contract.NotEmpty(aSubstring, subLen);
+    Require('aSubstring', aSubstring).IsNotEmpty.GetLength(subLen);
 
     result := HasLength(aString, strLen)
           and EndsWith(aString, aSubstring, csIgnoreCase);
@@ -3378,7 +3382,7 @@ implementation
                                    aStartPos, aLength: Integer;
                              var   aCopy: ANSIString): Boolean;
   begin
-    Contract.Minimum(aStartPos, 1);
+    Require('aStartPos', aStartPos).IsNotLessThan(1);
 
     aCopy   := System.Copy(aString, aStartPos, aLength);
     result  := Length(aCopy) > 0;
@@ -3398,7 +3402,7 @@ implementation
                                        aIndex: Integer;
                                  var   aCopy: ANSIString): Boolean;
   begin
-    Contract.Minimum(aIndex, 1);
+    Require('aIndex', aIndex).IsNotLessThan(1);
 
     aCopy   := System.Copy(aString, aIndex, Length(aString) - aIndex + 1);
     result  := Length(aCopy) > 0;
@@ -3420,7 +3424,7 @@ implementation
                                         aEndPos: Integer;
                                   var   aCopy: ANSIString): Boolean;
   begin
-    Contract.Minimum(aStartPos, 1);
+    Require('aStartPos', aStartPos).IsNotLessThan(1);
 
     aCopy   := System.Copy(aString, aStartPos, aEndPos - aStartPos + 1);
     result  := Length(aCopy) > 0;
@@ -3431,7 +3435,7 @@ implementation
   class function ANSIFn.CopyLeft(const aString: ANSIString;
                                     aCount: Integer): ANSIString;
   begin
-    Contract.Minimum(aCount, 0);
+    Require('aCount', aCount).IsPositiveOrZero;
 
     result := System.Copy(aString, 1, aCount);
   end;
@@ -3472,7 +3476,7 @@ implementation
                                     aCount: Integer;
                               var   aCopy: ANSIString): Boolean;
   begin
-    Contract.Minimum(aCount, 0);
+    Require('aCount', aCount).IsPositiveOrZero;
 
     aCopy   := System.Copy(aString, 1, aCount);
     result  := Length(aCopy) > 0;
@@ -3524,7 +3528,7 @@ implementation
   var
     p, delimLen: Integer;
   begin
-    Contract.NotEmpty(aDelimiter, delimLen);
+    Require('aDelimiter', aDelimiter).IsNotEmpty.GetLength(delimLen);
 
     if Find(aString, aDelimiter, p, aDelimiterCase) then
       case aDelimiterOption of
@@ -3603,7 +3607,7 @@ implementation
   class function ANSIFn.CopyRight(const aString: ANSIString;
                                     aCount: Integer): ANSIString;
   begin
-    Contract.Minimum(aCount, 0);
+    Require('aCount', aCount).IsPositiveOrZero;
 
     result := System.Copy(aString, Length(aString) - aCount + 1, aCount);
   end;
@@ -3644,7 +3648,7 @@ implementation
                                     aCount: Integer;
                               var   aCopy: ANSIString): Boolean;
   begin
-    Contract.Minimum(aCount, 0);
+    Require('aCount', aCount).IsPositiveOrZero;
 
     aCopy   := System.Copy(aString, Length(aString) - aCount + 1, aCount);
     result  := Length(aCopy) > 0;
@@ -3696,7 +3700,7 @@ implementation
   var
     p, delimLen: Integer;
   begin
-    Contract.NotEmpty(aDelimiter, delimLen);
+    Require('aDelimiter', aDelimiter).IsNotEmpty.GetLength(delimLen);
 
     if Find(aString, aDelimiter, p, aDelimiterCase) then
       case aDelimiterOption of
@@ -3870,7 +3874,7 @@ implementation
   var
     p: Integer;
   begin
-    Contract.NotNull(aReplacement);
+    Require('aReplacement', aReplacement).IsNotNull;
 
     aResult := aString;
     result := (aChar <> aReplacement) and Find(aString, aChar, p, aCaseMode);
@@ -3947,7 +3951,7 @@ implementation
     p: Integer;
     strLen, subLen: Integer;
   begin
-    Contract.NotNull(aReplacement);
+    Require('aReplacement', aReplacement).IsNotNull;
 
     aResult := aString;
 
@@ -4269,7 +4273,7 @@ implementation
     strLen, subLen: Integer;
     occurs, nudge: Integer;
   begin
-    Contract.NotNull(aReplacement);
+    Require('aReplacement', aReplacement).IsNotNull;
 
     aResult := aString;
 
@@ -4601,7 +4605,7 @@ implementation
   var
     p: Integer;
   begin
-    Contract.NotNull(aReplacement);
+    Require('aReplacement', aReplacement).IsNotNull;
 
     aResult := aString;
 
@@ -4679,7 +4683,7 @@ implementation
     p: Integer;
     strLen, subLen: Integer;
   begin
-    Contract.NotNull(aReplacement);
+    Require('aReplacement', aReplacement).IsNotNull;
 
     aResult := aString;
 
@@ -5502,7 +5506,7 @@ implementation
   class function ANSIFn.LTrim(const aString: ANSIString;
                                     aCount: Integer): ANSIString;
   begin
-    Contract.Minimum(aCount, 0);
+    Require('aCount', aCount).IsPositiveOrZero;
 
     result := aString;
     DeleteLeft(result, aCount);
@@ -5564,7 +5568,7 @@ implementation
   var
     len: Integer;
   begin
-    Contract.Minimum(aCount, 0);
+    Require('aCount', aCount).IsPositiveOrZero;
 
     result := aString;
 

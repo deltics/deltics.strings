@@ -38,7 +38,7 @@ implementation
 
   uses
     Windows,
-    Deltics.SysUtils;
+    Deltics.ReverseBytes;
 
 
 { TUTF16LEEncoding }

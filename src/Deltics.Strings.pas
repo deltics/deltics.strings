@@ -39,7 +39,6 @@
 
 {$i deltics.strings.inc}
 
-
   unit Deltics.Strings;
 
 
@@ -54,7 +53,9 @@ interface
     Deltics.Strings.Encoding,
     Deltics.Strings.StringBuilder,
     Deltics.Strings.StringList,
-    Deltics.Strings.Types;
+    Deltics.Strings.Templates,
+    Deltics.Strings.Types,
+    Deltics.Strings.Utils;
 
 
   type
@@ -97,6 +98,8 @@ interface
     IStringList               = Deltics.Strings.StringList.IStringList;
     TComInterfacedStringList  = Deltics.Strings.StringList.TComInterfacedStringList;
 
+    TStringTemplate           = Deltics.Strings.Templates.TStringTemplate;
+
     TUnicodeSurrogateStrategy = Deltics.Strings.Types.TUnicodeSurrogateStrategy;
 
 
@@ -104,6 +107,8 @@ interface
     EUnicodeDataloss          = Deltics.Strings.Types.EUnicodeDataloss;
     EUnicodeRequiresMultibyte = Deltics.Strings.Types.EUnicodeRequiresMultibyte;
     EUnicodeOrphanSurrogate   = Deltics.Strings.Types.EUnicodeOrphanSurrogate;
+
+    Utils = Deltics.Strings.Utils.Utils;
 
 
   const
@@ -236,6 +241,7 @@ interface
       function Contains(aChar: WIDEChar): Boolean; overload;
       function Contains(const aString: String): Boolean; overload;
       function EndsWith(const aChar: WIDEChar): Boolean; overload;
+      function EndsWith(const aString: String): Boolean; overload;
       function EqualsText(const aString: String): Boolean;
       function IsEmpty: Boolean; inline;
       function IsNotEmpty: Boolean; inline;
@@ -295,10 +301,7 @@ implementation
   {$ifdef __DELPHIXE2}
     StrUtils,
   {$endif}
-    Windows,
-    Deltics.Classes,
-    Deltics.SysUtils,
-    Deltics.Strings.Utils;
+    Windows;
 
 
 
@@ -655,6 +658,11 @@ implementation
   function TStringHelper.EndsWith(const aChar: WIDEChar): Boolean;
   begin
     result := WIDE.EndsWith(self, aChar);
+  end;
+
+  function TStringHelper.EndsWith(const aString: String): Boolean;
+  begin
+    result := WIDE.EndsWith(self, aString);
   end;
 
   function TStringHelper.EqualsText(const aString: String): Boolean;

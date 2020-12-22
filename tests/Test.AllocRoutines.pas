@@ -32,15 +32,16 @@ implementation
   {-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - --}
   procedure AllocTests.StrAllocAnsiAllocatesNewAnsiBuffer;
   var
-    pAnsi: PAnsiChar;
+    buffer: PAnsiChar;
   begin
-    pAnsi := STR.AllocAnsi(SRCS);
+    buffer := STR.AllocAnsi(SRCS);
     try
-      Assert('STR.AllocAnsi allocates a buffer', Assigned(pAnsi));
-      AssertEqual('Allocated buffer is expected size', Ansi.Len(pAnsi), Length(SRCA));
-      Assert('Allocated buffer contains Ansi encoded string', CompareMem(pAnsi, @SRCA[1], Length(SRCA)));
+      Test('STR.AllocAnsi returns a buffer').Assert(Assigned(buffer));
+      Test('ANSI.Len({buffer})', [buffer]).Assert(Ansi.Len(buffer)).Equals(Length(SRCA));
+      Test('Buffer ({buffer}) contains correctly encoded ANSI string', [buffer]).Assert(CompareMem(buffer, @SRCA[1], Length(SRCA)));
+
     finally
-      FreeMem(pAnsi);
+      FreeMem(buffer);
     end;
   end;
 
@@ -52,9 +53,10 @@ implementation
   begin
     pUtf8 := STR.AllocUtf8(SRCS);
     try
-      Assert('STR.AllocUtf8 allocates a buffer', Assigned(pUtf8));
-      AssertEqual('Allocated buffer is expected size', Utf8.Len(pUtf8), Length(SRCU));
-      Assert('Allocated buffer contains Utf8 encoded string', CompareMem(pUtf8, @SRCU[1], Length(SRCU)));
+      Test('STR.AllocUtf8 allocates a buffer').Assert(Assigned(pUtf8));
+      Test('Utf8.Len() of buffer').Assert(Utf8.Len(pUtf8)).Equals(Length(SRCU));
+      Test('Allocated buffer contains Utf8 encoded string').Assert(CompareMem(pUtf8, @SRCU[1], Length(SRCU)));
+
     finally
       FreeMem(pUtf8);
     end;
@@ -68,9 +70,10 @@ implementation
   begin
     pWide := STR.AllocWide(SRCS);
     try
-      Assert('STR.AllocWide allocates a buffer', Assigned(pWide));
-      AssertEqual('Allocated buffer is expected size', Wide.Len(pWide), Length(SRCW));
-      Assert('Allocated buffer contains Wide encoded string', CompareMem(pWide, @SRCW[1], Length(SRCW)));
+      Test('STR.AllocWide allocates a buffer').Assert(Assigned(pWide));
+      Test('WIDE.Len() of buffer').Assert(Wide.Len(pWide)).Equals(Length(SRCW));
+      Test('Allocated buffer contains Wide encoded string').Assert(CompareMem(pWide, @SRCW[1], Length(SRCW)));
+
     finally
       FreeMem(pWide);
     end;

@@ -1,20 +1,27 @@
 {
-  id: "deltics.strings",
-  summary: "Strings support framework to facilitate creation of code that supports versions of Delphi with different standard 'String' types (i.e. Unicode vs ANSI).",
-  tags: [
+  "id":"deltics.strings",
+  "version":"",
+  "summary":"Strings support framework to facilitate creation of code that supports versions of Delphi with different standard 'String' types (i.e. Unicode vs ANSI).",
+  "tags":[
     "deltics",
     "strings",
     "unicode"
   ],
-  copyright: "\u00A92019 Jolyon Direnko-Smith",
-  language: "en",
-  content: "source",
-  dependencies: [
-    "deltics.rtl:0.2.0-beta.17",
-    "deltics.contracts"
+  "copyright":"\u00A92019 Jolyon Direnko-Smith",
+  "language":"en",
+  "content":"source",
+  "dependencies":[
+    "deltics.contracts:2.0.0-beta.6",
+    "deltics.exchange:1.0.0",
+    "deltics.guids:1.0.0",
+    "deltics.interfacedobjects:1.0.0",
+    "deltics.reversebytes:1.0.0-beta.1",
+    "deltics.math:1.0.0-beta.3",
+    "deltics.multicast:1.0.0",
+    "deltics.pointers:1.0.0-beta.6"
   ],
-  source: {
-      files: [
+  "source":{
+      "files":[
         "src\\deltics.strings.inc",
         "src\\Deltics.Strings.pas",
         "src\\Deltics.Strings.ANSI.pas",

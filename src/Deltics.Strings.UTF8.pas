@@ -38,7 +38,7 @@ implementation
     SysUtils,
     Windows,
     Deltics.Strings,
-    Deltics.SysUtils;
+    Deltics.Pointers;
 
 
 { _UTF8 ------------------------------------------------------------------------------------------ }

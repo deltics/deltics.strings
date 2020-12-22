@@ -30,6 +30,9 @@ interface
 
 implementation
 
+  uses
+    Deltics.Contracts;
+
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class procedure Utils.CheckContainsResult(const aNeed: TContainNeeds;
@@ -53,6 +56,10 @@ implementation
     src: PAnsiChar;
     dest: PAnsiChar;
   begin
+    Require('aString', aString).IsNotEmpty;
+    Require('aFromIndex', aFromIndex).IsValidIndexForString(aString);
+    Require('aFromIndex + aNumChars - 1', aFromIndex + aNumChars - 1).IsValidIndexForString(aString);
+
     src   := @aString[aFromIndex];
     dest  := @aString[aToIndex];
 
@@ -69,6 +76,10 @@ implementation
     src: PWideChar;
     dest: PWideChar;
   begin
+    Require('aString', aString).IsNotEmpty;
+    Require('aFromIndex', aFromIndex).IsValidIndexForString(aString);
+    Require('aToIndex + aNumChars - 1', aToIndex + aNumChars - 1).IsValidIndexForString(aString);
+
     src   := @aString[aFromIndex];
     dest  := @aString[aToIndex];
 

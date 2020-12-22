@@ -29,8 +29,8 @@ interface
 implementation
 
   uses
-    Windows,
-    Deltics.SysUtils;
+    Windows;
+//    Deltics.SysUtils;
 
 
 { TUTF32LEEncoding }

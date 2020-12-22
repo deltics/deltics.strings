@@ -47,7 +47,7 @@ interface
 
   uses
     Classes,
-    Deltics.Strings;
+    Deltics.Strings.Types;
 
 
   type
@@ -155,7 +155,7 @@ implementation
   uses
     SysUtils,
     Deltics.GUIDs,
-    Deltics.SysUtils;
+    Deltics.Strings;
 
 
 { TStringTemplate -------------------------------------------------------------------------------- }

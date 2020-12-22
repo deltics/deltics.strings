@@ -9,8 +9,8 @@ interface
 
   type
     UtilsTests = class(TTest)
-      procedure CopyCharsCopiesAnsiChars;
-      procedure CopyCharsCopiesWideChars;
+      procedure CopyCharsWithAnsiString;
+      procedure CopyCharsWithUnicodeString;
     end;
 
 
@@ -18,36 +18,61 @@ interface
 implementation
 
   uses
-    Deltics.Strings,
-    Deltics.Strings.Utils;
+    Deltics.Contracts,
+    Deltics.Strings;
 
 
 { UtilsTests }
 
-  procedure UtilsTests.CopyCharsCopiesAnsiChars;
+  procedure UtilsTests.CopyCharsWithAnsiString;
   var
+    orgs: AnsiString;
     s: AnsiString;
   begin
-    s := 'The quick brown fox';
+    orgs := 'The quick brown fox';
+    s    := orgs;
 
     Utils.CopyChars(s, 5, 11, 5);
 
-    AssertEqual('Characters are copied correctly', s, ANSI('The quick quick fox'));
+    Test('Utils.CopyChars(Ansi:{s}, 5, 11, 5)', [orgs]).Assert(s).Equals(ANSI('The quick quick fox'));
   end;
 
 
-  procedure UtilsTests.CopyCharsCopiesWideChars;
+  procedure UtilsTests.CopyCharsWithUnicodeString;
   var
+    orgs: UnicodeString;
     s: UnicodeString;
   begin
-    s := 'The quick brown fox';
+    orgs := 'The quick brown fox';
+    s    := orgs;
 
     Utils.CopyChars(s, 5, 11, 5);
 
-    AssertEqual('Characters are copied correctly', s, 'The quick quick fox');
+    Test('Utils.CopyChars(Unicode:{s}, 5, 11, 5)', [orgs]).Assert(s).Equals('The quick quick fox');
+
+    Utils.CopyChars(s, 1, 17, 3);
+
+    Test('Utils.CopyChars(Unicode:{s}, 1, 17, 3)', [orgs]).Assert(s).Equals('The quick quick The');
+
+    Test.RaisesException(EArgumentException);
+    Utils.CopyChars(s, 1, 20, 3);
+
+    (*
+       To eliminate the duplication of the test specification when asserting for expected
+        exceptions, for Smoketest 2.2.0 I'd like to visit the possibility of testing exceptions
+        using WITH (yes, I know) and an assertion interface returned from the Assert() with
+        methods for noting the failed exception and testing any raised exception, something
+        similar to:
+
+      with Test('CopyChars() attempt to copy beyond length of string').AssertException(EArgumentException) do
+      try
+        Utils.CopyChars(s, 1, 20, 3);
+        NoExceptionRaised;
+      except
+        TestRaisedException;
+      end;
+    *)
   end;
-
-
 
 
 end.

@@ -1,9 +1,9 @@
 
-{$i deltics.rtl.inc}
+{$i deltics.inc}
 
 {$debuginfo OFF}
 
-{$ifdef debugDelticsStrings}
+{$ifdef debug_DelticsStrings}
   {$undef InlineMethods}
   {$debuginfo ON}
 {$endif}
