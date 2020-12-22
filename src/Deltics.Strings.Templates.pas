@@ -154,7 +154,7 @@ implementation
 
   uses
     SysUtils,
-    Deltics.GUIDs,
+    Deltics.Guids,
     Deltics.Strings;
 
 

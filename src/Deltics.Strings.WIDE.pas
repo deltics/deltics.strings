@@ -438,9 +438,7 @@ interface
 implementation
 
   uses
-  {$ifdef UNICODE}
     SysUtils,
-  {$endif}
     Deltics.Contracts,
     Deltics.Exchange,
     Deltics.Math,

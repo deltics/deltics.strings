@@ -21,7 +21,7 @@ interface
       fCursor: PChar;
       fSpaceAvailable: Integer;
       procedure AddPage;
-    function get_AsString: String;
+      function get_AsString: String;
     public
       constructor Create(aPageSize: Integer = 1024; aInitialPages: Integer = 1);
       constructor CreateCopy(aSource: TStringBuilder);
