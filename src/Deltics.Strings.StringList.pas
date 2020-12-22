@@ -47,7 +47,7 @@ interface
 
   uses
     Classes,
-    Deltics.Interfaces,
+    Deltics.InterfacedObjects,
     Deltics.Strings.Types;
 
 
