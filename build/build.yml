@@ -19,3 +19,6 @@ pool:
 
 jobs:
 - template: build.yml@congress
+  ${{ if eq(variables.ForceBuildAll, 'true') }}:
+    parameters:
+      forceBuildAll: true
