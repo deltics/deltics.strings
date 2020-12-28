@@ -11,14 +11,14 @@
   "language":"en",
   "content":"source",
   "dependencies":[
-    "deltics.contracts:2.0.0-beta.6",
+    "deltics.contracts:2.0.0",
     "deltics.exchange:1.0.0",
     "deltics.guids:1.0.0",
-    "deltics.interfacedobjects:1.0.0",
-    "deltics.reversebytes:1.0.0-beta.1",
+    "deltics.interfacedobjects:1.1.1",
+    "deltics.reversebytes:1.0.0",
     "deltics.math:1.0.0-beta.3",
     "deltics.multicast:1.0.0",
-    "deltics.pointers:1.0.0-beta.6"
+    "deltics.pointers:1.0.0"
   ],
   "source":{
       "files":[
