@@ -16,7 +16,7 @@
     "deltics.guids:1.0.0",
     "deltics.interfacedobjects:1.1.1",
     "deltics.reversebytes:1.0.0",
-    "deltics.math:1.0.0-beta.3",
+    "deltics.math:1.0.0",
     "deltics.multicast:1.0.0",
     "deltics.pointers:1.0.0"
   ],
