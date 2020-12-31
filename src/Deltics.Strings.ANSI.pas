@@ -982,6 +982,9 @@ implementation
   begin
     result := '';
 
+    if NOT Assigned(aBuffer) then
+      EXIT;
+      
     case aLen of
       -1  : aLen := Len(aBuffer);
        0  : EXIT;
