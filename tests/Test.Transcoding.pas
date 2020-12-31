@@ -199,8 +199,10 @@ implementation
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   procedure TranscodingTests.ANSIFromBufferWithNILAnsiBufferYieldsEmptyAnsiString;
+  const
+    BUF: PANSIChar = NIL;
   begin
-    Test('ANSI.FromBuffer(NIL)').Assert(ANSI.FromBuffer(PANSIChar(NIL))).Equals('');
+    Test('ANSI.FromBuffer(NIL)').Assert(ANSI.FromBuffer(BUF)).Equals('');
   end;
 
 
@@ -244,8 +246,10 @@ implementation
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   procedure TranscodingTests.ANSIFromBufferWithNILWideBufferYieldsEmptyAnsiString;
+  const
+    BUF: PWideChar = NIL;
   begin
-    Test('ANSI.FromBuffer(NIL)').Assert(ANSI.FromBuffer(PWideChar(NIL))).Equals('');
+    Test('ANSI.FromBuffer(NIL)').Assert(ANSI.FromBuffer(BUF)).Equals('');
   end;
 
 
