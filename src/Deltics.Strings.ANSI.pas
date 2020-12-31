@@ -45,6 +45,8 @@ interface
       class procedure CopyToBuffer(const aString: ANSIString; aBuffer: Pointer; aMaxChars: Integer); overload;
       class procedure CopyToBufferOffset(const aString: ANSIString; aBuffer: Pointer; aByteOffset: Integer); overload;
       class procedure CopyToBufferOffset(const aString: ANSIString; aBuffer: Pointer; aByteOffset: Integer; aMaxChars: Integer); overload;
+      class function FromBuffer(aBuffer: PANSIChar; aLen: Integer = -1): ANSIString; overload;
+      class function FromBuffer(aBuffer: PWIDEChar; aLen: Integer = -1): ANSIString; overload;
       class function Len(aBuffer: PANSIChar): Integer;
 
       // Misc utilities
@@ -846,7 +848,7 @@ implementation
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class function ANSIFn.FromANSI(const aBuffer: PAnsiChar;
-                                 aMaxLen: Integer): AnsiString;
+                                       aMaxLen: Integer): AnsiString;
   begin
     if aMaxLen = -1 then
       aMaxLen := Len(aBuffer)
@@ -964,6 +966,40 @@ implementation
   begin
     CopyToBuffer(aString, aMaxChars, aBuffer, aByteOffset);
   end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
+  class function ANSIFn.FromBuffer(aBuffer: PANSIChar; aLen: Integer = -1): ANSIString;
+  {
+    Copies an ANSI string (null terminated) from a specified buffer.
+
+    The length of the string should be specified if the length is known or is required
+     to be less than the known length of the ANSI string in the buffer.
+
+    If length is not specified then the contents of the buffer up to the first null
+     terminator will be returned.
+  }
+  begin
+    result := '';
+
+    case aLen of
+      -1  : aLen := Len(aBuffer);
+       0  : EXIT;
+    end;
+
+    if aLen <= 0 then
+      EXIT;
+
+    SetLength(result, aLen);
+    CopyMemory(PANSIChar(result), aBuffer, aLen);
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
+  class function ANSIFn.FromBuffer(aBuffer: PWIDEChar; aLen: Integer = -1): ANSIString; 
+  begin
+    result := FromWIDE(aBuffer, aLen);
+  end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
