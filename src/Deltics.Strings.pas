@@ -1,7 +1,7 @@
 {
   * X11 (MIT) LICENSE *
 
-  Copyright © 2013 Jolyon Smith
+  Copyright ï¿½ 2013 Jolyon Smith
 
   Permission is hereby granted, free of charge, to any person obtaining a copy of
    this software and associated documentation files (the "Software"), to deal in
@@ -38,6 +38,11 @@
 }
 
 {$i deltics.strings.inc}
+
+{$debuginfo OFF}
+{$ifdef debug_DelticsStringsHelpers}
+  {$debuginfo ON}
+{$endif}
 
   unit Deltics.Strings;
 
@@ -102,10 +107,9 @@ interface
 
     TUnicodeSurrogateStrategy = Deltics.Strings.Types.TUnicodeSurrogateStrategy;
 
-
     EUnicode                  = Deltics.Strings.Types.EUnicode;
     EUnicodeDataloss          = Deltics.Strings.Types.EUnicodeDataloss;
-    EUnicodeRequiresMultibyte = Deltics.Strings.Types.EUnicodeRequiresMultibyte;
+    EUnicodeRequiresMultibyte = Deltics.Strings.Types.EUnicodeRequiresMultibyte;
     EUnicodeOrphanSurrogate   = Deltics.Strings.Types.EUnicodeOrphanSurrogate;
 
     Utils = Deltics.Strings.Utils.Utils;
@@ -144,10 +148,13 @@ interface
 
     ssError   = Deltics.Strings.Types.ssError;   // An EUnicodeOrphanSurrogate exception is raised if a string operation results in an orphan surrogate
     ssIgnore  = Deltics.Strings.Types.ssIgnore;  // String operations may result in orphan surrogates
-    ssAvoid   = Deltics.Strings.Types.ssAvoid;   // String operations will ensure that surrogates are not orphaned
 
-    dupAccept = Classes.dupAccept;
-    dupError  = Classes.dupError;
+    ssAvoid   = Deltics.Strings.Types.ssAvoid;   // String operations will ensure that surrogates are not orphaned
+
+
+    dupAccept = Classes.dupAccept;
+
+    dupError  = Classes.dupError;
     dupIgnore = Classes.dupIgnore;
 
 
@@ -227,7 +234,6 @@ interface
     public
       function Split(aChar: ANSIChar; var aLeft, aRight: ANSIString): Boolean; overload;
       function Split(aChar: ANSIChar; var aArray: TANSIStringArray): Boolean; overload;
-
       property Length: Integer read get_Length;
     end;
 
@@ -251,9 +257,7 @@ interface
       function Split(aChar: WIDEChar; var aArray: TWIDEStringArray): Integer; overload;
       function ToLower: String;
       function ToUpper: String;
-
       function Startcase: String;
-
       property Length: Integer read get_Length;
     end;
 
@@ -328,15 +332,16 @@ implementation
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class function WIDEFn.Alloc(const aString: UnicodeString): PWIDEChar;
-  var
-    len: Integer;
-  begin
-    len     := (Length(aString) + 1) * 2;
-    result  := AllocMem(len);
+  var
+    len: Integer;
+  begin
+    len     := (Length(aString) + 1) * 2;
+    result  := AllocMem(len);
 
     CopyMemory(result, PWIDEChar(aString), len);
   end;
-
+
+
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class function WIDEFn.AllocANSI(const aString: UnicodeString): PANSIChar;
@@ -449,11 +454,12 @@ implementation
 
   function ANSI(aChar: ANSIChar): ANSIChar;
   begin
-    result := aChar;
-  end;
+    result := aChar;
+  end;
 
-  function ANSI(aChar: WIDEChar): ANSIChar;
-  var
+
+  function ANSI(aChar: WIDEChar): ANSIChar;
+  var
     usedDefault: BOOL;
   begin
     if aChar = #0 then
@@ -464,39 +470,43 @@ implementation
 
     usedDefault := FALSE;
 
-    if (WideCharToMultiByte(CP_ACP, 0, @aChar, 0, NIL, 0, '?', @usedDefault) > 1)
-     or (usedDefault and NOT AllowUnicodeDataLoss) then
-      raise EUnicodeRequiresMultibyte.Create('Unicode character ''' + aChar + ''' does not map to a single-byte character in the default ANSI codepage');
+    if (WideCharToMultiByte(CP_ACP, 0, @aChar, 0, NIL, 0, '?', @usedDefault) > 1)
+     or (usedDefault and NOT AllowUnicodeDataLoss) then
+      raise EUnicodeRequiresMultibyte.Create('Unicode character ''' + aChar + ''' does not map to a single-byte character in the default ANSI codepage');
 
-    if WideCharToMultiByte(CP_ACP, 0, @aChar, 1, @result, 1, '?', @usedDefault) = 0 then
-      raise EUnicode.Create('Unexpected error converting Unicode character ''' + aChar + ''' to the default ANSI codepage');
+    if WideCharToMultiByte(CP_ACP, 0, @aChar, 1, @result, 1, '?', @usedDefault) = 0 then
+      raise EUnicode.Create('Unexpected error converting Unicode character ''' + aChar + ''' to the default ANSI codepage');
 
     if usedDefault and NOT AllowUnicodeDataLoss then
       raise EUnicodeDataloss.Create('Unicode character ''' + aChar + ''' is not supported in the current ANSI codepage');
-  end;
+  end;
 
-  procedure ANSI(aChar: WIDEChar; var aMBCS: ANSIString);
-  var
-    len: Integer;
+
+  procedure ANSI(aChar: WIDEChar; var aMBCS: ANSIString);
+  var
+    len: Integer;
     usedDefault: BOOL;
   begin
-    len := WideCharToMultiByte(CP_ACP, 0, @aChar, 1, NIL, 0, '?', NIL);
-    SetLength(aMBCS, len);
+    len := WideCharToMultiByte(CP_ACP, 0, @aChar, 1, NIL, 0, '?', NIL);
 
-    if WideCharToMultiByte(CP_ACP, 0, @aChar, 1, PANSIChar(aMBCS), len, '?', @usedDefault) = 0 then
-      raise EUnicode.Create('Unexpected error converting Unicode character ''' + aChar + ''' to the default ANSI codepage');
+    SetLength(aMBCS, len);
+
+    if WideCharToMultiByte(CP_ACP, 0, @aChar, 1, PANSIChar(aMBCS), len, '?', @usedDefault) = 0 then
+      raise EUnicode.Create('Unexpected error converting Unicode character ''' + aChar + ''' to the default ANSI codepage');
 
     if usedDefault and NOT AllowUnicodeDataLoss then
       raise EUnicodeDataloss.Create('Unicode character ''' + aChar + ''' is not supported in the current ANSI codepage');
-  end;
+  end;
 
-  function ANSI(aString: UnicodeString): ANSIString;
-  begin
-    result := ANSI.FromWIDE(aString);
-  end;
 
-  function ANSI(aInteger: Integer): ANSIString;
-  begin
+  function ANSI(aString: UnicodeString): ANSIString;
+  begin
+    result := ANSI.FromWIDE(aString);
+  end;
+
+
+  function ANSI(aInteger: Integer): ANSIString;
+  begin
   {$ifdef UNICODE}
     result := ANSI.FromWIDE(IntToStr(aInteger));
   {$else}
@@ -505,9 +515,11 @@ implementation
   end;
 
 
-  { WIDE - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
 
-  function WIDE: WIDEClass;
+  { WIDE - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
+
+
+  function WIDE: WIDEClass;
   begin
     result := WIDEFn;
   end;
@@ -521,20 +533,22 @@ implementation
 
   function WIDE(aChar: ANSIChar): WIDEChar;
   begin
-    MultiByteToWideChar(CP_ACP, 0, @aChar, 1, @result, 1);
+    MultiByteToWideChar(CP_ACP, 0, @aChar, 1, @result, 1);
   end;
 
   function WIDE(aChar: WIDEChar): WIDEChar;
   begin
-    result := aChar;
-  end;
+    result := aChar;
+  end;
 
-  function WIDE(aString: ANSIString): UnicodeString;
+
+  function WIDE(aString: ANSIString): UnicodeString;
   begin
-    result := WIDE.FromANSI(aString);
-  end;
+    result := WIDE.FromANSI(aString);
+  end;
 
-  function WIDE(const aInteger: Integer): UnicodeString;
+
+  function WIDE(const aInteger: Integer): UnicodeString;
   begin
   {$ifdef UNICODE}
     result := IntToStr(aInteger);
@@ -546,12 +560,14 @@ implementation
 
   { STR  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
 
-  function STR: STRClass; overload;
+
+  function STR: STRClass; overload;
   begin
     result := STRFn;
   end;
 
-  function STR(aInteger: Integer): String;
+
+  function STR(aInteger: Integer): String;
   begin
     result := IntToStr(aInteger);
   end;

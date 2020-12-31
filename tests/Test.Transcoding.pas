@@ -27,6 +27,14 @@ interface
       procedure ANSIFromOverrunAnsiBufferYieldsAnsi;
       procedure ANSIFromEmptyAnsiBufferYieldsEmptyAnsiString;
       procedure ANSIFromAnsiBufferWithZeroLengthYieldsEmptyAnsiString;
+      procedure ANSIFromBufferWithNILAnsiBufferYieldsEmptyAnsiString;
+      procedure ANSIFromBufferWithZeroLengthAnsiBufferYieldsEmptyAnsiString;
+      procedure ANSIFromBufferWithAnsiBufferYieldsAnsiString;
+      procedure ANSIFromBufferWithAnsiBufferAndLengthYieldsTrimmedAnsiString;
+      procedure ANSIFromBufferWithNILWideBufferYieldsEmptyAnsiString;
+      procedure ANSIFromBufferWithZeroLengthWideBufferYieldsEmptyAnsiString;
+      procedure ANSIFromBufferWithWideBufferYieldsAnsiString;
+      procedure ANSIFromBufferWithWideBufferAndLengthYieldsTrimmedAnsiString;
       procedure ANSIFromUtf8YieldsAnsi;
       procedure ANSIFromUtf8BufferYieldsAnsi;
       procedure ANSIFromPartialUtf8BufferYieldsAnsi;
@@ -186,6 +194,100 @@ implementation
   procedure TranscodingTests.ANSIFromAnsiBufferWithZeroLengthYieldsEmptyAnsiString;
   begin
     Test('ANSI.FromAnsi(PAnsiChar({SRCA}), 0)', [SRCA]).Assert(ANSI.FromAnsi(@SRCA[1], 0)).Equals(EMPTYA);
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
+  procedure TranscodingTests.ANSIFromBufferWithNILAnsiBufferYieldsEmptyAnsiString;
+  const
+    BUF: PANSIChar = NIL;
+  begin
+    Test('ANSI.FromBuffer(NIL)').Assert(ANSI.FromBuffer(BUF)).Equals('');
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
+  procedure TranscodingTests.ANSIFromBufferWithZeroLengthAnsiBufferYieldsEmptyAnsiString;
+  var
+    buf: PANSIChar;
+  begin
+    GetMem(buf, 1);
+    try
+      buf[0] := #0;
+
+      Test('ANSI.FromBuffer([#0])').Assert(ANSI.FromBuffer(buf)).Equals('');
+    finally
+      FreeMem(buf);
+    end;
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
+  procedure TranscodingTests.ANSIFromBufferWithAnsiBufferYieldsAnsiString;
+  var
+    s: ANSIString;
+  begin
+    s := 'Some string';
+
+    Test('ANSI.FromBuffer(''Some string'')').Assert(ANSI.FromBuffer(PANSIChar(s))).Equals('Some string');
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
+  procedure TranscodingTests.ANSIFromBufferWithAnsiBufferAndLengthYieldsTrimmedAnsiString;
+  var
+    s: ANSIString;
+  begin
+    s := 'Some string';
+
+    Test('ANSI.FromBuffer(''Some string'', 4)').Assert(ANSI.FromBuffer(PANSIChar(s), 4)).Equals('Some');
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
+  procedure TranscodingTests.ANSIFromBufferWithNILWideBufferYieldsEmptyAnsiString;
+  const
+    BUF: PWideChar = NIL;
+  begin
+    Test('ANSI.FromBuffer(NIL)').Assert(ANSI.FromBuffer(BUF)).Equals('');
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
+  procedure TranscodingTests.ANSIFromBufferWithZeroLengthWideBufferYieldsEmptyAnsiString;
+  var
+    buf: PWideChar;
+  begin
+    GetMem(buf, 1);
+    try
+      buf[0] := #0;
+
+      Test('ANSI.FromBuffer([#0])').Assert(ANSI.FromBuffer(buf)).Equals('');
+    finally
+      FreeMem(buf);
+    end;
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
+  procedure TranscodingTests.ANSIFromBufferWithWideBufferYieldsAnsiString;
+  var
+    s: WideString;
+  begin
+    s := 'Some string';
+
+    Test('ANSI.FromBuffer(''Some string'')').Assert(ANSI.FromBuffer(PWideChar(s))).Equals('Some string');
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
+  procedure TranscodingTests.ANSIFromBufferWithWideBufferAndLengthYieldsTrimmedAnsiString;
+  var
+    s: WideString;
+  begin
+    s := 'Some string';
+
+    Test('ANSI.FromBuffer(''Some string'', 4)').Assert(ANSI.FromBuffer(PWideChar(s), 4)).Equals('Some');
   end;
 
 
