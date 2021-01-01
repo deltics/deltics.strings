@@ -3507,6 +3507,8 @@ implementation
   var
     len: Integer;
   begin
+    Require('aCount', aCount).IsPositiveOrZero;
+
     if (aCount <= 0) or NOT HasLength(aString, len) then
       EXIT;
 
