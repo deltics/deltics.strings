@@ -2609,21 +2609,23 @@ implementation
   class procedure ANSIFn.DeleteLeft(var aString: ANSIString;
                                         aCount: Integer);
   var
-    len: Integer;
+    copyChars: Integer;
+    firstChar: Integer;
   begin
     Require('aCount', aCount).IsPositiveOrZero;
 
-    if (aCount = 0) or NOT HasLength(aString, len) then
+    if (aCount = 0) or NOT HasLength(aString, copyChars) then
       EXIT;
 
-    Dec(len, aCount);
+    Dec(copyChars, aCount);
+    firstChar := aCount + 1;
 
-    if len > 0 then
-      Utils.CopyChars(aString, aCount, 0, len) // _VAR_ aString - cannot case as pointer, must supply the address of char 1
+    if copyChars > 0 then
+      Utils.CopyChars(aString, firstChar, 1, copyChars) // _VAR_ aString - cannot case as pointer, must supply the address of char 1
     else
-      len := 0;
+      copyChars := 0;
 
-    SetLength(aString, len);
+    SetLength(aString, copyChars);
   end;
 
 
