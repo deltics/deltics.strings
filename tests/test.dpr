@@ -3,6 +3,8 @@
 
   program test;
 
+{%File '    ANSI.DeleteLeft(sa, 1)', ''}
+
 uses
   Deltics.Smoketest,
   Deltics.Strings in '..\src\Deltics.Strings.pas',
@@ -31,11 +33,13 @@ uses
   Test.Runtime in 'Test.Runtime.pas',
   Test.AllocRoutines in 'Test.AllocRoutines.pas',
   Test.Transcoding in 'Test.Transcoding.pas',
-  Test.Utils in 'Test.Utils.pas';
+  Test.Utils in 'Test.Utils.pas',
+  Test.DeleteLeft in 'Test.DeleteLeft.pas';
 
 begin
   TestRun.Test(RuntimeTests, DELPHI_VERSION);
   TestRun.Test([AllocTests,
                 TranscodingTests,
                 UtilsTests]);
+  TestRun.Test([DeleteLeft]);
 end.
