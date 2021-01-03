@@ -1790,7 +1790,7 @@ implementation
         EXIT;
 
       first := Pointer(aString);
-      curr  := PWIDEChar(ByteOffset(first, aPos * 2));
+      curr  := PWIDEChar(Memory.ByteOffset(first, aPos * 2));
       Dec(len, aPos - 1);
 
       if (aCaseMode = csCaseSensitive) or (NOT WIDE.IsAlpha(aChar)) then
@@ -1854,7 +1854,7 @@ implementation
         EXIT;
 
       first := PWIDEChar(aString);
-      curr  := PWIDEChar(ByteOffset(first, aPos * 2));
+      curr  := PWIDEChar(Memory.ByteOffset(first, aPos * 2));
       Dec(strLen, aPos + subLen - 1);
 
       for i := 1 to strLen do
@@ -1937,7 +1937,7 @@ implementation
 
       pos   := Min(aPos, len + 1);
       first := PWIDEChar(aString);
-      curr  := PWIDEChar(ByteOffset(first, 2 * (aPos - 2)));
+      curr  := PWIDEChar(Memory.ByteOffset(first, 2 * (aPos - 2)));
       len   := pos - 1;
 
       if (aCaseMode = csCaseSensitive) or (NOT WIDE.IsAlpha(aChar)) then
@@ -1999,7 +1999,7 @@ implementation
 
       aPos  := Min(aPos - 1, strLen - subLen + 1);
       first := PWIDEChar(aString);
-      curr  := PWIDEChar(ByteOffset(first, 2 * (aPos - 1)));
+      curr  := PWIDEChar(Memory.ByteOffset(first, 2 * (aPos - 1)));
 
       for i := 1 to aPos do
       begin

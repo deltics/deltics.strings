@@ -54,24 +54,8 @@ implementation
 
     Test('Utils.CopyChars(Unicode:{s}, 1, 17, 3)', [orgs]).Assert(s).Equals('The quick quick The');
 
-    Test.RaisesException(EArgumentException);
+    Test.Raises(EArgumentException);
     Utils.CopyChars(s, 1, 20, 3);
-
-    (*
-       To eliminate the duplication of the test specification when asserting for expected
-        exceptions, for Smoketest 2.2.0 I'd like to visit the possibility of testing exceptions
-        using WITH (yes, I know) and an assertion interface returned from the Assert() with
-        methods for noting the failed exception and testing any raised exception, something
-        similar to:
-
-      with Test('CopyChars() attempt to copy beyond length of string').AssertException(EArgumentException) do
-      try
-        Utils.CopyChars(s, 1, 20, 3);
-        NoExceptionRaised;
-      except
-        TestRaisedException;
-      end;
-    *)
   end;
 
 

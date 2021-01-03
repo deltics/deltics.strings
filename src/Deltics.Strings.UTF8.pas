@@ -137,7 +137,7 @@ implementation
     if (aMaxBytes < len) then
       len := aMaxBytes;
 
-    CopyMemory(ByteOffset(aBuffer, aOffset), PUTF8Char(aString), len);
+    CopyMemory(Memory.ByteOffset(aBuffer, aOffset), PUTF8Char(aString), len);
   end;
 
 
