@@ -17,7 +17,6 @@ interface
   type
     ANSIFn = class
     private
-      class function AddressOfByte(aBase: Pointer; aByteIndex: Integer): PANSIChar; overload; {$ifdef InlineMethods} inline; {$endif}
       class function AddressOfIndex(const aString: ANSIString; aIndex: Integer): PANSIChar; overload; {$ifdef InlineMethods} inline; {$endif}
       class procedure FastCopy(const aString: ANSIString; aDest: PANSIChar; aLen: Integer); overload; {$ifdef InlineMethods} inline; {$endif}
       class procedure FastCopy(const aString: ANSIString; var aDest: ANSIString; aDestIndex: Integer); overload; {$ifdef InlineMethods} inline; {$endif}
@@ -460,21 +459,6 @@ implementation
 
 
 
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function ANSIFn.AddressOfByte(aBase: Pointer;
-                                      aByteIndex: Integer): PANSIChar;
-  var
-    ibase: IntPointer absolute aBase;
-  begin
-      result := PAnsiChar(ByteOffset(aBase, aByteIndex));
-//    if aByteIndex > 0 then
-//      result := ibase + Cardinal(aByteIndex))
-//    else
-//      result := PAnsiChar(ibase - Cardinal(Abs(aByteIndex)));
-  end;
-
-
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class function ANSIFn.AddressOfIndex(const aString: ANSIString;
                                              aIndex: Integer): PANSIChar;
@@ -596,7 +580,7 @@ implementation
     if (aMaxBytes < len) then
       len := aMaxBytes;
 
-    FastCopy(aString, AddressOfByte(aBuffer, aOffset), len);
+    FastCopy(aString, Memory.ByteOffset(aBuffer, aOffset), len);
   end;
 
 
@@ -1735,7 +1719,7 @@ implementation
 
       csIgnoreCase    : result := HasLength(aString, strLen)
                               and (CompareStringA(LOCALE_USER_DEFAULT, CASEMODE_FLAG[aCaseMode],
-                                                  PANSIChar(ByteOffset(Pointer(aString), strLen - 1)), 1,
+                                                  PANSIChar(Memory.ByteOffset(Pointer(aString), strLen - 1)), 1,
                                                   @aChar, 1) = CSTR_EQUAL);
     else
       result := FALSE;
@@ -1765,7 +1749,7 @@ implementation
     strLen := Length(aString);
     result := (subLen <= strLen)
           and (CompareStringA(LOCALE_USER_DEFAULT, CASEMODE_FLAG[aCaseMode],
-                              PANSIChar(ByteOffset(Pointer(aString), strLen - subLen)), subLen,
+                              PANSIChar(Memory.ByteOffset(Pointer(aString), strLen - subLen)), subLen,
                               PANSIChar(aSubstring), subLen) = CSTR_EQUAL);
   end;
 
@@ -1780,7 +1764,7 @@ implementation
 
     result := HasLength(aString, strLen)
           and (CompareStringA(LOCALE_USER_DEFAULT, NORM_IGNORECASE,
-                              PANSIChar(ByteOffset(Pointer(aString), strLen - 1)), 1,
+                              PANSIChar(Memory.ByteOffset(Pointer(aString), strLen - 1)), 1,
                               @aChar, 1) = CSTR_EQUAL);
   end;
 
@@ -1805,7 +1789,7 @@ implementation
     strLen := Length(aString);
     result := (subLen <= strLen)
           and (CompareStringA(LOCALE_USER_DEFAULT, NORM_IGNORECASE,
-                              PANSIChar(ByteOffset(Pointer(aString), strLen - subLen)), subLen,
+                              PANSIChar(Memory.ByteOffset(Pointer(aString), strLen - subLen)), subLen,
                               PANSIChar(aSubstring), subLen) = CSTR_EQUAL);
   end;
 
@@ -1967,7 +1951,7 @@ implementation
         EXIT;
 
       first := Pointer(aString);
-      curr  := PANSIChar(ByteOffset(first, pos));
+      curr  := PANSIChar(Memory.ByteOffset(first, pos));
       Dec(len, pos);
 
       if (aCaseMode = csCaseSensitive) or (NOT ANSI.IsAlpha(aChar)) then
@@ -2041,7 +2025,7 @@ implementation
         EXIT;
 
       first := PANSIChar(aString);
-      curr  := PANSIChar(ByteOffset(first, pos));
+      curr  := PANSIChar(Memory.ByteOffset(first, pos));
       Dec(strLen, pos + subLen - 1);
 
       for i := 1 to strLen do
@@ -2114,7 +2098,7 @@ implementation
 
       pos   := Min(aPos, len + 1);
       first := PANSIChar(aString);
-      curr  := PANSIChar(ByteOffset(first, pos - 2));
+      curr  := PANSIChar(Memory.ByteOffset(first, pos - 2));
       len   := pos - 1;
 
       if (aCaseMode = csCaseSensitive) or (NOT ANSI.IsAlpha(aChar)) then
@@ -2186,7 +2170,7 @@ implementation
 
       aPos  := Min(aPos - 1, strLen - subLen + 1);
       first := PANSIChar(aString);
-      curr  := PANSIChar(ByteOffset(first, aPos - 1));
+      curr  := PANSIChar(Memory.ByteOffset(first, aPos - 1));
 
       for i := 1 to aPos do
       begin

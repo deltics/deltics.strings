@@ -38,7 +38,7 @@ implementation
 
       Test.FailedToRaiseException;
     except
-      Test('ANSI.').RaisedException(EArgumentException);
+      Test('ANSI.').Raised(EArgumentException);
     end;
 
     try
@@ -46,7 +46,7 @@ implementation
 
       Test.FailedToRaiseException;
     except
-      Test('WIDE.').RaisedException(EArgumentException);
+      Test('WIDE.').Raised(EArgumentException);
     end;
   end;
 

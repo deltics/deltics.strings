@@ -16,7 +16,6 @@ interface
   type
     WIDEFn = class
     private
-      class function AddressOfByte(aBase: Pointer; aByteIndex: Integer): PWIDEChar; overload; {$ifdef InlineMethods} inline; {$endif}
       class function AddressOfIndex(var aString: UnicodeString; aIndex: Integer): PWIDEChar; overload; {$ifdef InlineMethods} inline; {$endif}
       class procedure FastCopy(const aString: UnicodeString; aDest: PWIDEChar); overload; {$ifdef InlineMethods} inline; {$endif}
       class procedure FastCopy(const aString: UnicodeString; aDest: PWIDEChar; aLen: Integer); overload; {$ifdef InlineMethods} inline; {$endif}
@@ -566,19 +565,6 @@ implementation
 { WIDEFn ------------------------------------------------------------------------------------------ }
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.AddressOfByte(aBase: Pointer;
-                                      aByteIndex: Integer): PWIDEChar;
-  var
-    ibase: IntPointer absolute aBase;
-  begin
-    if aByteIndex > 0 then
-      result := PWideChar(ibase + Cardinal(aByteIndex))
-    else
-      result := PWideChar(ibase - Cardinal(Abs(aByteIndex)));
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class function WIDEFn.AddressOfIndex(var aString: UnicodeString;
                                            aIndex: Integer): PWIDEChar;
   begin
@@ -680,7 +666,7 @@ implementation
     if (aMaxChars < len) then
       len := aMaxChars;
 
-    FastCopy(aString, AddressOfByte(aBuffer, aByteOffset), len);
+    FastCopy(aString, Memory.ByteOffset(aBuffer, aByteOffset), len);
   end;
 
 
@@ -1790,7 +1776,7 @@ implementation
         EXIT;
 
       first := Pointer(aString);
-      curr  := PWIDEChar(ByteOffset(first, aPos * 2));
+      curr  := PWIDEChar(Memory.ByteOffset(first, aPos * 2));
       Dec(len, aPos - 1);
 
       if (aCaseMode = csCaseSensitive) or (NOT WIDE.IsAlpha(aChar)) then
@@ -1854,7 +1840,7 @@ implementation
         EXIT;
 
       first := PWIDEChar(aString);
-      curr  := PWIDEChar(ByteOffset(first, aPos * 2));
+      curr  := PWIDEChar(Memory.ByteOffset(first, aPos * 2));
       Dec(strLen, aPos + subLen - 1);
 
       for i := 1 to strLen do
@@ -1937,7 +1923,7 @@ implementation
 
       pos   := Min(aPos, len + 1);
       first := PWIDEChar(aString);
-      curr  := PWIDEChar(ByteOffset(first, 2 * (aPos - 2)));
+      curr  := PWIDEChar(Memory.ByteOffset(first, 2 * (aPos - 2)));
       len   := pos - 1;
 
       if (aCaseMode = csCaseSensitive) or (NOT WIDE.IsAlpha(aChar)) then
@@ -1999,7 +1985,7 @@ implementation
 
       aPos  := Min(aPos - 1, strLen - subLen + 1);
       first := PWIDEChar(aString);
-      curr  := PWIDEChar(ByteOffset(first, 2 * (aPos - 1)));
+      curr  := PWIDEChar(Memory.ByteOffset(first, 2 * (aPos - 1)));
 
       for i := 1 to aPos do
       begin

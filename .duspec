@@ -14,11 +14,11 @@
     "deltics.contracts:2.0.0",
     "deltics.exchange:1.0.0",
     "deltics.guids:1.0.0",
-    "deltics.interfacedobjects:1.1.1",
+    "deltics.interfacedobjects:1.2.0",
     "deltics.reversebytes:1.0.0",
     "deltics.math:1.0.0",
     "deltics.multicast:1.0.0",
-    "deltics.pointers:1.0.0"
+    "deltics.pointers:1.1.1"
   ],
   "source":{
       "files":[
