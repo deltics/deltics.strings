@@ -17,7 +17,6 @@ interface
   type
     ANSIFn = class
     private
-      class function AddressOfByte(aBase: Pointer; aByteIndex: Integer): PANSIChar; overload; {$ifdef InlineMethods} inline; {$endif}
       class function AddressOfIndex(const aString: ANSIString; aIndex: Integer): PANSIChar; overload; {$ifdef InlineMethods} inline; {$endif}
       class procedure FastCopy(const aString: ANSIString; aDest: PANSIChar; aLen: Integer); overload; {$ifdef InlineMethods} inline; {$endif}
       class procedure FastCopy(const aString: ANSIString; var aDest: ANSIString; aDestIndex: Integer); overload; {$ifdef InlineMethods} inline; {$endif}
@@ -460,21 +459,6 @@ implementation
 
 
 
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function ANSIFn.AddressOfByte(aBase: Pointer;
-                                      aByteIndex: Integer): PANSIChar;
-  var
-    ibase: IntPointer absolute aBase;
-  begin
-      result := PAnsiChar(Memory.ByteOffset(aBase, aByteIndex));
-//    if aByteIndex > 0 then
-//      result := ibase + Cardinal(aByteIndex))
-//    else
-//      result := PAnsiChar(ibase - Cardinal(Abs(aByteIndex)));
-  end;
-
-
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class function ANSIFn.AddressOfIndex(const aString: ANSIString;
                                              aIndex: Integer): PANSIChar;
@@ -596,7 +580,7 @@ implementation
     if (aMaxBytes < len) then
       len := aMaxBytes;
 
-    FastCopy(aString, AddressOfByte(aBuffer, aOffset), len);
+    FastCopy(aString, Memory.ByteOffset(aBuffer, aOffset), len);
   end;
 
 

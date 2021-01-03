@@ -16,7 +16,6 @@ interface
   type
     WIDEFn = class
     private
-      class function AddressOfByte(aBase: Pointer; aByteIndex: Integer): PWIDEChar; overload; {$ifdef InlineMethods} inline; {$endif}
       class function AddressOfIndex(var aString: UnicodeString; aIndex: Integer): PWIDEChar; overload; {$ifdef InlineMethods} inline; {$endif}
       class procedure FastCopy(const aString: UnicodeString; aDest: PWIDEChar); overload; {$ifdef InlineMethods} inline; {$endif}
       class procedure FastCopy(const aString: UnicodeString; aDest: PWIDEChar; aLen: Integer); overload; {$ifdef InlineMethods} inline; {$endif}
@@ -566,19 +565,6 @@ implementation
 { WIDEFn ------------------------------------------------------------------------------------------ }
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.AddressOfByte(aBase: Pointer;
-                                      aByteIndex: Integer): PWIDEChar;
-  var
-    ibase: IntPointer absolute aBase;
-  begin
-    if aByteIndex > 0 then
-      result := PWideChar(ibase + Cardinal(aByteIndex))
-    else
-      result := PWideChar(ibase - Cardinal(Abs(aByteIndex)));
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class function WIDEFn.AddressOfIndex(var aString: UnicodeString;
                                            aIndex: Integer): PWIDEChar;
   begin
@@ -680,7 +666,7 @@ implementation
     if (aMaxChars < len) then
       len := aMaxChars;
 
-    FastCopy(aString, AddressOfByte(aBuffer, aByteOffset), len);
+    FastCopy(aString, Memory.ByteOffset(aBuffer, aByteOffset), len);
   end;
 
 
