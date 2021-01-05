@@ -108,11 +108,24 @@ implementation
     _UTF32LE  : TEncoding = NIL;
 
 
+{$ifdef 32BIT}
   function InterlockedCompareExchangePointer(var Destination; const Exchange, Comperand: Pointer): Pointer;
   asm
     xchg ecx, eax
     lock cmpxchg [ecx], edx
   end;
+{$else}
+  {$ifdef 64BIT}
+    function InterlockedCompareExchangePointer(var Destination; const Exchange, Comperand: Pointer): Pointer;
+    asm
+        .NOFRAME
+        MOV     RAX,R8
+   LOCK CMPXCHG [RCX],RDX
+    end;
+  {$else}
+    {$message FATAL "InterlockedCompareExchangePointer is not supported on this platform"}
+  {$endif}
+{$endif}
 
 
   class function TEncodingImplementation.Instance(var aEncoding: TEncoding;
