@@ -148,6 +148,7 @@ interface
 
 
   type
+    TBOM        = Deltics.Strings.Types.BOM.TBOM;
     Utf8Bom     = Deltics.Strings.Types.BOM.Utf8Bom;
     Utf16Bom    = Deltics.Strings.Types.BOM.Utf16Bom;
     Utf16LEBom  = Deltics.Strings.Types.BOM.Utf16LEBom;

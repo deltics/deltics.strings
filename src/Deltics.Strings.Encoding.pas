@@ -1,4 +1,4 @@
-﻿
+
 {$i deltics.strings.inc}
 
   unit Deltics.Strings.Encoding;
@@ -9,7 +9,6 @@ interface
   uses
     Classes,
     SysUtils,
-    Deltics.Strings.Types.BOM,
     Deltics.Strings.Types;
 
 
