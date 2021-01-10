@@ -192,7 +192,10 @@ implementation
     output: WideString;
     numChars: Integer;
   begin
-    input := 'abc©2020';
+    // The following is essentially a hand-crafted version of:  input := Utf8.FromString('abc©2020');
+    input := 'abc??2020';
+    input[4] := Utf8Char($c2);
+    input[5] := Utf8Char($a9);
 
     numChars := TEncoding.Utf8.GetCharCount(input[1], Length(input));
 
@@ -200,7 +203,7 @@ implementation
 
     SetLength(output, numChars);
 
-    TEncoding.Utf8.Decode(input[1], Length(input), PWideChar(output), numChars);
+    TEncoding.Utf8.Decode(input[1], Length(input), @output[1], numChars);
 
     Test('Decode').Assert(output).Equals('abc©2020');
   end;

@@ -5,6 +5,8 @@
 
 
 
+{%File '©'}
+
 uses
   Deltics.Smoketest,
   Deltics.Strings in '..\src\Deltics.Strings.pas',
@@ -12,7 +14,6 @@ uses
   Deltics.Strings.Fns.Utf8 in '..\src\Deltics.Strings.Fns.Utf8.pas',
   Deltics.Strings.Fns.Wide in '..\src\Deltics.Strings.Fns.Wide.pas',
   Deltics.Strings.Encoding in '..\src\Deltics.Strings.Encoding.pas',
-  Deltics.Strings.Types.BOM in '..\src\Deltics.Strings.Types.BOM.pas',
   Deltics.Strings.Encoding.Ascii in '..\src\Deltics.Strings.Encoding.Ascii.pas',
   Deltics.Strings.Encoding.Utf8 in '..\src\Deltics.Strings.Encoding.Utf8.pas',
   Deltics.Strings.Encoding.Utf16 in '..\src\Deltics.Strings.Encoding.Utf16.pas',
@@ -29,6 +30,8 @@ uses
   Deltics.Strings.StringList in '..\src\Deltics.Strings.StringList.pas',
   Deltics.Strings.Templates in '..\src\Deltics.Strings.Templates.pas',
   Deltics.Strings.Types in '..\src\Deltics.Strings.Types.pas',
+  Deltics.Strings.Types.BOM in '..\src\Deltics.Strings.Types.BOM.pas',
+  Deltics.Strings.Types.Core in '..\src\Deltics.Strings.Types.Core.pas',
   Deltics.Strings.Utils in '..\src\Deltics.Strings.Utils.pas',
   Test.Consts in 'Test.Consts.pas' {/  Test.Strings.STR in 'Test.Strings.STR.pas',},
   Test.Runtime in 'Test.Runtime.pas',
@@ -36,8 +39,7 @@ uses
   Test.Transcoding in 'Test.Transcoding.pas',
   Test.Utils in 'Test.Utils.pas',
   Test.DeleteLeft in 'Test.DeleteLeft.pas',
-  Test.Encoding in 'Test.Encoding.pas',
-  Deltics.Strings.Types.Core in '..\src\Deltics.Strings.Types.Core.pas';
+  Test.Encoding in 'Test.Encoding.pas';
 
 begin
   TestRun.Test(RuntimeTests, DELPHI_VERSION);
