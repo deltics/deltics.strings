@@ -2,7 +2,7 @@
 {$i deltics.strings.inc}
 
 
-  unit Deltics.Strings.Parsers.WIDE;
+  unit Deltics.Strings.Parsers.Wide;
 
 
 interface
@@ -12,27 +12,27 @@ interface
 
 
   type
-    WIDEParser = class
+    WideParser = class
     public
-      class function AsBoolean(aBuffer: PWIDEChar; aLen: Integer): Boolean; overload; {$ifdef InlineMethods} inline; {$endif}
-      class function AsBoolean(aBuffer: PWIDEChar; aLen: Integer; aDefault: Boolean): Boolean; overload; {$ifdef InlineMethods} inline; {$endif}
+      class function AsBoolean(aBuffer: PWideChar; aLen: Integer): Boolean; overload; {$ifdef InlineMethods} inline; {$endif}
+      class function AsBoolean(aBuffer: PWideChar; aLen: Integer; aDefault: Boolean): Boolean; overload; {$ifdef InlineMethods} inline; {$endif}
       class function AsBoolean(const aString: UnicodeString): Boolean; overload; {$ifdef InlineMethods} inline; {$endif}
       class function AsBoolean(const aString: UnicodeString; aDefault: Boolean): Boolean; overload; {$ifdef InlineMethods} inline; {$endif}
-      class function AsInteger(aBuffer: PWIDEChar; aLen: Integer): Integer; overload; {$ifdef InlineMethods} inline; {$endif}
-      class function AsInteger(aBuffer: PWIDEChar; aLen: Integer; aDefault: Integer): Integer; overload; {$ifdef InlineMethods} inline; {$endif}
+      class function AsInteger(aBuffer: PWideChar; aLen: Integer): Integer; overload; {$ifdef InlineMethods} inline; {$endif}
+      class function AsInteger(aBuffer: PWideChar; aLen: Integer; aDefault: Integer): Integer; overload; {$ifdef InlineMethods} inline; {$endif}
       class function AsInteger(const aString: UnicodeString): Integer; overload; {$ifdef InlineMethods} inline; {$endif}
       class function AsInteger(const aString: UnicodeString; aDefault: Integer): Integer; overload; {$ifdef InlineMethods} inline; {$endif}
 
-      class function IsBoolean(aBuffer: PWIDEChar; aLen: Integer): Boolean; overload; {$ifdef InlineMethods} inline; {$endif}
-      class function IsBoolean(aBuffer: PWIDEChar; aLen: Integer; var aValue: Boolean): Boolean; overload; {$ifdef InlineMethods} inline; {$endif}
+      class function IsBoolean(aBuffer: PWideChar; aLen: Integer): Boolean; overload; {$ifdef InlineMethods} inline; {$endif}
+      class function IsBoolean(aBuffer: PWideChar; aLen: Integer; var aValue: Boolean): Boolean; overload; {$ifdef InlineMethods} inline; {$endif}
       class function IsBoolean(const aString: UnicodeString): Boolean; overload; {$ifdef InlineMethods} inline; {$endif}
       class function IsBoolean(const aString: UnicodeString; var aValue: Boolean): Boolean; overload; {$ifdef InlineMethods} inline; {$endif}
-      class function IsInteger(aBuffer: PWIDEChar; aLen: Integer): Boolean; overload; {$ifdef InlineMethods} inline; {$endif}
-      class function IsInteger(aBuffer: PWIDEChar; aLen: Integer; var aValue: Integer): Boolean; overload; {$ifdef InlineMethods} inline; {$endif}
+      class function IsInteger(aBuffer: PWideChar; aLen: Integer): Boolean; overload; {$ifdef InlineMethods} inline; {$endif}
+      class function IsInteger(aBuffer: PWideChar; aLen: Integer; var aValue: Integer): Boolean; overload; {$ifdef InlineMethods} inline; {$endif}
       class function IsInteger(const aString: UnicodeString): Boolean; overload; {$ifdef InlineMethods} inline; {$endif}
       class function IsInteger(const aString: UnicodeString; var aValue: Integer): Boolean; overload; {$ifdef InlineMethods} inline; {$endif}
     end;
-    WIDEParserClass = class of WIDEParser;
+    WideParserClass = class of WideParser;
 
 
 
@@ -42,21 +42,21 @@ implementation
   uses
     SysUtils,
     Deltics.Strings,
-    Deltics.Strings.Parsers.WIDE.AsBoolean,
-    Deltics.Strings.Parsers.WIDE.AsInteger;
+    Deltics.Strings.Parsers.Wide.AsBoolean,
+    Deltics.Strings.Parsers.Wide.AsInteger;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEParser.AsInteger(aBuffer: PWIDEChar;
+  class function WideParser.AsInteger(aBuffer: PWideChar;
                                       aLen: Integer): Integer;
   begin
     if NOT ParseInteger(aBuffer, aLen, result) then
-      raise EConvertError.CreateFmt('''%s'' is not a valid integer expression', [WIDE(aBuffer, aLen)]);
+      raise EConvertError.CreateFmt('''%s'' is not a valid integer expression', [Wide(aBuffer, aLen)]);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEParser.AsInteger(aBuffer: PWIDEChar;
+  class function WideParser.AsInteger(aBuffer: PWideChar;
                                       aLen: Integer;
                                       aDefault: Integer): Integer;
   begin
@@ -66,18 +66,18 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEParser.AsInteger(const aString: UnicodeString): Integer;
+  class function WideParser.AsInteger(const aString: UnicodeString): Integer;
   begin
-    if NOT ParseInteger(PWIDEChar(aString), Length(aString), result) then
+    if NOT ParseInteger(PWideChar(aString), Length(aString), result) then
       raise EConvertError.CreateFmt('''%s'' is not a valid integer expression', [aString]);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEParser.AsInteger(const aString: UnicodeString;
+  class function WideParser.AsInteger(const aString: UnicodeString;
                                             aDefault: Integer): Integer;
   begin
-    if NOT ParseInteger(PWIDEChar(aString), Length(aString), result) then
+    if NOT ParseInteger(PWideChar(aString), Length(aString), result) then
       result := aDefault;
   end;
 
@@ -88,16 +88,16 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEParser.AsBoolean(aBuffer: PWIDEChar;
+  class function WideParser.AsBoolean(aBuffer: PWideChar;
                                       aLen: Integer): Boolean;
   begin
     if NOT ParseBoolean(aBuffer, aLen, result) then
-      raise EConvertError.CreateFmt('''%s'' is not a valid boolean expression', [WIDE(aBuffer, aLen)]);
+      raise EConvertError.CreateFmt('''%s'' is not a valid boolean expression', [Wide(aBuffer, aLen)]);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEParser.AsBoolean(aBuffer: PWIDEChar;
+  class function WideParser.AsBoolean(aBuffer: PWideChar;
                                       aLen: Integer;
                                       aDefault: Boolean): Boolean;
   begin
@@ -107,18 +107,18 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEParser.AsBoolean(const aString: UnicodeString): Boolean;
+  class function WideParser.AsBoolean(const aString: UnicodeString): Boolean;
   begin
-    if NOT ParseBoolean(PWIDEChar(aString), Length(aString), result) then
+    if NOT ParseBoolean(PWideChar(aString), Length(aString), result) then
       raise EConvertError.CreateFmt('''%s'' is not a valid boolean expression', [aString]);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEParser.AsBoolean(const aString: UnicodeString;
+  class function WideParser.AsBoolean(const aString: UnicodeString;
                                             aDefault: Boolean): Boolean;
   begin
-    if NOT ParseBoolean(PWIDEChar(aString), Length(aString), result) then
+    if NOT ParseBoolean(PWideChar(aString), Length(aString), result) then
       result := aDefault;
   end;
 
@@ -130,7 +130,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEParser.IsBoolean(aBuffer: PWIDEChar;
+  class function WideParser.IsBoolean(aBuffer: PWideChar;
                                       aLen: Integer): Boolean;
   begin
     result := CheckBoolean(aBuffer, aLen);
@@ -138,7 +138,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEParser.IsBoolean(    aBuffer: PWIDEChar;
+  class function WideParser.IsBoolean(    aBuffer: PWideChar;
                                           aLen: Integer;
                                       var aValue: Boolean): Boolean;
   begin
@@ -147,17 +147,17 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEParser.IsBoolean(const aString: UnicodeString): Boolean;
+  class function WideParser.IsBoolean(const aString: UnicodeString): Boolean;
   begin
-    result := CheckBoolean(PWIDEChar(aString), Length(aString));
+    result := CheckBoolean(PWideChar(aString), Length(aString));
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEParser.IsBoolean(const aString: UnicodeString;
+  class function WideParser.IsBoolean(const aString: UnicodeString;
                                       var   aValue: Boolean): Boolean;
   begin
-    result := ParseBoolean(PWIDEChar(aString), Length(aString), aValue);
+    result := ParseBoolean(PWideChar(aString), Length(aString), aValue);
   end;
 
 
@@ -168,14 +168,14 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEParser.IsInteger(aBuffer: PWIDEChar; aLen: Integer): Boolean;
+  class function WideParser.IsInteger(aBuffer: PWideChar; aLen: Integer): Boolean;
   begin
     result := CheckInteger(aBuffer, aLen);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEParser.IsInteger(    aBuffer: PWIDEChar;
+  class function WideParser.IsInteger(    aBuffer: PWideChar;
                                           aLen: Integer;
                                       var aValue: Integer): Boolean;
   begin
@@ -184,17 +184,17 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEParser.IsInteger(const aString: UnicodeString): Boolean;
+  class function WideParser.IsInteger(const aString: UnicodeString): Boolean;
   begin
-    result := CheckInteger(PWIDEChar(aString), Length(aString));
+    result := CheckInteger(PWideChar(aString), Length(aString));
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEParser.IsInteger(const aString: UnicodeString;
+  class function WideParser.IsInteger(const aString: UnicodeString;
                                       var   aValue: Integer): Boolean;
   begin
-    result := ParseInteger(PWIDEChar(aString), Length(aString), aValue);
+    result := ParseInteger(PWideChar(aString), Length(aString), aValue);
   end;
 
 

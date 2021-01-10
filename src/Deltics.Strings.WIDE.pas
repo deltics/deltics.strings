@@ -2,75 +2,75 @@
 {$i deltics.strings.inc}
 
 
-  unit Deltics.Strings.WIDE;
+  unit Deltics.Strings.Wide;
 
 
 interface
 
   uses
     Windows,
-    Deltics.Strings.Parsers.WIDE,
+    Deltics.Strings.Parsers.Wide,
     Deltics.Strings.StringList,
     Deltics.Strings.Types;
 
   type
-    WIDEFn = class
+    WideFn = class
     private
-      class function AddressOfIndex(var aString: UnicodeString; aIndex: Integer): PWIDEChar; overload; {$ifdef InlineMethods} inline; {$endif}
-      class procedure FastCopy(const aString: UnicodeString; aDest: PWIDEChar); overload; {$ifdef InlineMethods} inline; {$endif}
-      class procedure FastCopy(const aString: UnicodeString; aDest: PWIDEChar; aLen: Integer); overload; {$ifdef InlineMethods} inline; {$endif}
+      class function AddressOfIndex(var aString: UnicodeString; aIndex: Integer): PWideChar; overload; {$ifdef InlineMethods} inline; {$endif}
+      class procedure FastCopy(const aString: UnicodeString; aDest: PWideChar); overload; {$ifdef InlineMethods} inline; {$endif}
+      class procedure FastCopy(const aString: UnicodeString; aDest: PWideChar; aLen: Integer); overload; {$ifdef InlineMethods} inline; {$endif}
       class procedure FastCopy(const aString: UnicodeString; var aDest: UnicodeString; aDestIndex: Integer); overload; {$ifdef InlineMethods} inline; {$endif}
       class procedure FastCopy(const aString: UnicodeString; var aDest: UnicodeString; aDestIndex: Integer; aLen: Integer); overload; {$ifdef InlineMethods} inline; {$endif}
       class procedure FastMove(var aString: UnicodeString; aFromIndex, aToIndex, aCount: Integer); overload; {$ifdef InlineMethods} inline; {$endif}
-      class function CheckCase(const aString: UnicodeString; aCaseFn: TWIDETestCharFn): Boolean;
+      class function CheckCase(const aString: UnicodeString; aCaseFn: TWideTestCharFn): Boolean;
       class procedure CopyToBuffer(const aString: UnicodeString; aMaxChars: Integer; aBuffer: Pointer; aByteOffset: Integer); overload;
 //      class function Replace(aScope: TStringScope; const aString, aFindStr, aReplaceStr: UnicodeString; aCaseMode: TCaseSensitivity): UnicodeString; overload;
 //      class function Replace(aScope: TStringScope; const aString, aFindStr, aReplaceStr: UnicodeString; var aCount: Integer; aCaseMode: TCaseSensitivity): UnicodeString; overload;
 
     public
-      class function Parse: WIDEParserClass; {$ifdef InlineMethods} inline; {$endif}
+      class function Parse: WideParserClass; {$ifdef InlineMethods} inline; {$endif}
 
       // Transcoding
       class function Encode(const aString: String): UnicodeString;
-      class function FromANSI(const aString: ANSIString): UnicodeString; overload;
-      class function FromANSI(aBuffer: PANSIChar; aMaxLen: Integer = -1): UnicodeString; overload;
+      class function FromAnsi(const aString: AnsiString): UnicodeString; overload;
+      class function FromAnsi(aBuffer: PAnsiChar; aMaxLen: Integer = -1): UnicodeString; overload;
       class function FromString(const aString: String): UnicodeString;
-      class function FromUTF8(const aString: UTF8String): UnicodeString; overload;
-      class function FromUTF8(aBuffer: PUTF8Char; aMaxLen: Integer = -1): UnicodeString; overload;
-      class function FromWIDE(aBuffer: PWideChar; aMaxLen: Integer = -1): UnicodeString; overload;
+      class function FromUtf8(const aString: Utf8String): UnicodeString; overload;
+      class function FromUtf8(aBuffer: PUtf8Char; aMaxLen: Integer = -1): UnicodeString; overload;
+      class function FromWide(aBuffer: PWideChar; aMaxLen: Integer = -1): UnicodeString; overload;
 
       // Buffer (SZ pointer) routines
-      class function AllocUTF8(const aSource: UnicodeString): PUTF8Char;
+      class function AllocUtf8(const aSource: UnicodeString): PUtf8Char;
       class procedure CopyToBuffer(const aString: UnicodeString; aBuffer: Pointer); overload;
       class procedure CopyToBuffer(const aString: UnicodeString; aBuffer: Pointer; aMaxChars: Integer); overload;
       class procedure CopyToBufferOffset(const aString: UnicodeString; aBuffer: Pointer; aByteOffset: Integer); overload;
       class procedure CopyToBufferOffset(const aString: UnicodeString; aBuffer: Pointer; aByteOffset: Integer; aMaxChars: Integer); overload;
-      class function FromBuffer(aBuffer: PANSIChar; aLen: Integer = -1): UnicodeString; overload;
-      class function FromBuffer(aBuffer: PWIDEChar; aLen: Integer = -1): UnicodeString; overload;
-      class function Len(aBuffer: PWIDEChar): Integer;
+      class function FromBuffer(aBuffer: PAnsiChar; aLen: Integer = -1): UnicodeString; overload;
+      class function FromBuffer(aBuffer: PWideChar; aLen: Integer = -1): UnicodeString; overload;
+      class function Len(aBuffer: PWideChar): Integer;
 
       // Misc utilities
       class function Coalesce(const aString, aDefault: UnicodeString): UnicodeString; overload;
       class function HasLength(const aString: UnicodeString; var aLength: Integer): Boolean;
       class function HasIndex(const aString: UnicodeString; aIndex: Integer): Boolean; overload;
-      class function HasIndex(const aString: UnicodeString; aIndex: Integer; var aChar: WIDEChar): Boolean; overload;
+      class function HasIndex(const aString: UnicodeString; aIndex: Integer; var aChar: WideChar): Boolean; overload;
       class function IIf(aValue: Boolean; const aWhenTrue, aWhenFalse: UnicodeString): UnicodeString; overload;
       class function IndexOf(const aString: UnicodeString; aValues: array of UnicodeString; aCaseMode: TCaseSensitivity = csCaseSensitive): Integer; overload;
       class function IndexOfText(const aString: UnicodeString; aValues: array of UnicodeString): Integer; overload;
       class function Reverse(const aString: UnicodeString): UnicodeString;
-      class function Split(const aString: UnicodeString; const aChar: ANSIChar; var aLeft, aRight: UnicodeString): Boolean; overload;
-      class function Split(const aString: UnicodeString; const aChar: WIDEChar; var aLeft, aRight: UnicodeString): Boolean; overload;
+      class function Split(const aString: UnicodeString; const aChar: AnsiChar; var aLeft, aRight: UnicodeString): Boolean; overload;
+      class function Split(const aString: UnicodeString; const aChar: WideChar; var aLeft, aRight: UnicodeString): Boolean; overload;
       class function Split(const aString, aDelim: UnicodeString; var aLeft, aRight: UnicodeString): Boolean; overload;
-      class function Split(const aString: UnicodeString; const aChar: ANSIChar; var aParts: TWIDEStringArray): Integer; overload;
-      class function Split(const aString: UnicodeString; const aChar: WIDEChar; var aParts: TWIDEStringArray): Integer; overload;
-      class function Split(const aString, aDelim: UnicodeString; var aParts: TWIDEStringArray): Integer; overload;
+      class function Split(const aString: UnicodeString; const aChar: AnsiChar; var aParts: TWideStringArray): Integer; overload;
+      class function Split(const aString: UnicodeString; const aChar: WideChar; var aParts: TWideStringArray): Integer; overload;
+      class function Split(const aString, aDelim: UnicodeString; var aParts: TWideStringArray): Integer; overload;
 
       // Assembling a string
       class function Concat(const aArray: array of UnicodeString): UnicodeString; overload;
       class function Concat(const aArray: array of UnicodeString; const aSeparator: UnicodeString): UnicodeString; overload;
       class function Format(const aString: UnicodeString; const aArgs: array of const): UnicodeString;
-      class function StringOf(aChar: ANSIChar; aCount: Integer): UnicodeString; overload;
-      class function StringOf(aChar: WIDEChar; aCount: Integer): UnicodeString; overload;
+      class function StringOf(aChar: AnsiChar; aCount: Integer): UnicodeString; overload;
+      class function StringOf(aChar: WideChar; aCount: Integer): UnicodeString; overload;
       class function StringOf(const aString: UnicodeString; aCount: Integer): UnicodeString; overload;
 
       // Type conversions
@@ -84,18 +84,18 @@ interface
       class function IsInteger(const aString: UnicodeString; var aValue: Integer): Boolean; overload;
 
       // Testing things about a string
-      class function IsAlpha(aChar: WIDEChar): Boolean; overload;
+      class function IsAlpha(aChar: WideChar): Boolean; overload;
       class function IsAlpha(const aString: UnicodeString): Boolean; overload;
-      class function IsAlphaNumeric(aChar: WIDEChar): Boolean; overload;
+      class function IsAlphaNumeric(aChar: WideChar): Boolean; overload;
       class function IsAlphaNumeric(const aString: UnicodeString): Boolean; overload;
       class function IsEmpty(const aString: UnicodeString): Boolean; overload;
-      class function IsLowercase(const aChar: WIDEChar): Boolean; overload;
+      class function IsLowercase(const aChar: WideChar): Boolean; overload;
       class function IsLowercase(const aString: UnicodeString): Boolean; overload;
-      class function IsNull(aChar: WIDEChar): Boolean;
-      class function IsNumeric(aChar: WIDEChar): Boolean; overload;
+      class function IsNull(aChar: WideChar): Boolean;
+      class function IsNumeric(aChar: WideChar): Boolean; overload;
       class function IsNumeric(const aString: UnicodeString): Boolean; overload;
-      class function IsSurrogate(aChar: WIDEChar): Boolean;
-      class function IsUppercase(const aChar: WIDEChar): Boolean; overload;
+      class function IsSurrogate(aChar: WideChar): Boolean;
+      class function IsUppercase(const aChar: WideChar): Boolean; overload;
       class function IsUppercase(const aString: UnicodeString): Boolean; overload;
       class function NotEmpty(const aString: UnicodeString): Boolean;
 
@@ -108,88 +108,88 @@ interface
       class function SameText(const A, B: UnicodeString): Boolean;
 
       // Checking for things in a string
-      class function BeginsWith(const aString: UnicodeString; aChar: ANSIChar; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
-      class function BeginsWith(const aString: UnicodeString; aChar: WIDEChar; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
+      class function BeginsWith(const aString: UnicodeString; aChar: AnsiChar; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
+      class function BeginsWith(const aString: UnicodeString; aChar: WideChar; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
       class function BeginsWith(const aString, aSubstring: UnicodeString; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
-      class function BeginsWithText(const aString: UnicodeString; aChar: ANSIChar): Boolean; overload;
-      class function BeginsWithText(const aString: UnicodeString; aChar: WIDEChar): Boolean; overload;
+      class function BeginsWithText(const aString: UnicodeString; aChar: AnsiChar): Boolean; overload;
+      class function BeginsWithText(const aString: UnicodeString; aChar: WideChar): Boolean; overload;
       class function BeginsWithText(const aString, aSubstring: UnicodeString): Boolean; overload;
-      class function Contains(const aString: UnicodeString; aChar: ANSIChar; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
-      class function Contains(const aString: UnicodeString; aChar: WIDEChar; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
+      class function Contains(const aString: UnicodeString; aChar: AnsiChar; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
+      class function Contains(const aString: UnicodeString; aChar: WideChar; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
       class function Contains(const aString, aSubstring: UnicodeString; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
-      class function ContainsText(const aString: UnicodeString; aChar: ANSIChar): Boolean; overload;
-      class function ContainsText(const aString: UnicodeString; aChar: WIDEChar): Boolean; overload;
+      class function ContainsText(const aString: UnicodeString; aChar: AnsiChar): Boolean; overload;
+      class function ContainsText(const aString: UnicodeString; aChar: WideChar): Boolean; overload;
       class function ContainsText(const aString, aSubstring: UnicodeString): Boolean; overload;
-      class function EndsWith(const aString: UnicodeString; aChar: ANSIChar; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
-      class function EndsWith(const aString: UnicodeString; aChar: WIDEChar; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
+      class function EndsWith(const aString: UnicodeString; aChar: AnsiChar; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
+      class function EndsWith(const aString: UnicodeString; aChar: WideChar; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
       class function EndsWith(const aString, aSubstring: UnicodeString; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
-      class function EndsWithText(const aString: UnicodeString; aChar: ANSIChar): Boolean; overload;
-      class function EndsWithText(const aString: UnicodeString; aChar: WIDEChar): Boolean; overload;
+      class function EndsWithText(const aString: UnicodeString; aChar: AnsiChar): Boolean; overload;
+      class function EndsWithText(const aString: UnicodeString; aChar: WideChar): Boolean; overload;
       class function EndsWithText(const aString, aSubstring: UnicodeString): Boolean; overload;
 
       // Finding things in a string
-      class function Find(const aString: UnicodeString; aChar: ANSIChar; var aPos: Integer; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
-      class function Find(const aString: UnicodeString; aChar: WIDEChar; var aPos: Integer; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
+      class function Find(const aString: UnicodeString; aChar: AnsiChar; var aPos: Integer; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
+      class function Find(const aString: UnicodeString; aChar: WideChar; var aPos: Integer; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
       class function Find(const aString, aSubstring: UnicodeString; var aPos: Integer; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
-      class function FindText(const aString: UnicodeString; aChar: ANSIChar; var aPos: Integer): Boolean; overload;
-      class function FindText(const aString: UnicodeString; aChar: WIDEChar; var aPos: Integer): Boolean; overload;
+      class function FindText(const aString: UnicodeString; aChar: AnsiChar; var aPos: Integer): Boolean; overload;
+      class function FindText(const aString: UnicodeString; aChar: WideChar; var aPos: Integer): Boolean; overload;
       class function FindText(const aString, aSubstring: UnicodeString; var aPos: Integer): Boolean; overload;
-      class function FindNext(const aString: UnicodeString; aChar: ANSIChar; var aPos: Integer; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
-      class function FindNext(const aString: UnicodeString; aChar: WIDEChar; var aPos: Integer; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
+      class function FindNext(const aString: UnicodeString; aChar: AnsiChar; var aPos: Integer; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
+      class function FindNext(const aString: UnicodeString; aChar: WideChar; var aPos: Integer; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
       class function FindNext(const aString, aSubstring: UnicodeString; var aPos: Integer; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
-      class function FindNextText(const aString: UnicodeString; aChar: ANSIChar; var aPos: Integer): Boolean; overload;
-      class function FindNextText(const aString: UnicodeString; aChar: WIDEChar; var aPos: Integer): Boolean; overload;
+      class function FindNextText(const aString: UnicodeString; aChar: AnsiChar; var aPos: Integer): Boolean; overload;
+      class function FindNextText(const aString: UnicodeString; aChar: WideChar; var aPos: Integer): Boolean; overload;
       class function FindNextText(const aString, aSubstring: UnicodeString; var aPos: Integer): Boolean; overload;
-      class function FindPrevious(const aString: UnicodeString; aChar: ANSIChar; var aPos: Integer; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
-      class function FindPrevious(const aString: UnicodeString; aChar: WIDEChar; var aPos: Integer; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
+      class function FindPrevious(const aString: UnicodeString; aChar: AnsiChar; var aPos: Integer; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
+      class function FindPrevious(const aString: UnicodeString; aChar: WideChar; var aPos: Integer; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
       class function FindPrevious(const aString, aSubstring: UnicodeString; var aPos: Integer; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
-      class function FindPreviousText(const aString: UnicodeString; aChar: ANSIChar; var aPos: Integer): Boolean; overload;
-      class function FindPreviousText(const aString: UnicodeString; aChar: WIDEChar; var aPos: Integer): Boolean; overload;
+      class function FindPreviousText(const aString: UnicodeString; aChar: AnsiChar; var aPos: Integer): Boolean; overload;
+      class function FindPreviousText(const aString: UnicodeString; aChar: WideChar; var aPos: Integer): Boolean; overload;
       class function FindPreviousText(const aString, aSubstring: UnicodeString; var aPos: Integer): Boolean; overload;
-      class function FindLast(const aString: UnicodeString; aChar: ANSIChar; var aPos: Integer; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
-      class function FindLast(const aString: UnicodeString; aChar: WIDEChar; var aPos: Integer; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
+      class function FindLast(const aString: UnicodeString; aChar: AnsiChar; var aPos: Integer; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
+      class function FindLast(const aString: UnicodeString; aChar: WideChar; var aPos: Integer; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
       class function FindLast(const aString, aSubstring: UnicodeString; var aPos: Integer; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
-      class function FindLastText(const aString: UnicodeString; aChar: ANSIChar; var aPos: Integer): Boolean; overload;
-      class function FindLastText(const aString: UnicodeString; aChar: WIDEChar; var aPos: Integer): Boolean; overload;
+      class function FindLastText(const aString: UnicodeString; aChar: AnsiChar; var aPos: Integer): Boolean; overload;
+      class function FindLastText(const aString: UnicodeString; aChar: WideChar; var aPos: Integer): Boolean; overload;
       class function FindLastText(const aString, aSubstring: UnicodeString; var aPos: Integer): Boolean; overload;
-      class function FindAll(const aString: UnicodeString; aChar: ANSIChar; var aPos: TCharIndexArray; aCaseMode: TCaseSensitivity = csCaseSensitive): Integer; overload;
-      class function FindAll(const aString: UnicodeString; aChar: WIDEChar; var aPos: TCharIndexArray; aCaseMode: TCaseSensitivity = csCaseSensitive): Integer; overload;
+      class function FindAll(const aString: UnicodeString; aChar: AnsiChar; var aPos: TCharIndexArray; aCaseMode: TCaseSensitivity = csCaseSensitive): Integer; overload;
+      class function FindAll(const aString: UnicodeString; aChar: WideChar; var aPos: TCharIndexArray; aCaseMode: TCaseSensitivity = csCaseSensitive): Integer; overload;
       class function FindAll(const aString, aSubstring: UnicodeString; var aPos: TCharIndexArray; aCaseMode: TCaseSensitivity = csCaseSensitive): Integer; overload;
-      class function FindAllText(const aString: UnicodeString; aChar: ANSIChar; var aPos: TCharIndexArray): Integer; overload;
-      class function FindAllText(const aString: UnicodeString; aChar: WIDEChar; var aPos: TCharIndexArray): Integer; overload;
+      class function FindAllText(const aString: UnicodeString; aChar: AnsiChar; var aPos: TCharIndexArray): Integer; overload;
+      class function FindAllText(const aString: UnicodeString; aChar: WideChar; var aPos: TCharIndexArray): Integer; overload;
       class function FindAllText(const aString, aSubstring: UnicodeString; var aPos: TCharIndexArray): Integer; overload;
 
       // Adding to a string
-      class function Append(const aString: UnicodeString; aChar: ANSIChar): UnicodeString; overload;
-      class function Append(const aString: UnicodeString; aChar: WIDEChar): UnicodeString; overload;
+      class function Append(const aString: UnicodeString; aChar: AnsiChar): UnicodeString; overload;
+      class function Append(const aString: UnicodeString; aChar: WideChar): UnicodeString; overload;
       class function Append(const aString, aSuffix: UnicodeString): UnicodeString; overload;
-      class function Append(const aString, aSuffix: UnicodeString; aSeparator: ANSIChar): UnicodeString; overload;
-      class function Append(const aString, aSuffix: UnicodeString; aSeparator: WIDEChar): UnicodeString; overload;
+      class function Append(const aString, aSuffix: UnicodeString; aSeparator: AnsiChar): UnicodeString; overload;
+      class function Append(const aString, aSuffix: UnicodeString; aSeparator: WideChar): UnicodeString; overload;
       class function Append(const aString, aSuffix, aSeparator: UnicodeString): UnicodeString; overload;
-      class function Insert(const aString: UnicodeString; aPos: Integer; aChar: ANSIChar): UnicodeString; overload;
-      class function Insert(const aString: UnicodeString; aPos: Integer; aChar: WIDEChar): UnicodeString; overload;
+      class function Insert(const aString: UnicodeString; aPos: Integer; aChar: AnsiChar): UnicodeString; overload;
+      class function Insert(const aString: UnicodeString; aPos: Integer; aChar: WideChar): UnicodeString; overload;
       class function Insert(const aString: UnicodeString; aPos: Integer; const aInfix: UnicodeString): UnicodeString; overload;
-      class function Insert(const aString: UnicodeString; aPos: Integer; const aInfix: UnicodeString; aSeparator: WIDEChar): UnicodeString; overload;
+      class function Insert(const aString: UnicodeString; aPos: Integer; const aInfix: UnicodeString; aSeparator: WideChar): UnicodeString; overload;
       class function Insert(const aString: UnicodeString; aPos: Integer; const aInfix, aSeparator: UnicodeString): UnicodeString; overload;
-      class function Prepend(const aString: UnicodeString; aChar: ANSIChar): UnicodeString; overload;
-      class function Prepend(const aString: UnicodeString; aChar: WIDEChar): UnicodeString; overload;
+      class function Prepend(const aString: UnicodeString; aChar: AnsiChar): UnicodeString; overload;
+      class function Prepend(const aString: UnicodeString; aChar: WideChar): UnicodeString; overload;
       class function Prepend(const aString, aPrefix: UnicodeString): UnicodeString; overload;
-      class function Prepend(const aString, aPrefix: UnicodeString; aSeparator: ANSIChar): UnicodeString; overload;
-      class function Prepend(const aString, aPrefix: UnicodeString; aSeparator: WIDEChar): UnicodeString; overload;
+      class function Prepend(const aString, aPrefix: UnicodeString; aSeparator: AnsiChar): UnicodeString; overload;
+      class function Prepend(const aString, aPrefix: UnicodeString; aSeparator: WideChar): UnicodeString; overload;
       class function Prepend(const aString, aPrefix, aSeparator: UnicodeString): UnicodeString; overload;
-      class function Embrace(const aString: UnicodeString; aBrace: ANSIChar): UnicodeString; overload;
-      class function Embrace(const aString: UnicodeString; aBrace: WIDEChar = '('): UnicodeString; overload;
-      class function Enquote(const aString: UnicodeString; aQuote: ANSIChar): UnicodeString; overload;
-      class function Enquote(const aString: UnicodeString; aQuote: ANSIChar; aEscape: ANSIChar): UnicodeString; overload;
-      class function Enquote(const aString: UnicodeString; aQuote: WIDEChar = ''''; aEscape: WIDEChar = ''''): UnicodeString; overload;
-      class function PadLeft(const aValue: Integer; aLength: Integer; aChar: ANSIChar): UnicodeString; overload;
-      class function PadLeft(const aValue: Integer; aLength: Integer; aChar: WIDEChar = ' '): UnicodeString; overload;
-      class function PadLeft(const aString: UnicodeString; aLength: Integer; aChar: ANSIChar): UnicodeString; overload;
-      class function PadLeft(const aString: UnicodeString; aLength: Integer; aChar: WIDEChar = ' '): UnicodeString; overload;
-      class function PadRight(const aValue: Integer; aLength: Integer; aChar: ANSIChar): UnicodeString; overload;
-      class function PadRight(const aValue: Integer; aLength: Integer; aChar: WIDEChar = ' '): UnicodeString; overload;
-      class function PadRight(const aString: UnicodeString; aLength: Integer; aChar: ANSIChar): UnicodeString; overload;
-      class function PadRight(const aString: UnicodeString; aLength: Integer; aChar: WIDEChar = ' '): UnicodeString; overload;
+      class function Embrace(const aString: UnicodeString; aBrace: AnsiChar): UnicodeString; overload;
+      class function Embrace(const aString: UnicodeString; aBrace: WideChar = '('): UnicodeString; overload;
+      class function Enquote(const aString: UnicodeString; aQuote: AnsiChar): UnicodeString; overload;
+      class function Enquote(const aString: UnicodeString; aQuote: AnsiChar; aEscape: AnsiChar): UnicodeString; overload;
+      class function Enquote(const aString: UnicodeString; aQuote: WideChar = ''''; aEscape: WideChar = ''''): UnicodeString; overload;
+      class function PadLeft(const aValue: Integer; aLength: Integer; aChar: AnsiChar): UnicodeString; overload;
+      class function PadLeft(const aValue: Integer; aLength: Integer; aChar: WideChar = ' '): UnicodeString; overload;
+      class function PadLeft(const aString: UnicodeString; aLength: Integer; aChar: AnsiChar): UnicodeString; overload;
+      class function PadLeft(const aString: UnicodeString; aLength: Integer; aChar: WideChar = ' '): UnicodeString; overload;
+      class function PadRight(const aValue: Integer; aLength: Integer; aChar: AnsiChar): UnicodeString; overload;
+      class function PadRight(const aValue: Integer; aLength: Integer; aChar: WideChar = ' '): UnicodeString; overload;
+      class function PadRight(const aString: UnicodeString; aLength: Integer; aChar: AnsiChar): UnicodeString; overload;
+      class function PadRight(const aString: UnicodeString; aLength: Integer; aChar: WideChar = ' '): UnicodeString; overload;
 
       // TODO: This is supposed to be a general purpose String library, so
       //        this particular function really belongs in an XML framework!
@@ -199,23 +199,23 @@ interface
       class procedure Delete(var aString: UnicodeString; aIndex: Integer); overload;
       class procedure Delete(var aString: UnicodeString; aIndex, aLength: Integer); overload;
       class procedure DeleteRange(var aString: UnicodeString; aIndex, aEndIndex: Integer); overload;
-      class function Delete(var aString: UnicodeString; aChar: ANSIChar; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
-      class function Delete(var aString: UnicodeString; aChar: WIDEChar; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
+      class function Delete(var aString: UnicodeString; aChar: AnsiChar; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
+      class function Delete(var aString: UnicodeString; aChar: WideChar; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
       class function Delete(var aString: UnicodeString; const aSubstring: UnicodeString; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
-      class function DeleteText(var aString: UnicodeString; aChar: ANSIChar; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
-      class function DeleteText(var aString: UnicodeString; aChar: WIDEChar; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
+      class function DeleteText(var aString: UnicodeString; aChar: AnsiChar; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
+      class function DeleteText(var aString: UnicodeString; aChar: WideChar; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
       class function DeleteText(var aString: UnicodeString; const aSubstring: UnicodeString): Boolean; overload;
       class function DeleteAll(var aString: UnicodeString; const aSubstring: UnicodeString; aCaseMode: TCaseSensitivity = csCaseSensitive): Integer; overload;
-      class function DeleteAll(var aString: UnicodeString; aChar: ANSIChar; aCaseMode: TCaseSensitivity = csCaseSensitive): Integer; overload;
-      class function DeleteAll(var aString: UnicodeString; aChar: WIDEChar; aCaseMode: TCaseSensitivity = csCaseSensitive): Integer; overload;
-      class function DeleteAllText(var aString: UnicodeString; aChar: ANSIChar): Integer; overload;
-      class function DeleteAllText(var aString: UnicodeString; aChar: WIDEChar): Integer; overload;
+      class function DeleteAll(var aString: UnicodeString; aChar: AnsiChar; aCaseMode: TCaseSensitivity = csCaseSensitive): Integer; overload;
+      class function DeleteAll(var aString: UnicodeString; aChar: WideChar; aCaseMode: TCaseSensitivity = csCaseSensitive): Integer; overload;
+      class function DeleteAllText(var aString: UnicodeString; aChar: AnsiChar): Integer; overload;
+      class function DeleteAllText(var aString: UnicodeString; aChar: WideChar): Integer; overload;
       class function DeleteAllText(var aString: UnicodeString; const aSubstring: UnicodeString): Integer; overload;
-      class function DeleteLast(var aString: UnicodeString; aChar: ANSIChar; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
-      class function DeleteLast(var aString: UnicodeString; aChar: WIDEChar; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
+      class function DeleteLast(var aString: UnicodeString; aChar: AnsiChar; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
+      class function DeleteLast(var aString: UnicodeString; aChar: WideChar; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
       class function DeleteLast(var aString: UnicodeString; const aSubstring: UnicodeString; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
-      class function DeleteLastText(var aString: UnicodeString; aChar: ANSIChar): Boolean; overload;
-      class function DeleteLastText(var aString: UnicodeString; aChar: WIDEChar): Boolean; overload;
+      class function DeleteLastText(var aString: UnicodeString; aChar: AnsiChar): Boolean; overload;
+      class function DeleteLastText(var aString: UnicodeString; aChar: WideChar): Boolean; overload;
       class function DeleteLastText(var aString: UnicodeString; const aSubstring: UnicodeString): Boolean; overload;
       class procedure DeleteLeft(var aString: UnicodeString; aCount: Integer); overload;
       class function DeleteLeft(var aString: UnicodeString; const aSubstring: UnicodeString; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
@@ -226,23 +226,23 @@ interface
 
       // Removing parts of a string (modified result)
       class function Remove(const aString: UnicodeString; aIndex, aLength: Integer): UnicodeString; overload;
-      class function Remove(const aString: UnicodeString; aChar: ANSIChar; aCaseMode: TCaseSensitivity = csCaseSensitive): UnicodeString; overload;
-      class function Remove(const aString: UnicodeString; aChar: WIDEChar; aCaseMode: TCaseSensitivity = csCaseSensitive): UnicodeString; overload;
+      class function Remove(const aString: UnicodeString; aChar: AnsiChar; aCaseMode: TCaseSensitivity = csCaseSensitive): UnicodeString; overload;
+      class function Remove(const aString: UnicodeString; aChar: WideChar; aCaseMode: TCaseSensitivity = csCaseSensitive): UnicodeString; overload;
       class function Remove(const aString, aSubstring: UnicodeString; aCaseMode: TCaseSensitivity = csCaseSensitive): UnicodeString; overload;
-      class function RemoveText(const aString: UnicodeString; aChar: ANSIChar): UnicodeString; overload;
-      class function RemoveText(const aString: UnicodeString; aChar: WIDEChar): UnicodeString; overload;
+      class function RemoveText(const aString: UnicodeString; aChar: AnsiChar): UnicodeString; overload;
+      class function RemoveText(const aString: UnicodeString; aChar: WideChar): UnicodeString; overload;
       class function RemoveText(const aString, aSubstring: UnicodeString): UnicodeString; overload;
       class function RemoveAll(const aString, aSubstring: UnicodeString; aCaseMode: TCaseSensitivity = csCaseSensitive): UnicodeString; overload;
-      class function RemoveAll(const aString: UnicodeString; aChar: ANSIChar; aCaseMode: TCaseSensitivity = csCaseSensitive): UnicodeString; overload;
-      class function RemoveAll(const aString: UnicodeString; aChar: WIDEChar; aCaseMode: TCaseSensitivity = csCaseSensitive): UnicodeString; overload;
-      class function RemoveAllText(const aString: UnicodeString; aChar: ANSIChar): UnicodeString; overload;
-      class function RemoveAllText(const aString: UnicodeString; aChar: WIDEChar): UnicodeString; overload;
+      class function RemoveAll(const aString: UnicodeString; aChar: AnsiChar; aCaseMode: TCaseSensitivity = csCaseSensitive): UnicodeString; overload;
+      class function RemoveAll(const aString: UnicodeString; aChar: WideChar; aCaseMode: TCaseSensitivity = csCaseSensitive): UnicodeString; overload;
+      class function RemoveAllText(const aString: UnicodeString; aChar: AnsiChar): UnicodeString; overload;
+      class function RemoveAllText(const aString: UnicodeString; aChar: WideChar): UnicodeString; overload;
       class function RemoveAllText(const aString, aSubstring: UnicodeString): UnicodeString; overload;
-      class function RemoveLast(const aString: UnicodeString; aChar: ANSIChar; aCaseMode: TCaseSensitivity = csCaseSensitive): UnicodeString; overload;
-      class function RemoveLast(const aString: UnicodeString; aChar: WIDEChar; aCaseMode: TCaseSensitivity = csCaseSensitive): UnicodeString; overload;
+      class function RemoveLast(const aString: UnicodeString; aChar: AnsiChar; aCaseMode: TCaseSensitivity = csCaseSensitive): UnicodeString; overload;
+      class function RemoveLast(const aString: UnicodeString; aChar: WideChar; aCaseMode: TCaseSensitivity = csCaseSensitive): UnicodeString; overload;
       class function RemoveLast(const aString, aSubstring: UnicodeString; aCaseMode: TCaseSensitivity = csCaseSensitive): UnicodeString; overload;
-      class function RemoveLastText(const aString: UnicodeString; aChar: ANSIChar): UnicodeString; overload;
-      class function RemoveLastText(const aString: UnicodeString; aChar: WIDEChar): UnicodeString; overload;
+      class function RemoveLastText(const aString: UnicodeString; aChar: AnsiChar): UnicodeString; overload;
+      class function RemoveLastText(const aString: UnicodeString; aChar: WideChar): UnicodeString; overload;
       class function RemoveLastText(const aString, aSubstring: UnicodeString): UnicodeString; overload;
 
       // Consuming a string
@@ -254,35 +254,35 @@ interface
       class function Extract(var aString: UnicodeString; aIndex, aLength: Integer; var aExtract: UnicodeString): Boolean; overload;
       class function ExtractLeft(var aString: UnicodeString; aCount: Integer): UnicodeString; overload;
       class function ExtractLeft(var aString: UnicodeString; aCount: Integer; var aExtract: UnicodeString): Boolean; overload;
-      class function ExtractLeft(var aString: UnicodeString; aDelimiter: ANSIChar; aDelimiterOption: TExtractDelimiterOption = doLeaveOptionalDelimiter; aDelimiterCase: TCaseSensitivity = csCaseSensitive): UnicodeString; overload;
-      class function ExtractLeft(var aString: UnicodeString; aDelimiter: WIDEChar; aDelimiterOption: TExtractDelimiterOption = doLeaveOptionalDelimiter; aDelimiterCase: TCaseSensitivity = csCaseSensitive): UnicodeString; overload;
+      class function ExtractLeft(var aString: UnicodeString; aDelimiter: AnsiChar; aDelimiterOption: TExtractDelimiterOption = doLeaveOptionalDelimiter; aDelimiterCase: TCaseSensitivity = csCaseSensitive): UnicodeString; overload;
+      class function ExtractLeft(var aString: UnicodeString; aDelimiter: WideChar; aDelimiterOption: TExtractDelimiterOption = doLeaveOptionalDelimiter; aDelimiterCase: TCaseSensitivity = csCaseSensitive): UnicodeString; overload;
       class function ExtractLeft(var aString: UnicodeString; const aDelimiter: UnicodeString; aDelimiterOption: TExtractDelimiterOption = doLeaveOptionalDelimiter; aDelimiterCase: TCaseSensitivity = csCaseSensitive): UnicodeString; overload;
-      class function ExtractLeft(var aString: UnicodeString; aDelimiter: ANSIChar; var aExtract: UnicodeString; aDelimiterOption: TExtractDelimiterOption = doLeaveOptionalDelimiter; aDelimiterCase: TCaseSensitivity = csCaseSensitive): Boolean; overload;
-      class function ExtractLeft(var aString: UnicodeString; aDelimiter: WIDEChar; var aExtract: UnicodeString; aDelimiterOption: TExtractDelimiterOption = doLeaveOptionalDelimiter; aDelimiterCase: TCaseSensitivity = csCaseSensitive): Boolean; overload;
+      class function ExtractLeft(var aString: UnicodeString; aDelimiter: AnsiChar; var aExtract: UnicodeString; aDelimiterOption: TExtractDelimiterOption = doLeaveOptionalDelimiter; aDelimiterCase: TCaseSensitivity = csCaseSensitive): Boolean; overload;
+      class function ExtractLeft(var aString: UnicodeString; aDelimiter: WideChar; var aExtract: UnicodeString; aDelimiterOption: TExtractDelimiterOption = doLeaveOptionalDelimiter; aDelimiterCase: TCaseSensitivity = csCaseSensitive): Boolean; overload;
       class function ExtractLeft(var aString: UnicodeString; const aDelimiter: UnicodeString; var aExtract: UnicodeString; aDelimiterOption: TExtractDelimiterOption = doLeaveOptionalDelimiter; aDelimiterCase: TCaseSensitivity = csCaseSensitive): Boolean; overload;
-      class function ExtractLeftText(var aString: UnicodeString; aDelimiter: ANSIChar; aDelimiterOption: TExtractDelimiterOption = doLeaveOptionalDelimiter): UnicodeString; overload;
-      class function ExtractLeftText(var aString: UnicodeString; aDelimiter: WIDEChar; aDelimiterOption: TExtractDelimiterOption = doLeaveOptionalDelimiter): UnicodeString; overload;
+      class function ExtractLeftText(var aString: UnicodeString; aDelimiter: AnsiChar; aDelimiterOption: TExtractDelimiterOption = doLeaveOptionalDelimiter): UnicodeString; overload;
+      class function ExtractLeftText(var aString: UnicodeString; aDelimiter: WideChar; aDelimiterOption: TExtractDelimiterOption = doLeaveOptionalDelimiter): UnicodeString; overload;
       class function ExtractLeftText(var aString: UnicodeString; const aDelimiter: UnicodeString; aDelimiterOption: TExtractDelimiterOption = doLeaveOptionalDelimiter): UnicodeString; overload;
-      class function ExtractLeftText(var aString: UnicodeString; aDelimiter: ANSIChar; var aExtract: UnicodeString; aDelimiterOption: TExtractDelimiterOption = doLeaveOptionalDelimiter): Boolean; overload;
-      class function ExtractLeftText(var aString: UnicodeString; aDelimiter: WIDEChar; var aExtract: UnicodeString; aDelimiterOption: TExtractDelimiterOption = doLeaveOptionalDelimiter): Boolean; overload;
+      class function ExtractLeftText(var aString: UnicodeString; aDelimiter: AnsiChar; var aExtract: UnicodeString; aDelimiterOption: TExtractDelimiterOption = doLeaveOptionalDelimiter): Boolean; overload;
+      class function ExtractLeftText(var aString: UnicodeString; aDelimiter: WideChar; var aExtract: UnicodeString; aDelimiterOption: TExtractDelimiterOption = doLeaveOptionalDelimiter): Boolean; overload;
       class function ExtractLeftText(var aString: UnicodeString; const aDelimiter: UnicodeString; var aExtract: UnicodeString; aDelimiterOption: TExtractDelimiterOption = doLeaveOptionalDelimiter): Boolean; overload;
       class function ExtractRight(var aString: UnicodeString; aCount: Integer): UnicodeString; overload;
       class function ExtractRight(var aString: UnicodeString; aCount: Integer; var aExtract: UnicodeString): Boolean; overload;
       class function ExtractRightFrom(var aString: UnicodeString; aIndex: Integer): UnicodeString; overload;
       class function ExtractRightFrom(var aString: UnicodeString; aIndex: Integer; var aExtract: UnicodeString): Boolean; overload;
-      class function ExtractRight(var aString: UnicodeString; aDelimiter: ANSIChar; aDelimiterOption: TExtractDelimiterOption = doLeaveOptionalDelimiter; aDelimiterCase: TCaseSensitivity = csCaseSensitive): UnicodeString; overload;
-      class function ExtractRight(var aString: UnicodeString; aDelimiter: WIDEChar; aDelimiterOption: TExtractDelimiterOption = doLeaveOptionalDelimiter; aDelimiterCase: TCaseSensitivity = csCaseSensitive): UnicodeString; overload;
+      class function ExtractRight(var aString: UnicodeString; aDelimiter: AnsiChar; aDelimiterOption: TExtractDelimiterOption = doLeaveOptionalDelimiter; aDelimiterCase: TCaseSensitivity = csCaseSensitive): UnicodeString; overload;
+      class function ExtractRight(var aString: UnicodeString; aDelimiter: WideChar; aDelimiterOption: TExtractDelimiterOption = doLeaveOptionalDelimiter; aDelimiterCase: TCaseSensitivity = csCaseSensitive): UnicodeString; overload;
       class function ExtractRight(var aString: UnicodeString; const aDelimiter: UnicodeString; aDelimiterOption: TExtractDelimiterOption = doLeaveOptionalDelimiter; aDelimiterCase: TCaseSensitivity = csCaseSensitive): UnicodeString; overload;
-      class function ExtractRight(var aString: UnicodeString; aDelimiter: ANSIChar; var aExtract: UnicodeString; aDelimiterOption: TExtractDelimiterOption = doLeaveOptionalDelimiter; aDelimiterCase: TCaseSensitivity = csCaseSensitive): Boolean; overload;
-      class function ExtractRight(var aString: UnicodeString; aDelimiter: WIDEChar; var aExtract: UnicodeString; aDelimiterOption: TExtractDelimiterOption = doLeaveOptionalDelimiter; aDelimiterCase: TCaseSensitivity = csCaseSensitive): Boolean; overload;
+      class function ExtractRight(var aString: UnicodeString; aDelimiter: AnsiChar; var aExtract: UnicodeString; aDelimiterOption: TExtractDelimiterOption = doLeaveOptionalDelimiter; aDelimiterCase: TCaseSensitivity = csCaseSensitive): Boolean; overload;
+      class function ExtractRight(var aString: UnicodeString; aDelimiter: WideChar; var aExtract: UnicodeString; aDelimiterOption: TExtractDelimiterOption = doLeaveOptionalDelimiter; aDelimiterCase: TCaseSensitivity = csCaseSensitive): Boolean; overload;
       class function ExtractRight(var aString: UnicodeString; const aDelimiter: UnicodeString; var aExtract: UnicodeString; aDelimiterOption: TExtractDelimiterOption = doLeaveOptionalDelimiter; aDelimiterCase: TCaseSensitivity = csCaseSensitive): Boolean; overload;
-      class function ExtractRightText(var aString: UnicodeString; aDelimiter: ANSIChar; aDelimiterOption: TExtractDelimiterOption = doLeaveOptionalDelimiter): UnicodeString; overload;
-      class function ExtractRightText(var aString: UnicodeString; aDelimiter: WIDEChar; aDelimiterOption: TExtractDelimiterOption = doLeaveOptionalDelimiter): UnicodeString; overload;
+      class function ExtractRightText(var aString: UnicodeString; aDelimiter: AnsiChar; aDelimiterOption: TExtractDelimiterOption = doLeaveOptionalDelimiter): UnicodeString; overload;
+      class function ExtractRightText(var aString: UnicodeString; aDelimiter: WideChar; aDelimiterOption: TExtractDelimiterOption = doLeaveOptionalDelimiter): UnicodeString; overload;
       class function ExtractRightText(var aString: UnicodeString; const aDelimiter: UnicodeString; aDelimiterOption: TExtractDelimiterOption = doLeaveOptionalDelimiter): UnicodeString; overload;
-      class function ExtractRightText(var aString: UnicodeString; aDelimiter: ANSIChar; var aExtract: UnicodeString; aDelimiterOption: TExtractDelimiterOption = doLeaveOptionalDelimiter): Boolean; overload;
-      class function ExtractRightText(var aString: UnicodeString; aDelimiter: WIDEChar; var aExtract: UnicodeString; aDelimiterOption: TExtractDelimiterOption = doLeaveOptionalDelimiter): Boolean; overload;
+      class function ExtractRightText(var aString: UnicodeString; aDelimiter: AnsiChar; var aExtract: UnicodeString; aDelimiterOption: TExtractDelimiterOption = doLeaveOptionalDelimiter): Boolean; overload;
+      class function ExtractRightText(var aString: UnicodeString; aDelimiter: WideChar; var aExtract: UnicodeString; aDelimiterOption: TExtractDelimiterOption = doLeaveOptionalDelimiter): Boolean; overload;
       class function ExtractRightText(var aString: UnicodeString; const aDelimiter: UnicodeString; var aExtract: UnicodeString; aDelimiterOption: TExtractDelimiterOption = doLeaveOptionalDelimiter): Boolean; overload;
-      class function ExtractQuotedValue(var aString: UnicodeString; const aDelimiter: WIDEChar): UnicodeString;
+      class function ExtractQuotedValue(var aString: UnicodeString; const aDelimiter: WideChar): UnicodeString;
 
       // Copying parts of a string
       class function Copy(const aString: UnicodeString; aStartPos, aLength: Integer): UnicodeString; overload;
@@ -292,144 +292,144 @@ interface
       class function CopyRange(const aString: UnicodeString; aStartPos, aEndPos: Integer): UnicodeString; overload;
       class function CopyRange(const aString: UnicodeString; aStartPos, aEndPos: Integer; var aCopy: UnicodeString): Boolean; overload;
       class function CopyLeft(const aString: UnicodeString; aCount: Integer): UnicodeString; overload;
-      class function CopyLeft(const aString: UnicodeString; aDelimiter: ANSIChar; aDelimiterOption: TCopyDelimiterOption = doExcludeOptionalDelimiter; aDelimiterCase: TCaseSensitivity = csCaseSensitive): UnicodeString; overload;
-      class function CopyLeft(const aString: UnicodeString; aDelimiter: WIDEChar; aDelimiterOption: TCopyDelimiterOption = doExcludeOptionalDelimiter; aDelimiterCase: TCaseSensitivity = csCaseSensitive): UnicodeString; overload;
+      class function CopyLeft(const aString: UnicodeString; aDelimiter: AnsiChar; aDelimiterOption: TCopyDelimiterOption = doExcludeOptionalDelimiter; aDelimiterCase: TCaseSensitivity = csCaseSensitive): UnicodeString; overload;
+      class function CopyLeft(const aString: UnicodeString; aDelimiter: WideChar; aDelimiterOption: TCopyDelimiterOption = doExcludeOptionalDelimiter; aDelimiterCase: TCaseSensitivity = csCaseSensitive): UnicodeString; overload;
       class function CopyLeft(const aString, aDelimiter: UnicodeString; aDelimiterOption: TCopyDelimiterOption = doExcludeOptionalDelimiter; aDelimiterCase: TCaseSensitivity = csCaseSensitive): UnicodeString; overload;
       class function CopyLeft(const aString: UnicodeString; aCount: Integer; var aCopy: UnicodeString): Boolean; overload;
-      class function CopyLeft(const aString: UnicodeString; aDelimiter: ANSIChar; var aCopy: UnicodeString; aDelimiterOption: TCopyDelimiterOption = doExcludeOptionalDelimiter; aDelimiterCase: TCaseSensitivity = csCaseSensitive): Boolean; overload;
-      class function CopyLeft(const aString: UnicodeString; aDelimiter: WIDEChar; var aCopy: UnicodeString; aDelimiterOption: TCopyDelimiterOption = doExcludeOptionalDelimiter; aDelimiterCase: TCaseSensitivity = csCaseSensitive): Boolean; overload;
+      class function CopyLeft(const aString: UnicodeString; aDelimiter: AnsiChar; var aCopy: UnicodeString; aDelimiterOption: TCopyDelimiterOption = doExcludeOptionalDelimiter; aDelimiterCase: TCaseSensitivity = csCaseSensitive): Boolean; overload;
+      class function CopyLeft(const aString: UnicodeString; aDelimiter: WideChar; var aCopy: UnicodeString; aDelimiterOption: TCopyDelimiterOption = doExcludeOptionalDelimiter; aDelimiterCase: TCaseSensitivity = csCaseSensitive): Boolean; overload;
       class function CopyLeft(const aString, aDelimiter: UnicodeString; var aCopy: UnicodeString; aDelimiterOption: TCopyDelimiterOption = doExcludeOptionalDelimiter; aDelimiterCase: TCaseSensitivity = csCaseSensitive): Boolean; overload;
-      class function CopyLeftText(const aString: UnicodeString; aDelimiter: ANSIChar; aDelimiterOption: TCopyDelimiterOption = doExcludeOptionalDelimiter): UnicodeString; overload;
-      class function CopyLeftText(const aString: UnicodeString; aDelimiter: WIDEChar; aDelimiterOption: TCopyDelimiterOption = doExcludeOptionalDelimiter): UnicodeString; overload;
+      class function CopyLeftText(const aString: UnicodeString; aDelimiter: AnsiChar; aDelimiterOption: TCopyDelimiterOption = doExcludeOptionalDelimiter): UnicodeString; overload;
+      class function CopyLeftText(const aString: UnicodeString; aDelimiter: WideChar; aDelimiterOption: TCopyDelimiterOption = doExcludeOptionalDelimiter): UnicodeString; overload;
       class function CopyLeftText(const aString, aDelimiter: UnicodeString; aDelimiterOption: TCopyDelimiterOption = doExcludeOptionalDelimiter): UnicodeString; overload;
-      class function CopyLeftText(const aString: UnicodeString; aDelimiter: ANSIChar; var aCopy: UnicodeString; aDelimiterOption: TCopyDelimiterOption = doExcludeOptionalDelimiter): Boolean; overload;
-      class function CopyLeftText(const aString: UnicodeString; aDelimiter: WIDEChar; var aCopy: UnicodeString; aDelimiterOption: TCopyDelimiterOption = doExcludeOptionalDelimiter): Boolean; overload;
+      class function CopyLeftText(const aString: UnicodeString; aDelimiter: AnsiChar; var aCopy: UnicodeString; aDelimiterOption: TCopyDelimiterOption = doExcludeOptionalDelimiter): Boolean; overload;
+      class function CopyLeftText(const aString: UnicodeString; aDelimiter: WideChar; var aCopy: UnicodeString; aDelimiterOption: TCopyDelimiterOption = doExcludeOptionalDelimiter): Boolean; overload;
       class function CopyLeftText(const aString, aDelimiter: UnicodeString; var aCopy: UnicodeString; aDelimiterOption: TCopyDelimiterOption = doExcludeOptionalDelimiter): Boolean; overload;
       class function CopyRight(const aString: UnicodeString; aCount: Integer): UnicodeString; overload;
-      class function CopyRight(const aString: UnicodeString; aDelimiter: ANSIChar; aDelimiterOption: TCopyDelimiterOption = doExcludeOptionalDelimiter; aDelimiterCase: TCaseSensitivity = csCaseSensitive): UnicodeString; overload;
-      class function CopyRight(const aString: UnicodeString; aDelimiter: WIDEChar; aDelimiterOption: TCopyDelimiterOption = doExcludeOptionalDelimiter; aDelimiterCase: TCaseSensitivity = csCaseSensitive): UnicodeString; overload;
+      class function CopyRight(const aString: UnicodeString; aDelimiter: AnsiChar; aDelimiterOption: TCopyDelimiterOption = doExcludeOptionalDelimiter; aDelimiterCase: TCaseSensitivity = csCaseSensitive): UnicodeString; overload;
+      class function CopyRight(const aString: UnicodeString; aDelimiter: WideChar; aDelimiterOption: TCopyDelimiterOption = doExcludeOptionalDelimiter; aDelimiterCase: TCaseSensitivity = csCaseSensitive): UnicodeString; overload;
       class function CopyRight(const aString, aDelimiter: UnicodeString; aDelimiterOption: TCopyDelimiterOption = doExcludeOptionalDelimiter; aDelimiterCase: TCaseSensitivity = csCaseSensitive): UnicodeString; overload;
       class function CopyRight(const aString: UnicodeString; aCount: Integer; var aCopy: UnicodeString): Boolean; overload;
-      class function CopyRight(const aString: UnicodeString; aDelimiter: ANSIChar; var aCopy: UnicodeString; aDelimiterOption: TCopyDelimiterOption = doExcludeOptionalDelimiter; aDelimiterCase: TCaseSensitivity = csCaseSensitive): Boolean; overload;
-      class function CopyRight(const aString: UnicodeString; aDelimiter: WIDEChar; var aCopy: UnicodeString; aDelimiterOption: TCopyDelimiterOption = doExcludeOptionalDelimiter; aDelimiterCase: TCaseSensitivity = csCaseSensitive): Boolean; overload;
+      class function CopyRight(const aString: UnicodeString; aDelimiter: AnsiChar; var aCopy: UnicodeString; aDelimiterOption: TCopyDelimiterOption = doExcludeOptionalDelimiter; aDelimiterCase: TCaseSensitivity = csCaseSensitive): Boolean; overload;
+      class function CopyRight(const aString: UnicodeString; aDelimiter: WideChar; var aCopy: UnicodeString; aDelimiterOption: TCopyDelimiterOption = doExcludeOptionalDelimiter; aDelimiterCase: TCaseSensitivity = csCaseSensitive): Boolean; overload;
       class function CopyRight(const aString, aDelimiter: UnicodeString; var aCopy: UnicodeString; aDelimiterOption: TCopyDelimiterOption = doExcludeOptionalDelimiter; aDelimiterCase: TCaseSensitivity = csCaseSensitive): Boolean; overload;
-      class function CopyRightText(const aString: UnicodeString; aDelimiter: ANSIChar; aDelimiterOption: TCopyDelimiterOption = doExcludeOptionalDelimiter): UnicodeString; overload;
-      class function CopyRightText(const aString: UnicodeString; aDelimiter: WIDEChar; aDelimiterOption: TCopyDelimiterOption = doExcludeOptionalDelimiter): UnicodeString; overload;
+      class function CopyRightText(const aString: UnicodeString; aDelimiter: AnsiChar; aDelimiterOption: TCopyDelimiterOption = doExcludeOptionalDelimiter): UnicodeString; overload;
+      class function CopyRightText(const aString: UnicodeString; aDelimiter: WideChar; aDelimiterOption: TCopyDelimiterOption = doExcludeOptionalDelimiter): UnicodeString; overload;
       class function CopyRightText(const aString, aDelimiter: UnicodeString; aDelimiterOption: TCopyDelimiterOption = doExcludeOptionalDelimiter): UnicodeString; overload;
-      class function CopyRightText(const aString: UnicodeString; aDelimiter: ANSIChar; var aCopy: UnicodeString; aDelimiterOption: TCopyDelimiterOption = doExcludeOptionalDelimiter): Boolean; overload;
-      class function CopyRightText(const aString: UnicodeString; aDelimiter: WIDEChar; var aCopy: UnicodeString; aDelimiterOption: TCopyDelimiterOption = doExcludeOptionalDelimiter): Boolean; overload;
+      class function CopyRightText(const aString: UnicodeString; aDelimiter: AnsiChar; var aCopy: UnicodeString; aDelimiterOption: TCopyDelimiterOption = doExcludeOptionalDelimiter): Boolean; overload;
+      class function CopyRightText(const aString: UnicodeString; aDelimiter: WideChar; var aCopy: UnicodeString; aDelimiterOption: TCopyDelimiterOption = doExcludeOptionalDelimiter): Boolean; overload;
       class function CopyRightText(const aString, aDelimiter: UnicodeString; var aCopy: UnicodeString; aDelimiterOption: TCopyDelimiterOption = doExcludeOptionalDelimiter): Boolean; overload;
 
       // Changing pieces of a string
-      class function Replace(const aString: UnicodeString; aChar, aReplacement: ANSIChar; aCaseMode: TCaseSensitivity = csCaseSensitive): UnicodeString; overload;
-      class function Replace(const aString: UnicodeString; aChar, aReplacement: WIDEChar; aCaseMode: TCaseSensitivity = csCaseSensitive): UnicodeString; overload;
-      class function Replace(const aString: UnicodeString; aChar: ANSIChar; const aReplacement: UnicodeString; aCaseMode: TCaseSensitivity = csCaseSensitive): UnicodeString; overload;
-      class function Replace(const aString: UnicodeString; aChar: WIDEChar; const aReplacement: UnicodeString; aCaseMode: TCaseSensitivity = csCaseSensitive): UnicodeString; overload;
-      class function Replace(const aString, aSubstring: UnicodeString; aReplacement: ANSIChar; aCaseMode: TCaseSensitivity = csCaseSensitive): UnicodeString; overload;
-      class function Replace(const aString, aSubstring: UnicodeString; aReplacement: WIDEChar; aCaseMode: TCaseSensitivity = csCaseSensitive): UnicodeString; overload;
+      class function Replace(const aString: UnicodeString; aChar, aReplacement: AnsiChar; aCaseMode: TCaseSensitivity = csCaseSensitive): UnicodeString; overload;
+      class function Replace(const aString: UnicodeString; aChar, aReplacement: WideChar; aCaseMode: TCaseSensitivity = csCaseSensitive): UnicodeString; overload;
+      class function Replace(const aString: UnicodeString; aChar: AnsiChar; const aReplacement: UnicodeString; aCaseMode: TCaseSensitivity = csCaseSensitive): UnicodeString; overload;
+      class function Replace(const aString: UnicodeString; aChar: WideChar; const aReplacement: UnicodeString; aCaseMode: TCaseSensitivity = csCaseSensitive): UnicodeString; overload;
+      class function Replace(const aString, aSubstring: UnicodeString; aReplacement: AnsiChar; aCaseMode: TCaseSensitivity = csCaseSensitive): UnicodeString; overload;
+      class function Replace(const aString, aSubstring: UnicodeString; aReplacement: WideChar; aCaseMode: TCaseSensitivity = csCaseSensitive): UnicodeString; overload;
       class function Replace(const aString, aSubstring, aReplacement: UnicodeString; aCaseMode: TCaseSensitivity = csCaseSensitive): UnicodeString; overload;
-      class function Replace(const aString: UnicodeString; aChar, aReplacement: ANSIChar; var aResult: UnicodeString; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
-      class function Replace(const aString: UnicodeString; aChar, aReplacement: WIDEChar; var aResult: UnicodeString; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
-      class function Replace(const aString: UnicodeString; aChar: ANSIChar; const aReplacement: UnicodeString; var aResult: UnicodeString; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
-      class function Replace(const aString: UnicodeString; aChar: WIDEChar; const aReplacement: UnicodeString; var aResult: UnicodeString; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
-      class function Replace(const aString, aSubstring: UnicodeString; aReplacement: ANSIChar; var aResult: UnicodeString; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
-      class function Replace(const aString, aSubstring: UnicodeString; aReplacement: WIDEChar; var aResult: UnicodeString; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
+      class function Replace(const aString: UnicodeString; aChar, aReplacement: AnsiChar; var aResult: UnicodeString; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
+      class function Replace(const aString: UnicodeString; aChar, aReplacement: WideChar; var aResult: UnicodeString; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
+      class function Replace(const aString: UnicodeString; aChar: AnsiChar; const aReplacement: UnicodeString; var aResult: UnicodeString; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
+      class function Replace(const aString: UnicodeString; aChar: WideChar; const aReplacement: UnicodeString; var aResult: UnicodeString; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
+      class function Replace(const aString, aSubstring: UnicodeString; aReplacement: AnsiChar; var aResult: UnicodeString; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
+      class function Replace(const aString, aSubstring: UnicodeString; aReplacement: WideChar; var aResult: UnicodeString; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
       class function Replace(const aString, aSubstring, aReplacement: UnicodeString; var aResult: UnicodeString; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
-      class function ReplaceText(const aString: UnicodeString; aChar, aReplacement: ANSIChar): UnicodeString; overload;
-      class function ReplaceText(const aString: UnicodeString; aChar, aReplacement: WIDEChar): UnicodeString; overload;
-      class function ReplaceText(const aString: UnicodeString; aChar: ANSIChar; const aReplacement: UnicodeString): UnicodeString; overload;
-      class function ReplaceText(const aString: UnicodeString; aChar: WIDEChar; const aReplacement: UnicodeString): UnicodeString; overload;
-      class function ReplaceText(const aString, aSubstring: UnicodeString; aReplacement: ANSIChar): UnicodeString; overload;
-      class function ReplaceText(const aString, aSubstring: UnicodeString; aReplacement: WIDEChar): UnicodeString; overload;
+      class function ReplaceText(const aString: UnicodeString; aChar, aReplacement: AnsiChar): UnicodeString; overload;
+      class function ReplaceText(const aString: UnicodeString; aChar, aReplacement: WideChar): UnicodeString; overload;
+      class function ReplaceText(const aString: UnicodeString; aChar: AnsiChar; const aReplacement: UnicodeString): UnicodeString; overload;
+      class function ReplaceText(const aString: UnicodeString; aChar: WideChar; const aReplacement: UnicodeString): UnicodeString; overload;
+      class function ReplaceText(const aString, aSubstring: UnicodeString; aReplacement: AnsiChar): UnicodeString; overload;
+      class function ReplaceText(const aString, aSubstring: UnicodeString; aReplacement: WideChar): UnicodeString; overload;
       class function ReplaceText(const aString, aSubstring, aReplacement: UnicodeString): UnicodeString; overload;
-      class function ReplaceText(const aString: UnicodeString; aChar, aReplacement: ANSIChar; var aResult: UnicodeString): Boolean; overload;
-      class function ReplaceText(const aString: UnicodeString; aChar, aReplacement: WIDEChar; var aResult: UnicodeString): Boolean; overload;
-      class function ReplaceText(const aString: UnicodeString; aChar: ANSIChar; const aReplacement: UnicodeString; var aResult: UnicodeString): Boolean; overload;
-      class function ReplaceText(const aString: UnicodeString; aChar: WIDEChar; const aReplacement: UnicodeString; var aResult: UnicodeString): Boolean; overload;
-      class function ReplaceText(const aString, aSubstring: UnicodeString; aReplacement: ANSIChar; var aResult: UnicodeString): Boolean; overload;
-      class function ReplaceText(const aString, aSubstring: UnicodeString; aReplacement: WIDEChar; var aResult: UnicodeString): Boolean; overload;
+      class function ReplaceText(const aString: UnicodeString; aChar, aReplacement: AnsiChar; var aResult: UnicodeString): Boolean; overload;
+      class function ReplaceText(const aString: UnicodeString; aChar, aReplacement: WideChar; var aResult: UnicodeString): Boolean; overload;
+      class function ReplaceText(const aString: UnicodeString; aChar: AnsiChar; const aReplacement: UnicodeString; var aResult: UnicodeString): Boolean; overload;
+      class function ReplaceText(const aString: UnicodeString; aChar: WideChar; const aReplacement: UnicodeString; var aResult: UnicodeString): Boolean; overload;
+      class function ReplaceText(const aString, aSubstring: UnicodeString; aReplacement: AnsiChar; var aResult: UnicodeString): Boolean; overload;
+      class function ReplaceText(const aString, aSubstring: UnicodeString; aReplacement: WideChar; var aResult: UnicodeString): Boolean; overload;
       class function ReplaceText(const aString, aSubstring, aReplacement: UnicodeString; var aResult: UnicodeString): Boolean; overload;
-      class function ReplaceAll(const aString: UnicodeString; aChar, aReplacement: ANSIChar; var aResult: UnicodeString; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
-      class function ReplaceAll(const aString: UnicodeString; aChar, aReplacement: WIDEChar; var aResult: UnicodeString; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
-      class function ReplaceAll(const aString: UnicodeString; aChar: ANSIChar; const aReplacement: UnicodeString; var aResult: UnicodeString; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
-      class function ReplaceAll(const aString: UnicodeString; aChar: WIDEChar; const aReplacement: UnicodeString; var aResult: UnicodeString; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
-      class function ReplaceAll(const aString: UnicodeString; const aSubstring: UnicodeString; aReplacement: ANSIChar; var aResult: UnicodeString; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
-      class function ReplaceAll(const aString: UnicodeString; const aSubstring: UnicodeString; aReplacement: WIDEChar; var aResult: UnicodeString; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
+      class function ReplaceAll(const aString: UnicodeString; aChar, aReplacement: AnsiChar; var aResult: UnicodeString; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
+      class function ReplaceAll(const aString: UnicodeString; aChar, aReplacement: WideChar; var aResult: UnicodeString; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
+      class function ReplaceAll(const aString: UnicodeString; aChar: AnsiChar; const aReplacement: UnicodeString; var aResult: UnicodeString; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
+      class function ReplaceAll(const aString: UnicodeString; aChar: WideChar; const aReplacement: UnicodeString; var aResult: UnicodeString; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
+      class function ReplaceAll(const aString: UnicodeString; const aSubstring: UnicodeString; aReplacement: AnsiChar; var aResult: UnicodeString; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
+      class function ReplaceAll(const aString: UnicodeString; const aSubstring: UnicodeString; aReplacement: WideChar; var aResult: UnicodeString; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
       class function ReplaceAll(const aString, aSubstring, aReplacement: UnicodeString; var aResult: UnicodeString; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
-      class function ReplaceAll(const aString: UnicodeString; aChar, aReplacement: ANSIChar; aCaseMode: TCaseSensitivity = csCaseSensitive): UnicodeString; overload;
-      class function ReplaceAll(const aString: UnicodeString; aChar, aReplacement: WIDEChar; aCaseMode: TCaseSensitivity = csCaseSensitive): UnicodeString; overload;
-      class function ReplaceAll(const aString: UnicodeString; aChar: ANSIChar; const aReplacement: UnicodeString; aCaseMode: TCaseSensitivity = csCaseSensitive): UnicodeString; overload;
-      class function ReplaceAll(const aString: UnicodeString; aChar: WIDEChar; const aReplacement: UnicodeString; aCaseMode: TCaseSensitivity = csCaseSensitive): UnicodeString; overload;
-      class function ReplaceAll(const aString: UnicodeString; const aSubstring: UnicodeString; aReplacement: ANSIChar; aCaseMode: TCaseSensitivity = csCaseSensitive): UnicodeString; overload;
-      class function ReplaceAll(const aString: UnicodeString; const aSubstring: UnicodeString; aReplacement: WIDEChar; aCaseMode: TCaseSensitivity = csCaseSensitive): UnicodeString; overload;
+      class function ReplaceAll(const aString: UnicodeString; aChar, aReplacement: AnsiChar; aCaseMode: TCaseSensitivity = csCaseSensitive): UnicodeString; overload;
+      class function ReplaceAll(const aString: UnicodeString; aChar, aReplacement: WideChar; aCaseMode: TCaseSensitivity = csCaseSensitive): UnicodeString; overload;
+      class function ReplaceAll(const aString: UnicodeString; aChar: AnsiChar; const aReplacement: UnicodeString; aCaseMode: TCaseSensitivity = csCaseSensitive): UnicodeString; overload;
+      class function ReplaceAll(const aString: UnicodeString; aChar: WideChar; const aReplacement: UnicodeString; aCaseMode: TCaseSensitivity = csCaseSensitive): UnicodeString; overload;
+      class function ReplaceAll(const aString: UnicodeString; const aSubstring: UnicodeString; aReplacement: AnsiChar; aCaseMode: TCaseSensitivity = csCaseSensitive): UnicodeString; overload;
+      class function ReplaceAll(const aString: UnicodeString; const aSubstring: UnicodeString; aReplacement: WideChar; aCaseMode: TCaseSensitivity = csCaseSensitive): UnicodeString; overload;
       class function ReplaceAll(const aString, aSubstring, aReplacement: UnicodeString; aCaseMode: TCaseSensitivity = csCaseSensitive): UnicodeString; overload;
-      class function ReplaceAllText(const aString: UnicodeString; aChar, aReplacement: ANSIChar; var aResult: UnicodeString): Boolean; overload;
-      class function ReplaceAllText(const aString: UnicodeString; aChar, aReplacement: WIDEChar; var aResult: UnicodeString): Boolean; overload;
-      class function ReplaceAllText(const aString: UnicodeString; aChar: ANSIChar; const aReplacement: UnicodeString; var aResult: UnicodeString): Boolean; overload;
-      class function ReplaceAllText(const aString: UnicodeString; aChar: WIDEChar; const aReplacement: UnicodeString; var aResult: UnicodeString): Boolean; overload;
-      class function ReplaceAllText(const aString: UnicodeString; const aSubstring: UnicodeString; aReplacement: ANSIChar; var aResult: UnicodeString): Boolean; overload;
-      class function ReplaceAllText(const aString: UnicodeString; const aSubstring: UnicodeString; aReplacement: WIDEChar; var aResult: UnicodeString): Boolean; overload;
+      class function ReplaceAllText(const aString: UnicodeString; aChar, aReplacement: AnsiChar; var aResult: UnicodeString): Boolean; overload;
+      class function ReplaceAllText(const aString: UnicodeString; aChar, aReplacement: WideChar; var aResult: UnicodeString): Boolean; overload;
+      class function ReplaceAllText(const aString: UnicodeString; aChar: AnsiChar; const aReplacement: UnicodeString; var aResult: UnicodeString): Boolean; overload;
+      class function ReplaceAllText(const aString: UnicodeString; aChar: WideChar; const aReplacement: UnicodeString; var aResult: UnicodeString): Boolean; overload;
+      class function ReplaceAllText(const aString: UnicodeString; const aSubstring: UnicodeString; aReplacement: AnsiChar; var aResult: UnicodeString): Boolean; overload;
+      class function ReplaceAllText(const aString: UnicodeString; const aSubstring: UnicodeString; aReplacement: WideChar; var aResult: UnicodeString): Boolean; overload;
       class function ReplaceAllText(const aString, aSubstring, aReplacement: UnicodeString; var aResult: UnicodeString): Boolean; overload;
-      class function ReplaceAllText(const aString: UnicodeString; aChar, aReplacement: ANSIChar): UnicodeString; overload;
-      class function ReplaceAllText(const aString: UnicodeString; aChar, aReplacement: WIDEChar): UnicodeString; overload;
-      class function ReplaceAllText(const aString: UnicodeString; aChar: ANSIChar; const aReplacement: UnicodeString): UnicodeString; overload;
-      class function ReplaceAllText(const aString: UnicodeString; aChar: WIDEChar; const aReplacement: UnicodeString): UnicodeString; overload;
-      class function ReplaceAllText(const aString: UnicodeString; const aSubstring: UnicodeString; aReplacement: ANSIChar): UnicodeString; overload;
-      class function ReplaceAllText(const aString: UnicodeString; const aSubstring: UnicodeString; aReplacement: WIDEChar): UnicodeString; overload;
+      class function ReplaceAllText(const aString: UnicodeString; aChar, aReplacement: AnsiChar): UnicodeString; overload;
+      class function ReplaceAllText(const aString: UnicodeString; aChar, aReplacement: WideChar): UnicodeString; overload;
+      class function ReplaceAllText(const aString: UnicodeString; aChar: AnsiChar; const aReplacement: UnicodeString): UnicodeString; overload;
+      class function ReplaceAllText(const aString: UnicodeString; aChar: WideChar; const aReplacement: UnicodeString): UnicodeString; overload;
+      class function ReplaceAllText(const aString: UnicodeString; const aSubstring: UnicodeString; aReplacement: AnsiChar): UnicodeString; overload;
+      class function ReplaceAllText(const aString: UnicodeString; const aSubstring: UnicodeString; aReplacement: WideChar): UnicodeString; overload;
       class function ReplaceAllText(const aString, aSubstring, aReplacement: UnicodeString): UnicodeString; overload;
-      class function ReplaceLast(const aString: UnicodeString; aChar, aReplacement: ANSIChar; var aResult: UnicodeString; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
-      class function ReplaceLast(const aString: UnicodeString; aChar, aReplacement: WIDEChar; var aResult: UnicodeString; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
-      class function ReplaceLast(const aString: UnicodeString; aChar: ANSIChar; const aReplacement: UnicodeString; var aResult: UnicodeString; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
-      class function ReplaceLast(const aString: UnicodeString; aChar: WIDEChar; const aReplacement: UnicodeString; var aResult: UnicodeString; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
-      class function ReplaceLast(const aString, aSubstring: UnicodeString; aReplacement: ANSIChar; var aResult: UnicodeString; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
-      class function ReplaceLast(const aString, aSubstring: UnicodeString; aReplacement: WIDEChar; var aResult: UnicodeString; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
+      class function ReplaceLast(const aString: UnicodeString; aChar, aReplacement: AnsiChar; var aResult: UnicodeString; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
+      class function ReplaceLast(const aString: UnicodeString; aChar, aReplacement: WideChar; var aResult: UnicodeString; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
+      class function ReplaceLast(const aString: UnicodeString; aChar: AnsiChar; const aReplacement: UnicodeString; var aResult: UnicodeString; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
+      class function ReplaceLast(const aString: UnicodeString; aChar: WideChar; const aReplacement: UnicodeString; var aResult: UnicodeString; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
+      class function ReplaceLast(const aString, aSubstring: UnicodeString; aReplacement: AnsiChar; var aResult: UnicodeString; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
+      class function ReplaceLast(const aString, aSubstring: UnicodeString; aReplacement: WideChar; var aResult: UnicodeString; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
       class function ReplaceLast(const aString, aSubstring, aReplacement: UnicodeString; var aResult: UnicodeString; aCaseMode: TCaseSensitivity = csCaseSensitive): Boolean; overload;
-      class function ReplaceLast(const aString: UnicodeString; aChar, aReplacement: ANSIChar; aCaseMode: TCaseSensitivity = csCaseSensitive): UnicodeString; overload;
-      class function ReplaceLast(const aString: UnicodeString; aChar, aReplacement: WIDEChar; aCaseMode: TCaseSensitivity = csCaseSensitive): UnicodeString; overload;
-      class function ReplaceLast(const aString: UnicodeString; aChar: ANSIChar; const aReplacement: UnicodeString; aCaseMode: TCaseSensitivity = csCaseSensitive): UnicodeString; overload;
-      class function ReplaceLast(const aString: UnicodeString; aChar: WIDEChar; const aReplacement: UnicodeString; aCaseMode: TCaseSensitivity = csCaseSensitive): UnicodeString; overload;
-      class function ReplaceLast(const aString, aSubstring: UnicodeString; aReplacement: ANSIChar; aCaseMode: TCaseSensitivity = csCaseSensitive): UnicodeString; overload;
-      class function ReplaceLast(const aString, aSubstring: UnicodeString; aReplacement: WIDEChar; aCaseMode: TCaseSensitivity = csCaseSensitive): UnicodeString; overload;
+      class function ReplaceLast(const aString: UnicodeString; aChar, aReplacement: AnsiChar; aCaseMode: TCaseSensitivity = csCaseSensitive): UnicodeString; overload;
+      class function ReplaceLast(const aString: UnicodeString; aChar, aReplacement: WideChar; aCaseMode: TCaseSensitivity = csCaseSensitive): UnicodeString; overload;
+      class function ReplaceLast(const aString: UnicodeString; aChar: AnsiChar; const aReplacement: UnicodeString; aCaseMode: TCaseSensitivity = csCaseSensitive): UnicodeString; overload;
+      class function ReplaceLast(const aString: UnicodeString; aChar: WideChar; const aReplacement: UnicodeString; aCaseMode: TCaseSensitivity = csCaseSensitive): UnicodeString; overload;
+      class function ReplaceLast(const aString, aSubstring: UnicodeString; aReplacement: AnsiChar; aCaseMode: TCaseSensitivity = csCaseSensitive): UnicodeString; overload;
+      class function ReplaceLast(const aString, aSubstring: UnicodeString; aReplacement: WideChar; aCaseMode: TCaseSensitivity = csCaseSensitive): UnicodeString; overload;
       class function ReplaceLast(const aString, aSubstring, aReplacement: UnicodeString; aCaseMode: TCaseSensitivity = csCaseSensitive): UnicodeString; overload;
-      class function ReplaceLastText(const aString: UnicodeString; aChar, aReplacement: ANSIChar): UnicodeString; overload;
-      class function ReplaceLastText(const aString: UnicodeString; aChar, aReplacement: WIDEChar): UnicodeString; overload;
-      class function ReplaceLastText(const aString: UnicodeString; aChar: ANSIChar; const aReplacement: UnicodeString): UnicodeString; overload;
-      class function ReplaceLastText(const aString: UnicodeString; aChar: WIDEChar; const aReplacement: UnicodeString): UnicodeString; overload;
-      class function ReplaceLastText(const aString, aSubstring: UnicodeString; aReplacement: ANSIChar): UnicodeString; overload;
-      class function ReplaceLastText(const aString, aSubstring: UnicodeString; aReplacement: WIDEChar): UnicodeString; overload;
+      class function ReplaceLastText(const aString: UnicodeString; aChar, aReplacement: AnsiChar): UnicodeString; overload;
+      class function ReplaceLastText(const aString: UnicodeString; aChar, aReplacement: WideChar): UnicodeString; overload;
+      class function ReplaceLastText(const aString: UnicodeString; aChar: AnsiChar; const aReplacement: UnicodeString): UnicodeString; overload;
+      class function ReplaceLastText(const aString: UnicodeString; aChar: WideChar; const aReplacement: UnicodeString): UnicodeString; overload;
+      class function ReplaceLastText(const aString, aSubstring: UnicodeString; aReplacement: AnsiChar): UnicodeString; overload;
+      class function ReplaceLastText(const aString, aSubstring: UnicodeString; aReplacement: WideChar): UnicodeString; overload;
       class function ReplaceLastText(const aString, aSubstring, aReplacement: UnicodeString): UnicodeString; overload;
-      class function ReplaceLastText(const aString: UnicodeString; aChar, aReplacement: ANSIChar; var aResult: UnicodeString): Boolean; overload;
-      class function ReplaceLastText(const aString: UnicodeString; aChar, aReplacement: WIDEChar; var aResult: UnicodeString): Boolean; overload;
-      class function ReplaceLastText(const aString: UnicodeString; aChar: ANSIChar; const aReplacement: UnicodeString; var aResult: UnicodeString): Boolean; overload;
-      class function ReplaceLastText(const aString: UnicodeString; aChar: WIDEChar; const aReplacement: UnicodeString; var aResult: UnicodeString): Boolean; overload;
-      class function ReplaceLastText(const aString, aSubstring: UnicodeString; aReplacement: ANSIChar; var aResult: UnicodeString): Boolean; overload;
-      class function ReplaceLastText(const aString, aSubstring: UnicodeString; aReplacement: WIDEChar; var aResult: UnicodeString): Boolean; overload;
+      class function ReplaceLastText(const aString: UnicodeString; aChar, aReplacement: AnsiChar; var aResult: UnicodeString): Boolean; overload;
+      class function ReplaceLastText(const aString: UnicodeString; aChar, aReplacement: WideChar; var aResult: UnicodeString): Boolean; overload;
+      class function ReplaceLastText(const aString: UnicodeString; aChar: AnsiChar; const aReplacement: UnicodeString; var aResult: UnicodeString): Boolean; overload;
+      class function ReplaceLastText(const aString: UnicodeString; aChar: WideChar; const aReplacement: UnicodeString; var aResult: UnicodeString): Boolean; overload;
+      class function ReplaceLastText(const aString, aSubstring: UnicodeString; aReplacement: AnsiChar; var aResult: UnicodeString): Boolean; overload;
+      class function ReplaceLastText(const aString, aSubstring: UnicodeString; aReplacement: WideChar; var aResult: UnicodeString): Boolean; overload;
       class function ReplaceLastText(const aString, aSubstring, aReplacement: UnicodeString; var aResult: UnicodeString): Boolean; overload;
 
       // Returning strings with parts removed
       class function LTrim(const aString: UnicodeString): UnicodeString; overload;
-      class function LTrim(const aString: UnicodeString; aChar: WIDEChar): UnicodeString; overload;
+      class function LTrim(const aString: UnicodeString; aChar: WideChar): UnicodeString; overload;
       class function LTrim(const aString: UnicodeString; aCount: Integer): UnicodeString; overload;
       class function RTrim(const aString: UnicodeString): UnicodeString; overload;
-      class function RTrim(const aString: UnicodeString; aChar: WIDEChar): UnicodeString; overload;
+      class function RTrim(const aString: UnicodeString; aChar: WideChar): UnicodeString; overload;
       class function RTrim(const aString: UnicodeString; aCount: Integer): UnicodeString; overload;
       class function Trim(const aString: UnicodeString): UnicodeString; overload;
-      class function Trim(const aString: UnicodeString; aChar: WIDEChar): UnicodeString; overload;
+      class function Trim(const aString: UnicodeString; aChar: WideChar): UnicodeString; overload;
       class function Trim(const aString: UnicodeString; aCount: Integer): UnicodeString; overload;
       class function Unbrace(const aString: UnicodeString): UnicodeString;
       class function Unquote(const aString: UnicodeString): UnicodeString;
 
       // Case conversions
       class function Camelcase(const aString: UnicodeString; aInitialLower: Boolean = FALSE): UnicodeString;
-      class function Lowercase(aChar: WIDEChar): WIDEChar; overload;
+      class function Lowercase(aChar: WideChar): WideChar; overload;
       class function Lowercase(const aString: UnicodeString): UnicodeString; overload;
       class function Skewercase(const aString: UnicodeString): UnicodeString;
       class function Snakecase(const aString: UnicodeString): UnicodeString;
       class function Startcase(const aString: UnicodeString): UnicodeString;
       class function Titlecase(const aString: UnicodeString): UnicodeString; overload;
-      class function Titlecase(const aString: UnicodeString; const aLower: TWIDEStringArray): UnicodeString; overload;
-      class function Titlecase(const aString: UnicodeString; aLower: TWIDEStringList): UnicodeString; overload;
-      class function Uppercase(aChar: WIDEChar): WIDEChar; overload;
+      class function Titlecase(const aString: UnicodeString; const aLower: TWideStringArray): UnicodeString; overload;
+      class function Titlecase(const aString: UnicodeString; aLower: TWideStringList): UnicodeString; overload;
+      class function Uppercase(aChar: WideChar): WideChar; overload;
       class function Uppercase(const aString: UnicodeString): UnicodeString; overload;
     end;
 
@@ -453,28 +453,28 @@ implementation
 
 
   const
-    MIN_HiSurrogate : WIDEChar = #$D800;
-    MAX_HiSurrogate : WIDEChar = #$DBFF;
-    MIN_LoSurrogate : WIDEChar = #$DC00;
-    MAX_LoSurrogate : WIDEChar = #$DFFF;
-    MIN_Surrogate   : WIDEChar = #$DC00;
-    MAX_Surrogate   : WIDEChar = #$DFFF;
+    MIN_HiSurrogate : WideChar = #$D800;
+    MAX_HiSurrogate : WideChar = #$DBFF;
+    MIN_LoSurrogate : WideChar = #$DC00;
+    MAX_LoSurrogate : WideChar = #$DFFF;
+    MIN_Surrogate   : WideChar = #$DC00;
+    MAX_Surrogate   : WideChar = #$DFFF;
 
   var
-    LowercaseWordsForTitlecase: TWIDEStringList = NIL;
+    LowercaseWordsForTitlecase: TWideStringList = NIL;
 
 
-  function IsHiSurrogate(aChar: WIDEChar): Boolean;
+  function IsHiSurrogate(aChar: WideChar): Boolean;
   begin
     result := (aChar >= MIN_HiSurrogate) and (aChar <= MAX_HiSurrogate);
   end;
 
-  function IsLoSurrogate(aChar: WIDEChar): Boolean;
+  function IsLoSurrogate(aChar: WideChar): Boolean;
   begin
     result := (aChar >= MIN_LoSurrogate) and (aChar <= MAX_LoSurrogate);
   end;
 
-  function LoSurrogateStrategy(aChar: WIDEChar): TUnicodeSurrogateStrategy; overload;
+  function LoSurrogateStrategy(aChar: WideChar): TUnicodeSurrogateStrategy; overload;
   begin
     result := UnicodeSurrogateStrategy;
     if (result <> ssIgnore) and NOT IsLoSurrogate(aChar) then
@@ -483,15 +483,15 @@ implementation
 
   function LoSurrogateStrategy(const aString: UnicodeString; aIndex: Integer): TUnicodeSurrogateStrategy; overload;
   var
-    c: WIDEChar;
+    c: WideChar;
   begin
     result := UnicodeSurrogateStrategy;
-    if (result <> ssIgnore) and (   NOT WIDE.HasIndex(aString, aIndex, c)
+    if (result <> ssIgnore) and (   NOT Wide.HasIndex(aString, aIndex, c)
                                  or NOT IsLoSurrogate(c)) then
       result := ssIgnore;
   end;
 
-  function HiSurrogateStrategy(aChar: WIDEChar): TUnicodeSurrogateStrategy; overload;
+  function HiSurrogateStrategy(aChar: WideChar): TUnicodeSurrogateStrategy; overload;
   begin
     result := UnicodeSurrogateStrategy;
     if (result <> ssIgnore) and NOT IsHiSurrogate(aChar) then
@@ -500,10 +500,10 @@ implementation
 
   function HiSurrogateStrategy(const aString: UnicodeString; aIndex: Integer): TUnicodeSurrogateStrategy; overload;
   var
-    c: WIDEChar;
+    c: WideChar;
   begin
     result := UnicodeSurrogateStrategy;
-    if (result <> ssIgnore) and (   NOT WIDE.HasIndex(aString, aIndex, c)
+    if (result <> ssIgnore) and (   NOT Wide.HasIndex(aString, aIndex, c)
                                  or NOT IsHiSurrogate(c)) then
       result := ssIgnore;
   end;
@@ -511,8 +511,8 @@ implementation
 
 (*
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  function TWIDEString.Contains(const aNeed: TContainNeeds;
-                                      aChars: array of WIDEChar;
+  function TWideString.Contains(const aNeed: TContainNeeds;
+                                      aChars: array of WideChar;
                                       aCaseMode: TCaseSensitivity): Boolean;
   var
     i: Integer;
@@ -534,7 +534,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  function TWIDEString.Contains(const aNeed: TContainNeeds;
+  function TWideString.Contains(const aNeed: TContainNeeds;
                                       aStrings: array of UnicodeString;
                                       aCaseMode: TCaseSensitivity): Boolean;
   var
@@ -562,54 +562,54 @@ implementation
 
 
 
-{ WIDEFn ------------------------------------------------------------------------------------------ }
+{ WideFn ------------------------------------------------------------------------------------------ }
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.AddressOfIndex(var aString: UnicodeString;
-                                           aIndex: Integer): PWIDEChar;
+  class function WideFn.AddressOfIndex(var aString: UnicodeString;
+                                           aIndex: Integer): PWideChar;
   begin
     result := @aString[aIndex];
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class procedure WIDEFn.FastCopy(const aString: UnicodeString;
-                                        aDest: PWIDEChar);
+  class procedure WideFn.FastCopy(const aString: UnicodeString;
+                                        aDest: PWideChar);
   begin
-    CopyMemory(aDest, PWIDEChar(aString), Length(aString) * 2);
+    CopyMemory(aDest, PWideChar(aString), Length(aString) * 2);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class procedure WIDEFn.FastCopy(const aString: UnicodeString;
-                                        aDest: PWIDEChar;
+  class procedure WideFn.FastCopy(const aString: UnicodeString;
+                                        aDest: PWideChar;
                                         aLen: Integer);
   begin
-    CopyMemory(aDest, PWIDEChar(aString), aLen * 2);
+    CopyMemory(aDest, PWideChar(aString), aLen * 2);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class procedure WIDEFn.FastCopy(const aString: UnicodeString;
+  class procedure WideFn.FastCopy(const aString: UnicodeString;
                                   var   aDest: UnicodeString;
                                         aDestIndex: Integer);
   begin
-    CopyMemory(AddressOfIndex(aDest, aDestIndex), PWIDEChar(aString), Length(aString) * 2);
+    CopyMemory(AddressOfIndex(aDest, aDestIndex), PWideChar(aString), Length(aString) * 2);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class procedure WIDEFn.FastCopy(const aString: UnicodeString;
+  class procedure WideFn.FastCopy(const aString: UnicodeString;
                                   var   aDest: UnicodeString;
                                         aDestIndex: Integer;
                                         aLen: Integer);
   begin
-    CopyMemory(AddressOfIndex(aDest, aDestIndex), PWIDEChar(aString), aLen * 2);
+    CopyMemory(AddressOfIndex(aDest, aDestIndex), PWideChar(aString), aLen * 2);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class procedure WIDEFn.FastMove(var aString: UnicodeString;
+  class procedure WideFn.FastMove(var aString: UnicodeString;
                                       aFromIndex: Integer;
                                       aToIndex: Integer;
                                       aCount: Integer);
@@ -620,17 +620,17 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.CheckCase(const aString: UnicodeString;
-                                        aCaseFn: TWIDETestCharFn): Boolean;
+  class function WideFn.CheckCase(const aString: UnicodeString;
+                                        aCaseFn: TWideTestCharFn): Boolean;
   var
     i: Integer;
     bAlpha: Boolean;
-    pc: PWIDEChar;
+    pc: PWideChar;
   begin
     result  := FALSE;
     bAlpha  := FALSE;
 
-    pc := PWIDEChar(aString);
+    pc := PWideChar(aString);
     for i := 0 to Pred(Length(aString)) do
     begin
       if Windows.IsCharAlphaW(pc^) then
@@ -649,7 +649,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class procedure WIDEFn.CopyToBuffer(const aString: UnicodeString;
+  class procedure WideFn.CopyToBuffer(const aString: UnicodeString;
                                             aMaxChars: Integer;
                                             aBuffer: Pointer;
                                             aByteOffset: Integer);
@@ -672,7 +672,7 @@ implementation
 
 (*
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Replace(      aScope: TStringScope;
+  class function WideFn.Replace(      aScope: TStringScope;
                                 const aString: UnicodeString;
                                 const aFindStr: UnicodeString;
                                 const aReplaceStr: UnicodeString;
@@ -684,7 +684,7 @@ implementation
   end;
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Replace(      aScope: TStringScope;
+  class function WideFn.Replace(      aScope: TStringScope;
                                 const aString: UnicodeString;
                                 const aFindStr: UnicodeString;
                                 const aReplaceStr: UnicodeString;
@@ -693,19 +693,19 @@ implementation
   var
     i: Integer;
     pa: TCharIndexArray;
-    pr, ps, px: PWIDEChar;
+    pr, ps, px: PWideChar;
     p, flen, xlen, rlen, clen: Integer;
   begin
     if (aScope = ssFirst) then
     begin
       SetLength(pa, 1);
-      if WIDE.Find(aString, aFindStr, p, aCaseMode) then
+      if Wide.Find(aString, aFindStr, p, aCaseMode) then
         pa[0] := p
       else
         SetLength(pa, 0);
     end
     else
-      WIDE.FindAll(aString, aFindStr, pa, aCaseMode);
+      Wide.FindAll(aString, aFindStr, pa, aCaseMode);
 
     aCount := Length(pa);
 
@@ -729,9 +729,9 @@ implementation
     rlen := Length(aString) + (Length(pa) * ((xlen - flen)));
     SetLength(result, rlen);
 
-    pr := PWIDEChar(result);
-    ps := PWIDEChar(aString);
-    px := PWIDEChar(aReplaceStr);
+    pr := PWideChar(result);
+    ps := PWideChar(aString);
+    px := PWideChar(aReplaceStr);
 
     CopyMemory(pr, ps, (pa[0] - 1) * 2);
     Inc(pr, pa[0] - 1);
@@ -763,9 +763,9 @@ implementation
       Inc(ps, clen + flen);
     end;
 
-    if (pr - PWIDEChar(result)) < rlen then
+    if (pr - PWideChar(result)) < rlen then
     begin
-      clen := Length(aString) - (ps - PWIDEChar(aString));
+      clen := Length(aString) - (ps - PWideChar(aString));
       CopyMemory(pr, ps, clen * 2);
     end;
   end;
@@ -777,7 +777,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Coalesce(const aString, aDefault: UnicodeString): UnicodeString;
+  class function WideFn.Coalesce(const aString, aDefault: UnicodeString): UnicodeString;
   begin
     if (aString <> '') then
       result := aString
@@ -787,7 +787,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.HasLength(const aString: UnicodeString;
+  class function WideFn.HasLength(const aString: UnicodeString;
                                   var   aLength: Integer): Boolean;
   begin
     aLength := Length(aString);
@@ -796,7 +796,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.HasIndex(const aString: UnicodeString;
+  class function WideFn.HasIndex(const aString: UnicodeString;
                                        aIndex: Integer): Boolean;
   begin
     result := (aIndex > 0) and (aIndex <= Length(aString));
@@ -804,19 +804,19 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.HasIndex(const aString: UnicodeString;
+  class function WideFn.HasIndex(const aString: UnicodeString;
                                        aIndex: Integer;
-                                   var aChar: WIDEChar): Boolean;
+                                   var aChar: WideChar): Boolean;
   begin
     aChar  := #0;
     result := (aIndex > 0) and (aIndex <= Length(aString));
     if result then
-      aChar := PWIDEChar(aString)[aIndex - 1];
+      aChar := PWideChar(aString)[aIndex - 1];
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.MatchesAny(const aString: UnicodeString;
+  class function WideFn.MatchesAny(const aString: UnicodeString;
                                          aValues: array of UnicodeString;
                                          aCaseMode: TCaseSensitivity): Boolean;
   begin
@@ -825,7 +825,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.MatchesAnyText(const aString: UnicodeString;
+  class function WideFn.MatchesAnyText(const aString: UnicodeString;
                                              aValues: array of UnicodeString): Boolean;
   begin
     result := IndexOf(aString, aValues, csIgnoreCase) <> -1;
@@ -833,7 +833,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Iif(      aValue: Boolean;
+  class function WideFn.Iif(      aValue: Boolean;
                             const aWhenTrue: UnicodeString;
                             const aWhenFalse: UnicodeString): UnicodeString;
   begin
@@ -845,12 +845,12 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.IndexOf(const aString: UnicodeString;
+  class function WideFn.IndexOf(const aString: UnicodeString;
                                       aValues: array of UnicodeString;
                                       aCaseMode: TCaseSensitivity): Integer;
   begin
     for result := 0 to High(aValues) do
-      if WIDE.SameString(aString, aValues[result], aCaseMode) then
+      if Wide.SameString(aString, aValues[result], aCaseMode) then
         EXIT;
 
     result := -1;
@@ -858,11 +858,11 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.IndexOfText(const aString: UnicodeString;
+  class function WideFn.IndexOfText(const aString: UnicodeString;
                                           aValues: array of UnicodeString): Integer;
   begin
     for result := 0 to High(aValues) do
-      if WIDE.SameText(aString, aValues[result]) then
+      if Wide.SameText(aString, aValues[result]) then
         EXIT;
 
     result := -1;
@@ -870,18 +870,18 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Reverse(const aString: UnicodeString): UnicodeString;
+  class function WideFn.Reverse(const aString: UnicodeString): UnicodeString;
   var
     i, strLen: Integer;
-    c: WIDEChar;
-    pc, prc: PWIDEChar;
+    c: WideChar;
+    pc, prc: PWideChar;
     loSurrogate: Boolean;
   begin
     if NOT HasLength(aString, strLen) then
       EXIT;
 
     result := aString;
-    pc   := PWIDEChar(result);
+    pc   := PWideChar(result);
     prc  := @result[strLen];
     loSurrogate := FALSE;
 
@@ -938,36 +938,36 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Encode(const aString: String): UnicodeString;
+  class function WideFn.Encode(const aString: String): UnicodeString;
   begin
   {$ifdef UNICODE}
     result := aString;
   {$else}
-    result := FromANSI(aString);
+    result := FromAnsi(aString);
   {$endif}
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.FromString(const aString: String): UnicodeString;
+  class function WideFn.FromString(const aString: String): UnicodeString;
   begin
   {$ifdef UNICODE}
     result := aString;
   {$else}
-    result := FromANSI(aString);
+    result := FromAnsi(aString);
   {$endif}
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.FromANSI(const aString: ANSIString): UnicodeString;
+  class function WideFn.FromAnsi(const aString: AnsiString): UnicodeString;
   begin
-    result := FromANSI(PANSIChar(aString), System.Length(aString));
+    result := FromAnsi(PAnsiChar(aString), System.Length(aString));
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.FromANSI(aBuffer: PANSIChar;
+  class function WideFn.FromAnsi(aBuffer: PAnsiChar;
                                  aMaxLen: Integer): UnicodeString;
   var
     len: Integer;
@@ -978,7 +978,7 @@ implementation
 
     if (aMaxLen > 0) then
     begin
-      len := ANSIFn.Len(PAnsiChar(aBuffer));
+      len := AnsiFn.Len(PAnsiChar(aBuffer));
       if len < aMaxLen then
         aMaxLen := len;
     end
@@ -999,7 +999,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.FromUTF8(aBuffer: PUTF8Char;
+  class function WideFn.FromUtf8(aBuffer: PUtf8Char;
                                  aMaxLen: Integer): UnicodeString;
   var
     len: Integer;
@@ -1010,14 +1010,14 @@ implementation
 
     if (aMaxLen > 0) then
     begin
-      len := ANSIFn.Len(PAnsiChar(aBuffer));
+      len := AnsiFn.Len(PAnsiChar(aBuffer));
       if len < aMaxLen then
         aMaxLen := len;
     end
     else
       aMaxLen := -1;
 
-    len := MultiByteToWideChar(CP_UTF8, 0, PANSIChar(aBuffer), aMaxLen, NIL, 0);
+    len := MultiByteToWideChar(CP_Utf8, 0, PAnsiChar(aBuffer), aMaxLen, NIL, 0);
 
     // If aMaxLen is -1 then the reported length INCLUDES the null terminator
     //  which is automatically part of result
@@ -1026,19 +1026,19 @@ implementation
       Dec(len);
 
     SetLength(result, len);
-    MultiByteToWideChar(CP_UTF8, 0, PANSIChar(aBuffer), aMaxLen, @result[1], len);
+    MultiByteToWideChar(CP_Utf8, 0, PAnsiChar(aBuffer), aMaxLen, @result[1], len);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.FromUTF8(const aString: UTF8String): UnicodeString;
+  class function WideFn.FromUtf8(const aString: Utf8String): UnicodeString;
   begin
-    result := FromUTF8(PUTF8Char(aString), System.Length(aString));
+    result := FromUtf8(PUtf8Char(aString), System.Length(aString));
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.FromWIDE(aBuffer: PWideChar;
+  class function WideFn.FromWide(aBuffer: PWideChar;
                                  aMaxLen: Integer): UnicodeString;
   begin
     if aMaxLen = -1 then
@@ -1052,32 +1052,32 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.AllocUTF8(const aSource: UnicodeString): PUTF8Char;
+  class function WideFn.AllocUtf8(const aSource: UnicodeString): PUtf8Char;
   var
     len: Integer;
-    s: UTF8String;
+    s: Utf8String;
   begin
-    s := UTF8.FromWIDE(aSource);
+    s := Utf8.FromWide(aSource);
 
     len     := Length(s) + 1;
     result  := AllocMem(len);
 
-    CopyMemory(result, PUTF8Char(s), len);
+    CopyMemory(result, PUtf8Char(s), len);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Len(aBuffer: PWIDEChar): Integer;
+  class function WideFn.Len(aBuffer: PWideChar): Integer;
   {$ifdef UNICODE}
     begin
       result := SysUtils.StrLen(aBuffer);
     end;
   {$else}
     var
-      p: PWIDEChar;
+      p: PWideChar;
     begin
       p := aBuffer;
-      while p^ <> WIDEChar(0) do
+      while p^ <> WideChar(0) do
         Inc(p);
 
       result := (p - aBuffer);
@@ -1086,7 +1086,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class procedure WIDEFn.CopyToBuffer(const aString: UnicodeString;
+  class procedure WideFn.CopyToBuffer(const aString: UnicodeString;
                                             aBuffer: Pointer);
   begin
     CopyToBuffer(aString, Length(aString), aBuffer, 0);
@@ -1094,7 +1094,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class procedure WIDEFn.CopyToBuffer(const aString: UnicodeString;
+  class procedure WideFn.CopyToBuffer(const aString: UnicodeString;
                                             aBuffer: Pointer;
                                             aMaxChars: Integer);
   begin
@@ -1103,7 +1103,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class procedure WIDEFn.CopyToBufferOffset(const aString: UnicodeString;
+  class procedure WideFn.CopyToBufferOffset(const aString: UnicodeString;
                                                   aBuffer: Pointer;
                                                   aByteOffset: Integer);
   begin
@@ -1112,7 +1112,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class procedure WIDEFn.CopyToBufferOffset(const aString: UnicodeString;
+  class procedure WideFn.CopyToBufferOffset(const aString: UnicodeString;
                                                   aBuffer: Pointer;
                                                   aByteOffset: Integer;
                                                   aMaxChars: Integer);
@@ -1123,16 +1123,19 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.FromBuffer(aBuffer: PANSIChar;
+  class function WideFn.FromBuffer(aBuffer: PAnsiChar;
                                    aLen: Integer): UnicodeString;
   begin
-    result := WIDE.FromANSI(aBuffer, aLen);
+    result := Wide.FromAnsi(aBuffer, aLen);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.FromBuffer(aBuffer: PWIDEChar;
+  class function WideFn.FromBuffer(aBuffer: PWideChar;
                                    aLen: Integer): UnicodeString;
+  var
+    enc: TEncoding;
+    resultCharCount: Integer;
   begin
     Require('aLen', aLen).IsNotLessThan(-1);
 
@@ -1143,27 +1146,14 @@ implementation
     if aLen = 0 then
       EXIT;
 
-    case aBuffer[0] of
-      BOMCHAR_UTF16LE : begin
-                          if aLen = 1 then
-                            EXIT;
+    Encoding.Identify(aBuffer^, aLen, enc);
+    if NOT Assigned(enc) or NOT enc.IsUtf16 then
+      raise Exception.Create('Not a valid UTF16 encoded buffer');
 
-                          SetLength(result, aLen - 1);
-                          CopyMemory(@result[1], @aBuffer[1], (aLen - 1) * 2);
-                        end;
+    resultCharCount := enc.GetCharCount(aBuffer^, aLen);
+    SetLength(result, resultCharCount);
 
-      BOMCHAR_UTF16BE : begin
-                          if aLen = 1 then
-                            EXIT;
-
-                          SetLength(result, aLen - 1);
-                          CopyMemory(@result[1], @aBuffer[1], (aLen - 1) * 2);
-                          ReverseBytes(System.PWord(@result[1]), aLen - 1);
-                        end;
-    else
-      SetLength(result, aLen);
-      CopyMemory(@result[1], @aBuffer[0], aLen * 2);
-    end;
+    enc.Decode(aBuffer, aLen, @result[1], resultCharCount);
   end;
 
 
@@ -1173,11 +1163,11 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Concat(const aArray: array of UnicodeString): UnicodeString;
+  class function WideFn.Concat(const aArray: array of UnicodeString): UnicodeString;
   var
     i: Integer;
     len: Integer;
-    pResult: PWIDEChar;
+    pResult: PWideChar;
   begin
     case Length(aArray) of
       0: result := '';
@@ -1191,7 +1181,7 @@ implementation
       if len = 0 then
         EXIT;
 
-      pResult := PWIDEChar(result);
+      pResult := PWideChar(result);
       for i := 0 to Pred(Length(aArray)) do
       begin
         len := Length(aArray[i]);
@@ -1203,7 +1193,7 @@ implementation
                 Inc(pResult);
               end;
         else
-          WIDE.CopyToBuffer(aArray[i], pResult);
+          Wide.CopyToBuffer(aArray[i], pResult);
           Inc(pResult, len);
         end;
       end;
@@ -1212,10 +1202,10 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Concat(const aArray: array of UnicodeString;
+  class function WideFn.Concat(const aArray: array of UnicodeString;
                               const aSeparator: UnicodeString): UnicodeString;
   var
-    p: PWIDEChar;
+    p: PWideChar;
 
     procedure DoValue(const aIndex: Integer);
     var
@@ -1232,12 +1222,12 @@ implementation
               Inc(p);
             end;
       else
-        WIDE.CopyToBuffer(value, p);
+        Wide.CopyToBuffer(value, p);
         Inc(p, len);
       end;
     end;
 
-    procedure DoWithChar(const aChar: WIDEChar);
+    procedure DoWithChar(const aChar: WideChar);
     var
       i: Integer;
     begin
@@ -1258,7 +1248,7 @@ implementation
       begin
         DoValue(i);
 
-        WIDE.CopyToBuffer(aSeparator, p);
+        Wide.CopyToBuffer(aSeparator, p);
         Inc(p, aLength);
       end;
     end;
@@ -1282,7 +1272,7 @@ implementation
       if len = 0 then
         EXIT;
 
-      p := PWIDEChar(result);
+      p := PWideChar(result);
 
       case sepLen of
         1 : DoWithChar(aSeparator[1]);
@@ -1297,31 +1287,31 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Format(const aString: UnicodeString;
+  class function WideFn.Format(const aString: UnicodeString;
                                const aArgs: array of const): UnicodeString;
   begin
-    result := WIDEFormat(aString, aArgs);
+    result := WideFormat(aString, aArgs);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.StringOf(aChar: ANSIChar;
+  class function WideFn.StringOf(aChar: AnsiChar;
                                  aCount: Integer): UnicodeString;
   begin
-    result := StringOf(WIDE(aChar), aCount);
+    result := StringOf(Wide(aChar), aCount);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.StringOf(aChar: WIDEChar;
+  class function WideFn.StringOf(aChar: WideChar;
                                  aCount: Integer): UnicodeString;
   var
     i: Integer;
-    pc: PWIDEChar;
+    pc: PWideChar;
   begin
     SetLength(result, aCount);
 
-    pc := PWIDECHar(result);
+    pc := PWideCHar(result);
 
     for i := 1 to aCount do
     begin
@@ -1332,23 +1322,23 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.StringOf(const aString: UnicodeString;
+  class function WideFn.StringOf(const aString: UnicodeString;
                                        aCount: Integer): UnicodeString;
   var
     i: Integer;
     chars: Integer;
     bytes: Integer;
-    pr: PWIDEChar;
+    pr: PWideChar;
   begin
     chars := System.Length(aString);
     SetLength(result, chars * aCount);
 
     bytes := chars * 2;
-    pr    := PWIDEChar(result);
+    pr    := PWideChar(result);
 
     for i := 1 to aCount do
     begin
-      CopyMemory(pr, PWIDEChar(aString), bytes);
+      CopyMemory(pr, PWideChar(aString), bytes);
       Inc(pr, chars);
     end;
   end;
@@ -1366,11 +1356,11 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.BeginsWith(const aString: UnicodeString;
-                                         aChar: WIDEChar;
+  class function WideFn.BeginsWith(const aString: UnicodeString;
+                                         aChar: WideChar;
                                          aCaseMode: TCaseSensitivity): Boolean;
   var
-    chars: PWIDEChar absolute aString;
+    chars: PWideChar absolute aString;
   begin
     Require('aChar', aChar).IsNotNull;
     Require('aCaseMode', aCaseMode in [csCaseSensitive, csIgnoreCase]);
@@ -1391,16 +1381,16 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.BeginsWith(const aString: UnicodeString;
-                                         aChar: ANSIChar;
+  class function WideFn.BeginsWith(const aString: UnicodeString;
+                                         aChar: AnsiChar;
                                          aCaseMode: TCaseSensitivity): Boolean;
   begin
-    result := BeginsWith(aString, WIDE(aChar), aCaseMode);
+    result := BeginsWith(aString, Wide(aChar), aCaseMode);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.BeginsWith(const aString: UnicodeString;
+  class function WideFn.BeginsWith(const aString: UnicodeString;
                                    const aSubstring: UnicodeString;
                                          aCaseMode: TCaseSensitivity): Boolean;
   var
@@ -1412,34 +1402,34 @@ implementation
 
     result := (len <= System.Length(aString))
           and (CompareStringW(LOCALE_USER_DEFAULT, CASEMODE_FLAG[aCaseMode],
-                              PWIDEChar(aString), len,
-                              PWIDEChar(aSubstring), len) = CSTR_EQUAL);
+                              PWideChar(aString), len,
+                              PWideChar(aSubstring), len) = CSTR_EQUAL);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.BeginsWithText(const aString: UnicodeString;
-                                             aChar: WIDEChar): Boolean;
+  class function WideFn.BeginsWithText(const aString: UnicodeString;
+                                             aChar: WideChar): Boolean;
   begin
     Require('aChar', aChar).IsNotNull;
 
     result := (aString <> '')
           and (CompareStringW(LOCALE_USER_DEFAULT, NORM_IGNORECASE,
-                              PWIDEChar(aString), 1,
+                              PWideChar(aString), 1,
                               @aChar, 1) = CSTR_EQUAL);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.BeginsWithText(const aString: UnicodeString;
-                                             aChar: ANSIChar): Boolean;
+  class function WideFn.BeginsWithText(const aString: UnicodeString;
+                                             aChar: AnsiChar): Boolean;
   begin
-    result := BeginsWithText(aString, WIDE(aChar));
+    result := BeginsWithText(aString, Wide(aChar));
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.BeginsWithText(const aString: UnicodeString;
+  class function WideFn.BeginsWithText(const aString: UnicodeString;
                                        const aSubstring: UnicodeString): Boolean;
   var
     len: Integer;
@@ -1450,14 +1440,14 @@ implementation
 
     result := (len <= System.Length(aString))
           and (CompareStringW(LOCALE_USER_DEFAULT, NORM_IGNORECASE,
-                              PWIDEChar(aString), len,
-                              PWIDEChar(aSubstring), len) = CSTR_EQUAL);
+                              PWideChar(aString), len,
+                              PWideChar(aSubstring), len) = CSTR_EQUAL);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Contains(const aString: UnicodeString;
-                                       aChar: ANSIChar;
+  class function WideFn.Contains(const aString: UnicodeString;
+                                       aChar: AnsiChar;
                                        aCaseMode: TCaseSensitivity): Boolean;
   var
     notUsed: Integer;
@@ -1467,8 +1457,8 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Contains(const aString: UnicodeString;
-                                       aChar: WIDEChar;
+  class function WideFn.Contains(const aString: UnicodeString;
+                                       aChar: WideChar;
                                        aCaseMode: TCaseSensitivity): Boolean;
   var
     notUsed: Integer;
@@ -1478,7 +1468,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Contains(const aString: UnicodeString;
+  class function WideFn.Contains(const aString: UnicodeString;
                                  const aSubstring: UnicodeString;
                                        aCaseMode: TCaseSensitivity): Boolean;
   var
@@ -1489,8 +1479,8 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ContainsText(const aString: UnicodeString;
-                                           aChar: ANSIChar): Boolean;
+  class function WideFn.ContainsText(const aString: UnicodeString;
+                                           aChar: AnsiChar): Boolean;
   var
     notUsed: Integer;
   begin
@@ -1499,8 +1489,8 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ContainsText(const aString: UnicodeString;
-                                           aChar: WIDEChar): Boolean;
+  class function WideFn.ContainsText(const aString: UnicodeString;
+                                           aChar: WideChar): Boolean;
   var
     notUsed: Integer;
   begin
@@ -1509,7 +1499,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ContainsText(const aString: UnicodeString;
+  class function WideFn.ContainsText(const aString: UnicodeString;
                                      const aSubstring: UnicodeString): Boolean;
   var
     notUsed: Integer;
@@ -1519,20 +1509,20 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.EndsWith(const aString: UnicodeString;
-                                       aChar: ANSIChar;
+  class function WideFn.EndsWith(const aString: UnicodeString;
+                                       aChar: AnsiChar;
                                        aCaseMode: TCaseSensitivity): Boolean;
   begin
-    result := EndsWith(aString, WIDE(aChar), aCaseMode);
+    result := EndsWith(aString, Wide(aChar), aCaseMode);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.EndsWith(const aString: UnicodeString;
-                                       aChar: WIDEChar;
+  class function WideFn.EndsWith(const aString: UnicodeString;
+                                       aChar: WideChar;
                                        aCaseMode: TCaseSensitivity): Boolean;
   var
-    chars: PWIDEChar absolute aString;
+    chars: PWideChar absolute aString;
     len: Integer;
   begin
     Require('aChar', aChar).IsNotNull;
@@ -1547,7 +1537,7 @@ implementation
       csCaseSensitive : result := (chars[len - 1] = aChar);
 
       csIgnoreCase    : result := CompareStringW(LOCALE_USER_DEFAULT, CASEMODE_FLAG[aCaseMode],
-                                                PWIDEChar(@chars[len - 1]), 1,
+                                                PWideChar(@chars[len - 1]), 1,
                                                 @aChar, 1) = CSTR_EQUAL;
     else
     end;
@@ -1555,12 +1545,12 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.EndsWith(const aString: UnicodeString;
+  class function WideFn.EndsWith(const aString: UnicodeString;
                                  const aSubstring: UnicodeString;
                                        aCaseMode: TCaseSensitivity): Boolean;
   var
-    str: PWIDEChar absolute aString;
-    subStr: PWIDEChar absolute aSubstring;
+    str: PWideChar absolute aString;
+    subStr: PWideChar absolute aSubstring;
     len: Integer;
     subLen: Integer;
   begin
@@ -1572,33 +1562,33 @@ implementation
 
     result := (subLen <= len)
           and (CompareStringW(LOCALE_USER_DEFAULT, CASEMODE_FLAG[aCaseMode],
-                              PWIDEChar(@str[len - subLen]), subLen,
+                              PWideChar(@str[len - subLen]), subLen,
                               subStr, subLen) = CSTR_EQUAL);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.EndsWithText(const aString: UnicodeString;
-                                           aChar: ANSIChar): Boolean;
+  class function WideFn.EndsWithText(const aString: UnicodeString;
+                                           aChar: AnsiChar): Boolean;
   begin
-    result := EndsWith(aString, WIDE(aChar), csIgnoreCase);
+    result := EndsWith(aString, Wide(aChar), csIgnoreCase);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.EndsWithText(const aString: UnicodeString;
-                                           aChar: WIDEChar): Boolean;
+  class function WideFn.EndsWithText(const aString: UnicodeString;
+                                           aChar: WideChar): Boolean;
   begin
     result := EndsWith(aString, aChar, csIgnoreCase);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.EndsWithText(const aString: UnicodeString;
+  class function WideFn.EndsWithText(const aString: UnicodeString;
                                      const aSubstring: UnicodeString): Boolean;
   var
-    str: PWIDEChar absolute aString;
-    subStr: PWIDEChar absolute aSubstring;
+    str: PWideChar absolute aString;
+    subStr: PWideChar absolute aSubstring;
     len: Integer;
     subLen: Integer;
   begin
@@ -1610,14 +1600,14 @@ implementation
 
     result := (subLen <= len)
           and (CompareStringW(LOCALE_USER_DEFAULT, NORM_IGNORECASE,
-                              PWIDEChar(@str[len - subLen]), subLen,
+                              PWideChar(@str[len - subLen]), subLen,
                               subStr, subLen) = CSTR_EQUAL);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Find(const aString: UnicodeString;
-                                   aChar: ANSIChar;
+  class function WideFn.Find(const aString: UnicodeString;
+                                   aChar: AnsiChar;
                              var   aPos: Integer;
                                    aCaseMode: TCaseSensitivity): Boolean;
   begin
@@ -1627,8 +1617,8 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Find(const aString: UnicodeString;
-                                   aChar: WIDEChar;
+  class function WideFn.Find(const aString: UnicodeString;
+                                   aChar: WideChar;
                              var   aPos: Integer;
                                    aCaseMode: TCaseSensitivity): Boolean;
   begin
@@ -1638,7 +1628,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Find(const aString: UnicodeString;
+  class function WideFn.Find(const aString: UnicodeString;
                              const aSubstring: UnicodeString;
                              var   aPos: Integer;
                                    aCaseMode: TCaseSensitivity): Boolean;
@@ -1649,8 +1639,8 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.FindText(const aString: UnicodeString;
-                                       aChar: ANSIChar;
+  class function WideFn.FindText(const aString: UnicodeString;
+                                       aChar: AnsiChar;
                                  var   aPos: Integer): Boolean;
   begin
     aPos   := 0;
@@ -1659,8 +1649,8 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.FindText(const aString: UnicodeString;
-                                       aChar: WIDEChar;
+  class function WideFn.FindText(const aString: UnicodeString;
+                                       aChar: WideChar;
                                  var   aPos: Integer): Boolean;
   begin
     aPos   := 0;
@@ -1669,7 +1659,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.FindText(const aString: UnicodeString;
+  class function WideFn.FindText(const aString: UnicodeString;
                                  const aSubstring: UnicodeString;
                                  var   aPos: Integer): Boolean;
   begin
@@ -1679,8 +1669,8 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.FindLast(const aString: UnicodeString;
-                                       aChar: ANSIChar;
+  class function WideFn.FindLast(const aString: UnicodeString;
+                                       aChar: AnsiChar;
                                  var   aPos: Integer;
                                        aCaseMode: TCaseSensitivity): Boolean;
   begin
@@ -1690,8 +1680,8 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.FindLast(const aString: UnicodeString;
-                                       aChar: WIDEChar;
+  class function WideFn.FindLast(const aString: UnicodeString;
+                                       aChar: WideChar;
                                  var   aPos: Integer;
                                        aCaseMode: TCaseSensitivity): Boolean;
   begin
@@ -1701,7 +1691,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.FindLast(const aString: UnicodeString;
+  class function WideFn.FindLast(const aString: UnicodeString;
                                  const aSubstring: UnicodeString;
                                  var   aPos: Integer;
                                        aCaseMode: TCaseSensitivity): Boolean;
@@ -1712,8 +1702,8 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.FindLastText(const aString: UnicodeString;
-                                           aChar: ANSIChar;
+  class function WideFn.FindLastText(const aString: UnicodeString;
+                                           aChar: AnsiChar;
                                      var   aPos: Integer): Boolean;
   begin
     aPos    := Length(aString) + 1;
@@ -1722,8 +1712,8 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.FindLastText(const aString: UnicodeString;
-                                           aChar: WIDEChar;
+  class function WideFn.FindLastText(const aString: UnicodeString;
+                                           aChar: WideChar;
                                      var   aPos: Integer): Boolean;
   begin
     aPos    := Length(aString) + 1;
@@ -1732,7 +1722,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.FindLastText(const aString: UnicodeString;
+  class function WideFn.FindLastText(const aString: UnicodeString;
                                      const aSubstring: UnicodeString;
                                      var   aPos: Integer): Boolean;
   begin
@@ -1742,25 +1732,25 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.FindNext(const aString: UnicodeString;
-                                       aChar: ANSIChar;
+  class function WideFn.FindNext(const aString: UnicodeString;
+                                       aChar: AnsiChar;
                                  var   aPos: Integer;
                                        aCaseMode: TCaseSensitivity): Boolean;
   begin
-    result := FindNext(aString, WIDE(aChar), aPos, aCaseMode);
+    result := FindNext(aString, Wide(aChar), aPos, aCaseMode);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.FindNext(const aString: UnicodeString;
-                                       aChar: WIDEChar;
+  class function WideFn.FindNext(const aString: UnicodeString;
+                                       aChar: WideChar;
                                  var   aPos: Integer;
                                        aCaseMode: TCaseSensitivity): Boolean;
   var
     i: Integer;
     len: Integer;
-    first: PWIDEChar;
-    curr: PWIDEChar;
+    first: PWideChar;
+    curr: PWideChar;
   begin
     Require('aChar', aChar).IsNotNull;
 
@@ -1776,10 +1766,10 @@ implementation
         EXIT;
 
       first := Pointer(aString);
-      curr  := PWIDEChar(Memory.ByteOffset(first, aPos * 2));
+      curr  := PWideChar(Memory.ByteOffset(first, aPos * 2));
       Dec(len, aPos - 1);
 
-      if (aCaseMode = csCaseSensitive) or (NOT WIDE.IsAlpha(aChar)) then
+      if (aCaseMode = csCaseSensitive) or (NOT Wide.IsAlpha(aChar)) then
       begin
         for i := 1 to len do
         begin
@@ -1815,7 +1805,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.FindNext(const aString: UnicodeString;
+  class function WideFn.FindNext(const aString: UnicodeString;
                                  const aSubstring: UnicodeString;
                                  var   aPos: Integer;
                                        aCaseMode: TCaseSensitivity): Boolean;
@@ -1823,8 +1813,8 @@ implementation
     i: Integer;
     strLen: Integer;
     subLen: Integer;
-    first: PWIDEChar;
-    curr: PWIDEChar;
+    first: PWideChar;
+    curr: PWideChar;
   begin
     Require('aSubstring', aSubstring).IsNotEmpty.GetLength(subLen);
 
@@ -1839,15 +1829,15 @@ implementation
        or (aPos + subLen > strLen) then
         EXIT;
 
-      first := PWIDEChar(aString);
-      curr  := PWIDEChar(Memory.ByteOffset(first, aPos * 2));
+      first := PWideChar(aString);
+      curr  := PWideChar(Memory.ByteOffset(first, aPos * 2));
       Dec(strLen, aPos + subLen - 1);
 
       for i := 1 to strLen do
       begin
         result := CompareStringW(LOCALE_USER_DEFAULT, CASEMODE_FLAG[aCaseMode],
                                  curr, subLen,
-                                 PWIDEChar(aSubstring), subLen) = CSTR_EQUAL;
+                                 PWideChar(aSubstring), subLen) = CSTR_EQUAL;
         if result then
           BREAK;
 
@@ -1864,8 +1854,8 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.FindNextText(const aString: UnicodeString;
-                                           aChar: ANSIChar;
+  class function WideFn.FindNextText(const aString: UnicodeString;
+                                           aChar: AnsiChar;
                                      var   aPos: Integer): Boolean;
   begin
     result := FindNext(aString, aChar, aPos, csIgnoreCase);
@@ -1873,8 +1863,8 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.FindNextText(const aString: UnicodeString;
-                                           aChar: WIDEChar;
+  class function WideFn.FindNextText(const aString: UnicodeString;
+                                           aChar: WideChar;
                                      var   aPos: Integer): Boolean;
   begin
     result := FindNext(aString, aChar, aPos, csIgnoreCase);
@@ -1882,7 +1872,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.FindNextText(const aString: UnicodeString;
+  class function WideFn.FindNextText(const aString: UnicodeString;
                                      const aSubstring: UnicodeString;
                                      var   aPos: Integer): Boolean;
   begin
@@ -1891,26 +1881,26 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.FindPrevious(const aString: UnicodeString;
-                                           aChar: ANSIChar;
+  class function WideFn.FindPrevious(const aString: UnicodeString;
+                                           aChar: AnsiChar;
                                      var   aPos: Integer;
                                            aCaseMode: TCaseSensitivity): Boolean;
   begin
-    result := FindPrevious(aString, WIDE(aChar), aPos, aCaseMode);
+    result := FindPrevious(aString, Wide(aChar), aPos, aCaseMode);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.FindPrevious(const aString: UnicodeString;
-                                           aChar: WIDEChar;
+  class function WideFn.FindPrevious(const aString: UnicodeString;
+                                           aChar: WideChar;
                                      var   aPos: Integer;
                                            aCaseMode: TCaseSensitivity): Boolean;
   var
     i: Integer;
     len: Integer;
     pos: Integer;
-    first: PWIDEChar;
-    curr: PWIDEChar;
+    first: PWideChar;
+    curr: PWideChar;
   begin
     Require('aChar', aChar).IsNotNull;
 
@@ -1922,11 +1912,11 @@ implementation
         EXIT;
 
       pos   := Min(aPos, len + 1);
-      first := PWIDEChar(aString);
-      curr  := PWIDEChar(Memory.ByteOffset(first, 2 * (aPos - 2)));
+      first := PWideChar(aString);
+      curr  := PWideChar(Memory.ByteOffset(first, 2 * (aPos - 2)));
       len   := pos - 1;
 
-      if (aCaseMode = csCaseSensitive) or (NOT WIDE.IsAlpha(aChar)) then
+      if (aCaseMode = csCaseSensitive) or (NOT Wide.IsAlpha(aChar)) then
       begin
         for i := 1 to len do
         begin
@@ -1962,7 +1952,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.FindPrevious(const aString: UnicodeString;
+  class function WideFn.FindPrevious(const aString: UnicodeString;
                                      const aSubstring: UnicodeString;
                                      var   aPos: Integer;
                                            aCaseMode: TCaseSensitivity): Boolean;
@@ -1970,8 +1960,8 @@ implementation
     i: Integer;
     strLen: Integer;
     subLen: Integer;
-    first: PWIDEChar;
-    curr: PWIDEChar;
+    first: PWideChar;
+    curr: PWideChar;
   begin
     Require('aSubstring', aSubstring).IsNotEmpty.GetLength(subLen);
 
@@ -1984,14 +1974,14 @@ implementation
         EXIT;
 
       aPos  := Min(aPos - 1, strLen - subLen + 1);
-      first := PWIDEChar(aString);
-      curr  := PWIDEChar(Memory.ByteOffset(first, 2 * (aPos - 1)));
+      first := PWideChar(aString);
+      curr  := PWideChar(Memory.ByteOffset(first, 2 * (aPos - 1)));
 
       for i := 1 to aPos do
       begin
         result := CompareStringW(LOCALE_USER_DEFAULT, CASEMODE_FLAG[aCaseMode],
                                  curr, subLen,
-                                 PWIDEChar(aSubstring), subLen) = CSTR_EQUAL;
+                                 PWideChar(aSubstring), subLen) = CSTR_EQUAL;
         if result then
           BREAK;
 
@@ -2008,8 +1998,8 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.FindPreviousText(const aString: UnicodeString;
-                                               aChar: ANSIChar;
+  class function WideFn.FindPreviousText(const aString: UnicodeString;
+                                               aChar: AnsiChar;
                                          var   aPos: Integer): Boolean;
   begin
     result := FindPrevious(aString, aChar, aPos, csIgnoreCase);
@@ -2017,8 +2007,8 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.FindPreviousText(const aString: UnicodeString;
-                                               aChar: WIDEChar;
+  class function WideFn.FindPreviousText(const aString: UnicodeString;
+                                               aChar: WideChar;
                                          var   aPos: Integer): Boolean;
   begin
     result := FindPrevious(aString, aChar, aPos, csIgnoreCase);
@@ -2026,7 +2016,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.FindPreviousText(const aString: UnicodeString;
+  class function WideFn.FindPreviousText(const aString: UnicodeString;
                                          const aSubstring: UnicodeString;
                                          var   aPos: Integer): Boolean;
   begin
@@ -2036,25 +2026,25 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.FindAll(const aString: UnicodeString;
-                                      aChar: ANSIChar;
+  class function WideFn.FindAll(const aString: UnicodeString;
+                                      aChar: AnsiChar;
                                 var   aPos: TCharIndexArray;
                                       aCaseMode: TCaseSensitivity): Integer;
   begin
-    result := FindAll(aString, WIDE(aChar), aPos, aCaseMode);
+    result := FindAll(aString, Wide(aChar), aPos, aCaseMode);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.FindAll(const aString: UnicodeString;
-                                      aChar: WIDEChar;
+  class function WideFn.FindAll(const aString: UnicodeString;
+                                      aChar: WideChar;
                                 var   aPos: TCharIndexArray;
                                       aCaseMode: TCaseSensitivity): Integer;
   var
     i: Integer;
     len: Integer;
-    firstChar: PWIDEChar;
-    currChar: PWIDEChar;
+    firstChar: PWideChar;
+    currChar: PWideChar;
   begin
     Require('aChar', aChar).IsNotNull;
 
@@ -2065,10 +2055,10 @@ implementation
       EXIT;
 
     SetLength(aPos, len);
-    firstChar := PWIDEChar(aString);
+    firstChar := PWideChar(aString);
     currChar  := firstChar;
 
-    if (aCaseMode = csCaseSensitive) or (NOT WIDE.IsAlpha(aChar)) then
+    if (aCaseMode = csCaseSensitive) or (NOT Wide.IsAlpha(aChar)) then
     begin
       for i := Pred(len) downto 0 do
       begin
@@ -2104,15 +2094,15 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.FindAll(const aString: UnicodeString;
+  class function WideFn.FindAll(const aString: UnicodeString;
                                 const aSubstring: UnicodeString;
                                 var   aPos: TCharIndexArray;
                                       aCaseMode: TCaseSensitivity): Integer;
   var
     i: Integer;
-    currChar: PWIDEChar;
-    firstChar: PWIDEChar;
-    pstr: PWIDEChar;
+    currChar: PWideChar;
+    firstChar: PWideChar;
+    pstr: PWideChar;
     strLen: Integer;
     subLen: Integer;
   begin
@@ -2126,8 +2116,8 @@ implementation
       EXIT;
 
     SetLength(aPos, strLen);
-    pstr      := PWIDEChar(aSubstring);
-    firstChar := PWIDEChar(aString);
+    pstr      := PWideChar(aSubstring);
+    firstChar := PWideChar(aString);
     currChar  := firstChar;
 
     for i := (strLen - subLen) downto 0 do
@@ -2148,8 +2138,8 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.FindAllText(const aString: UnicodeString;
-                                          aChar: ANSIChar;
+  class function WideFn.FindAllText(const aString: UnicodeString;
+                                          aChar: AnsiChar;
                                     var   aPos: TCharIndexArray): Integer;
   begin
     result := FindAll(aString, aChar, aPos, csIgnoreCase);
@@ -2157,8 +2147,8 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.FindAllText(const aString: UnicodeString;
-                                          aChar: WIDEChar;
+  class function WideFn.FindAllText(const aString: UnicodeString;
+                                          aChar: WideChar;
                                     var   aPos: TCharIndexArray): Integer;
   begin
     result := FindAll(aString, aChar, aPos, csIgnoreCase);
@@ -2166,7 +2156,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.FindAllText(const aString: UnicodeString;
+  class function WideFn.FindAllText(const aString: UnicodeString;
                                     const aSubstring: UnicodeString;
                                     var   aPos: TCharIndexArray): Integer;
   begin
@@ -2188,62 +2178,62 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.AsBoolean(const aString: UnicodeString): Boolean;
+  class function WideFn.AsBoolean(const aString: UnicodeString): Boolean;
   begin
-    result := Parse.AsBoolean(PWIDEChar(aString), Length(aString));
+    result := Parse.AsBoolean(PWideChar(aString), Length(aString));
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.AsBoolean(const aString: UnicodeString;
+  class function WideFn.AsBoolean(const aString: UnicodeString;
                                         aDefault: Boolean): Boolean;
   begin
-    result := Parse.AsBoolean(PWIDEChar(aString), Length(aString), aDefault);
+    result := Parse.AsBoolean(PWideChar(aString), Length(aString), aDefault);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.AsInteger(const aString: UnicodeString): Integer;
+  class function WideFn.AsInteger(const aString: UnicodeString): Integer;
   begin
-    result := Parse.AsInteger(PWIDEChar(aString), Length(aString));
+    result := Parse.AsInteger(PWideChar(aString), Length(aString));
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.AsInteger(const aString: UnicodeString;
+  class function WideFn.AsInteger(const aString: UnicodeString;
                                         aDefault: Integer): Integer;
   begin
-    result := Parse.AsInteger(PWIDEChar(aString), Length(aString), aDefault);
+    result := Parse.AsInteger(PWideChar(aString), Length(aString), aDefault);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.IsBoolean(const aString: UnicodeString): Boolean;
+  class function WideFn.IsBoolean(const aString: UnicodeString): Boolean;
   begin
-    result := Parse.IsBoolean(PWIDEChar(aString), Length(aString));
+    result := Parse.IsBoolean(PWideChar(aString), Length(aString));
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.IsBoolean(const aString: UnicodeString;
+  class function WideFn.IsBoolean(const aString: UnicodeString;
                                   var   aValue: Boolean): Boolean;
   begin
-    result := Parse.IsBoolean(PWIDEChar(aString), Length(aString), aValue);
+    result := Parse.IsBoolean(PWideChar(aString), Length(aString), aValue);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.IsInteger(const aString: UnicodeString): Boolean;
+  class function WideFn.IsInteger(const aString: UnicodeString): Boolean;
   begin
-    result := Parse.IsInteger(PWIDEChar(aString), Length(aString));
+    result := Parse.IsInteger(PWideChar(aString), Length(aString));
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.IsInteger(const aString: UnicodeString;
+  class function WideFn.IsInteger(const aString: UnicodeString;
                                   var   aValue: Integer): Boolean;
   begin
-    result := Parse.IsInteger(PWIDEChar(aString), Length(aString), aValue);
+    result := Parse.IsInteger(PWideChar(aString), Length(aString), aValue);
   end;
 
 
@@ -2264,16 +2254,16 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.IsAlpha(aChar: WIDEChar): Boolean;
+  class function WideFn.IsAlpha(aChar: WideChar): Boolean;
   begin
     result := IsCharAlphaW(aChar);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.IsAlpha(const aString: UnicodeString): Boolean;
+  class function WideFn.IsAlpha(const aString: UnicodeString): Boolean;
   var
-    chars: PWIDEChar absolute aString;
+    chars: PWideChar absolute aString;
     i: Integer;
     len: Integer;
   begin
@@ -2291,16 +2281,16 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.IsAlphaNumeric(aChar: WIDEChar): Boolean;
+  class function WideFn.IsAlphaNumeric(aChar: WideChar): Boolean;
   begin
     result := IsCharAlphaNumericW(aChar);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.IsAlphaNumeric(const aString: UnicodeString): Boolean;
+  class function WideFn.IsAlphaNumeric(const aString: UnicodeString): Boolean;
   var
-    chars: PWIDEChar absolute aString;
+    chars: PWideChar absolute aString;
     i: Integer;
     len: Integer;
   begin
@@ -2318,44 +2308,44 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.IsEmpty(const aString: UnicodeString): Boolean;
+  class function WideFn.IsEmpty(const aString: UnicodeString): Boolean;
   begin
     result := Length(aString) = 0;
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.IsLowercase(const aChar: WIDEChar): Boolean;
+  class function WideFn.IsLowercase(const aChar: WideChar): Boolean;
   begin
     result := IsCharLowerW(aChar);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.IsLowercase(const aString: UnicodeString): Boolean;
+  class function WideFn.IsLowercase(const aString: UnicodeString): Boolean;
   begin
     result := CheckCase(aString, IsCharLowerW);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.IsNull(aChar: WIDEChar): Boolean;
+  class function WideFn.IsNull(aChar: WideChar): Boolean;
   begin
-    result := aChar = WIDEChar(#0);
+    result := aChar = WideChar(#0);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.IsNumeric(aChar: WIDEChar): Boolean;
+  class function WideFn.IsNumeric(aChar: WideChar): Boolean;
   begin
     result := IsCharAlphaNumericW(aChar) and NOT IsCharAlphaW(aChar);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.IsNumeric(const aString: UnicodeString): Boolean;
+  class function WideFn.IsNumeric(const aString: UnicodeString): Boolean;
   var
-    chars: PWIDEChar absolute aString;
+    chars: PWideChar absolute aString;
     i: Integer;
     len: Integer;
     hasDP: Boolean;
@@ -2385,21 +2375,21 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.IsSurrogate(aChar: WIDEChar): Boolean;
+  class function WideFn.IsSurrogate(aChar: WideChar): Boolean;
   begin
     result := IsHiSurrogate(aChar) or IsLoSurrogate(aChar);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.IsUppercase(const aChar: WIDEChar): Boolean;
+  class function WideFn.IsUppercase(const aChar: WideChar): Boolean;
   begin
     result := IsCharUpperW(aChar);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.IsUppercase(const aString: UnicodeString): Boolean;
+  class function WideFn.IsUppercase(const aString: UnicodeString): Boolean;
   begin
     result := CheckCase(aString, IsCharUpperW);
   end;
@@ -2407,7 +2397,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.NotEmpty(const aString: UnicodeString): Boolean;
+  class function WideFn.NotEmpty(const aString: UnicodeString): Boolean;
   begin
     result := (aString <> '');
   end;
@@ -2415,40 +2405,40 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Compare(const A, B: UnicodeString;
+  class function WideFn.Compare(const A, B: UnicodeString;
                                       aCaseMode: TCaseSensitivity): TCompareResult;
   begin
     result := CompareStringW(LOCALE_USER_DEFAULT, CASEMODE_FLAG[aCaseMode],
-                             PWIDEChar(A), Length(A),
-                             PWIDEChar(B), Length(B)) - CSTR_EQUAL;
+                             PWideChar(A), Length(A),
+                             PWideChar(B), Length(B)) - CSTR_EQUAL;
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.CompareText(const A, B: UnicodeString): TCompareResult;
+  class function WideFn.CompareText(const A, B: UnicodeString): TCompareResult;
   begin
     result := CompareStringW(LOCALE_USER_DEFAULT, NORM_IGNORECASE,
-                             PWIDEChar(A), Length(A),
-                             PWIDEChar(B), Length(B)) - CSTR_EQUAL;
+                             PWideChar(A), Length(A),
+                             PWideChar(B), Length(B)) - CSTR_EQUAL;
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.SameString(const A, B: UnicodeString;
+  class function WideFn.SameString(const A, B: UnicodeString;
                                          aCaseMode: TCaseSensitivity): Boolean;
   begin
     result := CompareStringW(LOCALE_USER_DEFAULT, CASEMODE_FLAG[aCaseMode],
-                             PWIDEChar(A), Length(A),
-                             PWIDEChar(B), Length(B)) = CSTR_EQUAL;
+                             PWideChar(A), Length(A),
+                             PWideChar(B), Length(B)) = CSTR_EQUAL;
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.SameText(const A, B: UnicodeString): Boolean;
+  class function WideFn.SameText(const A, B: UnicodeString): Boolean;
   begin
     result := CompareStringW(LOCALE_USER_DEFAULT, NORM_IGNORECASE,
-                             PWIDEChar(A), Length(A),
-                             PWIDEChar(B), Length(B)) = CSTR_EQUAL;
+                             PWideChar(A), Length(A),
+                             PWideChar(B), Length(B)) = CSTR_EQUAL;
   end;
 
 
@@ -2459,13 +2449,13 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Append(const aString: UnicodeString;
-                                     aChar: ANSIChar): UnicodeString;
+  class function WideFn.Append(const aString: UnicodeString;
+                                     aChar: AnsiChar): UnicodeString;
   var
-    ch: WIDEChar;
+    ch: WideChar;
   begin
     result := aString;
-    ch     := WIDE(aChar);
+    ch     := Wide(aChar);
 
     SetLength(result, Length(result) + 1);
     result[Length(result)] := ch;
@@ -2473,8 +2463,8 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Append(const aString: UnicodeString;
-                                     aChar: WIDEChar): UnicodeString;
+  class function WideFn.Append(const aString: UnicodeString;
+                                     aChar: WideChar): UnicodeString;
   begin
     result := aString;
     SetLength(result, Length(result) + 1);
@@ -2483,7 +2473,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Append(const aString, aSuffix: UnicodeString): UnicodeString;
+  class function WideFn.Append(const aString, aSuffix: UnicodeString): UnicodeString;
   var
     orgLen: Integer;
     sfxlen: Integer;
@@ -2504,18 +2494,18 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Append(const aString: UnicodeString;
+  class function WideFn.Append(const aString: UnicodeString;
                                const aSuffix: UnicodeString;
-                                     aSeparator: ANSIChar): UnicodeString;
+                                     aSeparator: AnsiChar): UnicodeString;
   begin
-    result := Append(aString, aSuffix, WIDE(aSeparator));
+    result := Append(aString, aSuffix, Wide(aSeparator));
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Append(const aString: UnicodeString;
+  class function WideFn.Append(const aString: UnicodeString;
                                const aSuffix: UnicodeString;
-                                     aSeparator: WIDEChar): UnicodeString;
+                                     aSeparator: WideChar): UnicodeString;
   var
     orgLen: Integer;
     sfxLen: Integer;
@@ -2530,7 +2520,7 @@ implementation
       begin
         SetLength(result, orgLen + sfxLen + 1);
 
-        PWIDEChar(result)[orgLen] := aSeparator;
+        PWideChar(result)[orgLen] := aSeparator;
 
         FastCopy(aSuffix, result, orgLen + 2);
       end;
@@ -2541,7 +2531,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-   class function WIDEFn.Append(const aString: UnicodeString;
+   class function WideFn.Append(const aString: UnicodeString;
                                 const aSuffix: UnicodeString;
                                 const aSeparator: UnicodeString): UnicodeString;
   var
@@ -2576,18 +2566,18 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Insert(const aString: UnicodeString;
+  class function WideFn.Insert(const aString: UnicodeString;
                                      aPos: Integer;
-                                     aChar: ANSIChar): UnicodeString;
+                                     aChar: AnsiChar): UnicodeString;
   begin
-    result := Insert(aString, aPos, WIDE(aChar));
+    result := Insert(aString, aPos, Wide(aChar));
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Insert(const aString: UnicodeString;
+  class function WideFn.Insert(const aString: UnicodeString;
                                      aPos: Integer;
-                                     aChar: WIDEChar): UnicodeString;
+                                     aChar: WideChar): UnicodeString;
   var
     strLen: Integer;
   begin
@@ -2609,7 +2599,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Insert(const aString: UnicodeString;
+  class function WideFn.Insert(const aString: UnicodeString;
                                      aPos: Integer;
                                const aInfix: UnicodeString): UnicodeString;
   var
@@ -2634,15 +2624,15 @@ implementation
     Utils.CopyChars(result, bufPos, bufPos + ifxlen, strLen - aPos + 1);
 
     // Copy the infix into the space left by shifting the previous end of the string
-    WIDE.CopyToBuffer(aInfix, ifxlen, Pointer(result), bufPos * 2);
+    Wide.CopyToBuffer(aInfix, ifxlen, Pointer(result), bufPos * 2);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Insert(const aString: UnicodeString;
+  class function WideFn.Insert(const aString: UnicodeString;
                                     aPos: Integer;
                               const aInfix: UnicodeString;
-                                    aSeparator: WIDEChar): UnicodeString;
+                                    aSeparator: WideChar): UnicodeString;
   var
     strLen: Integer;
     ifxLen: Integer;
@@ -2665,7 +2655,7 @@ implementation
     Utils.CopyChars(result, bufPos, bufPos + ifxLen + 2, strLen - aPos + 1);
 
     // Copy the infix into the space left by shifting the previous end of the string
-    WIDE.CopyToBuffer(aInfix, ifxLen, Pointer(result), aPos * 2);
+    Wide.CopyToBuffer(aInfix, ifxLen, Pointer(result), aPos * 2);
 
     result[aPos]              := aSeparator;
     result[aPos + ifxLen + 1] := aSeparator;
@@ -2673,7 +2663,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Insert(const aString: UnicodeString;
+  class function WideFn.Insert(const aString: UnicodeString;
                                      aPos: Integer;
                                const aInfix: UnicodeString;
                                const aSeparator: UnicodeString): UnicodeString;
@@ -2702,11 +2692,11 @@ implementation
       Utils.CopyChars(result, bufPos, bufPos + ifxLen + (2 * sepLen), strLen - aPos + 1);
 
       // Copy the infix into the space left by shifting the previous end of the string
-      WIDE.CopyToBuffer(aInfix, ifxLen, Pointer(result), (bufPos + sepLen) * 2);
+      Wide.CopyToBuffer(aInfix, ifxLen, Pointer(result), (bufPos + sepLen) * 2);
 
       // Copy the separator into the space either side of the infix
-      WIDE.CopyToBuffer(aSeparator, sepLen, Pointer(result), bufPos * 2);
-      WIDE.CopyToBuffer(aSeparator, sepLen, Pointer(result), (bufPos + ifxLen + sepLen) * 2);
+      Wide.CopyToBuffer(aSeparator, sepLen, Pointer(result), bufPos * 2);
+      Wide.CopyToBuffer(aSeparator, sepLen, Pointer(result), (bufPos + ifxLen + sepLen) * 2);
     end
     else
       result := Insert(aString, aPos, aInfix);
@@ -2714,18 +2704,18 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Prepend(const aString: UnicodeString;
-                                      aChar: ANSIChar): UnicodeString;
+  class function WideFn.Prepend(const aString: UnicodeString;
+                                      aChar: AnsiChar): UnicodeString;
   begin
-    result := Prepend(aString, WIDE(aChar));
+    result := Prepend(aString, Wide(aChar));
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Prepend(const aString: UnicodeString;
-                                      aChar: WIDEChar): UnicodeString;
+  class function WideFn.Prepend(const aString: UnicodeString;
+                                      aChar: WideChar): UnicodeString;
   var
-    dest: PWIDEChar absolute result;
+    dest: PWideChar absolute result;
     strLen: Integer;
   begin
     Require('aChar', aChar).IsNotNull;
@@ -2745,7 +2735,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Prepend(const aString: UnicodeString;
+  class function WideFn.Prepend(const aString: UnicodeString;
                                 const aPrefix: UnicodeString): UnicodeString;
   var
     strLen: Integer;
@@ -2769,20 +2759,20 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Prepend(const aString: UnicodeString;
+  class function WideFn.Prepend(const aString: UnicodeString;
                                 const aPrefix: UnicodeString;
-                                      aSeparator: ANSIChar): UnicodeString;
+                                      aSeparator: AnsiChar): UnicodeString;
   begin
-    result := Prepend(aString, aPrefix, WIDE(aSeparator));
+    result := Prepend(aString, aPrefix, Wide(aSeparator));
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Prepend(const aString: UnicodeString;
+  class function WideFn.Prepend(const aString: UnicodeString;
                                 const aPrefix: UnicodeString;
-                                      aSeparator: WIDEChar): UnicodeString;
+                                      aSeparator: WideChar): UnicodeString;
   var
-    dest: PWIDEChar absolute result;
+    dest: PWideChar absolute result;
     strLen: Integer;
     pfxLen: Integer;
   begin
@@ -2806,7 +2796,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Prepend(const aString: UnicodeString;
+  class function WideFn.Prepend(const aString: UnicodeString;
                                 const aPrefix: UnicodeString;
                                 const aSeparator: UnicodeString): UnicodeString;
   var
@@ -2838,16 +2828,16 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Embrace(const aString: UnicodeString;
-                                      aBrace: ANSIChar): UnicodeString;
+  class function WideFn.Embrace(const aString: UnicodeString;
+                                      aBrace: AnsiChar): UnicodeString;
   begin
-    result := Embrace(aString, WIDE(aBrace));
+    result := Embrace(aString, Wide(aBrace));
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Embrace(const aString: UnicodeString;
-                                      aBrace: WIDEChar): UnicodeString;
+  class function WideFn.Embrace(const aString: UnicodeString;
+                                      aBrace: WideChar): UnicodeString;
   var
     strLen: Integer;
   begin
@@ -2859,44 +2849,44 @@ implementation
     else
       SetLength(result, 2);
 
-    PWIDECHar(result)[0] := aBrace;
+    PWideCHar(result)[0] := aBrace;
 
     case aBrace of
-      '(' : PWIDEChar(result)[strLen + 1] := WIDEChar(')');
-      '{' : PWIDEChar(result)[strLen + 1] := WIDEChar('}');
-      '[' : PWIDEChar(result)[strLen + 1] := WIDEChar(']');
-      '<' : PWIDEChar(result)[strLen + 1] := WIDEChar('>');
+      '(' : PWideChar(result)[strLen + 1] := WideChar(')');
+      '{' : PWideChar(result)[strLen + 1] := WideChar('}');
+      '[' : PWideChar(result)[strLen + 1] := WideChar(']');
+      '<' : PWideChar(result)[strLen + 1] := WideChar('>');
     else
-      PWIDEChar(result)[strLen + 1] := aBrace;
+      PWideChar(result)[strLen + 1] := aBrace;
     end;
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Enquote(const aString: UnicodeString;
-                                      aQuote: ANSIChar): UnicodeString;
+  class function WideFn.Enquote(const aString: UnicodeString;
+                                      aQuote: AnsiChar): UnicodeString;
   begin
-    result := Enquote(aString, WIDE(aQuote), WIDE(aQuote));
+    result := Enquote(aString, Wide(aQuote), Wide(aQuote));
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Enquote(const aString: UnicodeString;
-                                      aQuote: ANSIChar;
-                                      aEscape: ANSIChar): UnicodeString;
+  class function WideFn.Enquote(const aString: UnicodeString;
+                                      aQuote: AnsiChar;
+                                      aEscape: AnsiChar): UnicodeString;
   begin
-    result := Enquote(aString, WIDE(aQuote), WIDE(aEscape));
+    result := Enquote(aString, Wide(aQuote), Wide(aEscape));
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Enquote(const aString: UnicodeString;
-                                      aQuote: WIDEChar;
-                                      aEscape: WIDEChar): UnicodeString;
+  class function WideFn.Enquote(const aString: UnicodeString;
+                                      aQuote: WideChar;
+                                      aEscape: WideChar): UnicodeString;
   var
     i, j: Integer;
     strlen: Integer;
-    pc: PWIDEChar;
+    pc: PWideChar;
   begin
     strlen := System.Length(aString);
     SetLength(result, (strlen * 2) + 2);
@@ -2905,7 +2895,7 @@ implementation
 
     if strlen > 0 then
     begin
-      pc  := PWIDEChar(aString);
+      pc  := PWideChar(aString);
       for i := 1 to strlen do
       begin
         if (pc^ = aQuote) then
@@ -2928,41 +2918,41 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.PadLeft(const aValue: Integer;
+  class function WideFn.PadLeft(const aValue: Integer;
                                    aLength: Integer;
-                                   aChar: ANSIChar): UnicodeString;
+                                   aChar: AnsiChar): UnicodeString;
   begin
-    result := PadLeft(WIDE(aValue), aLength, WIDE(aChar));
+    result := PadLeft(Wide(aValue), aLength, Wide(aChar));
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.PadLeft(const aValue: Integer;
+  class function WideFn.PadLeft(const aValue: Integer;
                                    aLength: Integer;
-                                   aChar: WIDEChar): UnicodeString;
+                                   aChar: WideChar): UnicodeString;
   begin
-    result := PadLeft(WIDE(aValue), aLength, aChar);
+    result := PadLeft(Wide(aValue), aLength, aChar);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.PadLeft(const aString: UnicodeString;
+  class function WideFn.PadLeft(const aString: UnicodeString;
                                    aLength: Integer;
-                                   aChar: ANSIChar): UnicodeString;
+                                   aChar: AnsiChar): UnicodeString;
   begin
-    result := PadLeft(aString, aLength, WIDE(aChar));
+    result := PadLeft(aString, aLength, Wide(aChar));
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.PadLeft(const aString: UnicodeString;
+  class function WideFn.PadLeft(const aString: UnicodeString;
                                       aLength: Integer;
-                                      aChar: WIDEChar): UnicodeString;
+                                      aChar: WideChar): UnicodeString;
   var
     i: Integer;
     len: Integer;
     pad: Integer;
-    p: PWIDEChar;
+    p: PWideChar;
   begin
     len := Length(aString);
     pad := aLength - len;
@@ -2975,7 +2965,7 @@ implementation
 
     SetLength(result, aLength);
 
-    p := PWIDEChar(result);
+    p := PWideChar(result);
     for i := 0 to Pred(pad) do
       p[i] := aChar;
 
@@ -2985,41 +2975,41 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.PadRight(const aValue: Integer;
+  class function WideFn.PadRight(const aValue: Integer;
                                    aLength: Integer;
-                                   aChar: ANSIChar): UnicodeString;
+                                   aChar: AnsiChar): UnicodeString;
   begin
-    result := PadRight(WIDE(aValue), aLength, WIDE(aChar));
+    result := PadRight(Wide(aValue), aLength, Wide(aChar));
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.PadRight(const aValue: Integer;
+  class function WideFn.PadRight(const aValue: Integer;
                                    aLength: Integer;
-                                   aChar: WIDEChar): UnicodeString;
+                                   aChar: WideChar): UnicodeString;
   begin
-    result := PadRight(WIDE(aValue), aLength, aChar);
+    result := PadRight(Wide(aValue), aLength, aChar);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.PadRight(const aString: UnicodeString;
+  class function WideFn.PadRight(const aString: UnicodeString;
                                    aLength: Integer;
-                                   aChar: ANSIChar): UnicodeString;
+                                   aChar: AnsiChar): UnicodeString;
   begin
-    result := PadRight(aString, aLength, WIDE(aChar));
+    result := PadRight(aString, aLength, Wide(aChar));
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.PadRight(const aString: UnicodeString;
+  class function WideFn.PadRight(const aString: UnicodeString;
                                    aLength: Integer;
-                                   aChar: WIDEChar): UnicodeString;
+                                   aChar: WideChar): UnicodeString;
   var
     i: Integer;
     len: Integer;
     pad: Integer;
-    p: PWIDEChar;
+    p: PWideChar;
   begin
     result := aString;
 
@@ -3031,7 +3021,7 @@ implementation
 
     SetLength(result, aLength);
 
-    p := PWIDEChar(result);
+    p := PWideChar(result);
     Inc(p, len);
 
     for i := 0 to Pred(pad) do
@@ -3040,24 +3030,24 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Parse: WIDEParserClass;
+  class function WideFn.Parse: WideParserClass;
   begin
-    result := WIDEParser;
+    result := WideParser;
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Split(const aString: UnicodeString;
-                              const aChar: ANSIChar;
+  class function WideFn.Split(const aString: UnicodeString;
+                              const aChar: AnsiChar;
                               var   aLeft, aRight: UnicodeString): Boolean;
   begin
-    result := Split(aString, WIDE(aChar), aLeft, aRight);
+    result := Split(aString, Wide(aChar), aLeft, aRight);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Split(const aString: UnicodeString;
-                              const aChar: WIDEChar;
+  class function WideFn.Split(const aString: UnicodeString;
+                              const aChar: WideChar;
                               var   aLeft, aRight: UnicodeString): Boolean;
   var
     p: Integer;
@@ -3079,7 +3069,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Split(const aString: UnicodeString;
+  class function WideFn.Split(const aString: UnicodeString;
                               const aDelim: UnicodeString;
                               var   aLeft, aRight: UnicodeString): Boolean;
   var
@@ -3102,18 +3092,18 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Split(const aString: UnicodeString;
-                              const aChar: ANSIChar;
-                              var   aParts: TWIDEStringArray): Integer;
+  class function WideFn.Split(const aString: UnicodeString;
+                              const aChar: AnsiChar;
+                              var   aParts: TWideStringArray): Integer;
   begin
-    result := Split(aString, WIDE(aChar), aParts);
+    result := Split(aString, Wide(aChar), aParts);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Split(const aString: UnicodeString;
-                              const aChar: WIDEChar;
-                              var   aParts: TWIDEStringArray): Integer;
+  class function WideFn.Split(const aString: UnicodeString;
+                              const aChar: WideChar;
+                              var   aParts: TWideStringArray): Integer;
   var
     i: Integer;
     p: TCharIndexArray;
@@ -3151,9 +3141,9 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Split(const aString: UnicodeString;
+  class function WideFn.Split(const aString: UnicodeString;
                               const aDelim: UnicodeString;
-                              var   aParts: TWIDEStringArray): Integer;
+                              var   aParts: TWideStringArray): Integer;
   var
     i: Integer;
     p: TCharIndexArray;
@@ -3202,7 +3192,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class procedure WIDEFn.Delete(var aString: UnicodeString;
+  class procedure WideFn.Delete(var aString: UnicodeString;
                                     aIndex: Integer);
   begin
     Require('aIndex', aIndex).IsValidIndexForString(aString);
@@ -3222,7 +3212,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class procedure WIDEFn.Delete(var aString: UnicodeString;
+  class procedure WideFn.Delete(var aString: UnicodeString;
                                     aIndex: Integer;
                                     aLength: Integer);
   begin
@@ -3249,7 +3239,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class procedure WIDEFn.DeleteRange(var aString: UnicodeString;
+  class procedure WideFn.DeleteRange(var aString: UnicodeString;
                                          aIndex: Integer;
                                          aEndIndex: Integer);
   begin
@@ -3274,21 +3264,21 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Delete(var aString: UnicodeString;
-                                   aChar: ANSIChar;
+  class function WideFn.Delete(var aString: UnicodeString;
+                                   aChar: AnsiChar;
                                    aCaseMode: TCaseSensitivity): Boolean;
   var
     idx: Integer;
   begin
-    result := Find(aString, WIDE(aChar), idx, aCaseMode);
+    result := Find(aString, Wide(aChar), idx, aCaseMode);
     if result then
       Delete(aString, idx);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Delete(var aString: UnicodeString;
-                                   aChar: WIDEChar;
+  class function WideFn.Delete(var aString: UnicodeString;
+                                   aChar: WideChar;
                                    aCaseMode: TCaseSensitivity): Boolean;
   var
     idx: Integer;
@@ -3300,7 +3290,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Delete(var   aString: UnicodeString;
+  class function WideFn.Delete(var   aString: UnicodeString;
                                const aSubstring: UnicodeString;
                                      aCaseMode: TCaseSensitivity): Boolean;
   var
@@ -3313,21 +3303,21 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.DeleteText(var aString: UnicodeString;
-                                       aChar: ANSIChar;
+  class function WideFn.DeleteText(var aString: UnicodeString;
+                                       aChar: AnsiChar;
                                        aCaseMode: TCaseSensitivity): Boolean;
   var
     idx: Integer;
   begin
-    result := Find(aString, WIDE(aChar), idx, csIgnoreCase);
+    result := Find(aString, Wide(aChar), idx, csIgnoreCase);
     if result then
       Delete(aString, idx);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.DeleteText(var aString: UnicodeString;
-                                       aChar: WIDEChar;
+  class function WideFn.DeleteText(var aString: UnicodeString;
+                                       aChar: WideChar;
                                        aCaseMode: TCaseSensitivity): Boolean;
   var
     idx: Integer;
@@ -3339,7 +3329,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.DeleteText(var   aString: UnicodeString;
+  class function WideFn.DeleteText(var   aString: UnicodeString;
                                    const aSubstring: UnicodeString): Boolean;
   begin
     result := Delete(aString, aSubstring, csIgnoreCase);
@@ -3348,7 +3338,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.DeleteAll(var   aString: UnicodeString;
+  class function WideFn.DeleteAll(var   aString: UnicodeString;
                                   const aSubstring: UnicodeString;
                                         aCaseMode: TCaseSensitivity): Integer;
   var
@@ -3368,8 +3358,8 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.DeleteAll(var aString: UnicodeString;
-                                      aChar: ANSIChar;
+  class function WideFn.DeleteAll(var aString: UnicodeString;
+                                      aChar: AnsiChar;
                                       aCaseMode: TCaseSensitivity): Integer;
   var
     i: Integer;
@@ -3383,32 +3373,32 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.DeleteAll(var aString: UnicodeString;
-                                      aChar: WIDEChar;
+  class function WideFn.DeleteAll(var aString: UnicodeString;
+                                      aChar: WideChar;
                                       aCaseMode: TCaseSensitivity): Integer;
   begin
-    result := DeleteAll(aString, ANSI(aChar), aCaseMode);
+    result := DeleteAll(aString, Ansi(aChar), aCaseMode);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.DeleteAllText(var aString: UnicodeString;
-                                          aChar: ANSIChar): Integer;
+  class function WideFn.DeleteAllText(var aString: UnicodeString;
+                                          aChar: AnsiChar): Integer;
   begin
     result := DeleteAll(aString, aChar, csIgnoreCase);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.DeleteAllText(var aString: UnicodeString;
-                                          aChar: WIDEChar): Integer;
+  class function WideFn.DeleteAllText(var aString: UnicodeString;
+                                          aChar: WideChar): Integer;
   begin
-    result := DeleteAll(aString, ANSI(aChar), csIgnoreCase);
+    result := DeleteAll(aString, Ansi(aChar), csIgnoreCase);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.DeleteAllText(var   aString: UnicodeString;
+  class function WideFn.DeleteAllText(var   aString: UnicodeString;
                                       const aSubstring: UnicodeString): Integer;
   begin
     result := DeleteAll(aString, aSubstring, csIgnoreCase);
@@ -3416,8 +3406,8 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.DeleteLast(var aString: UnicodeString;
-                                       aChar: ANSIChar;
+  class function WideFn.DeleteLast(var aString: UnicodeString;
+                                       aChar: AnsiChar;
                                        aCaseMode: TCaseSensitivity): Boolean;
   var
     idx: Integer;
@@ -3429,20 +3419,20 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.DeleteLast(var aString: UnicodeString;
-                                       aChar: WIDEChar;
+  class function WideFn.DeleteLast(var aString: UnicodeString;
+                                       aChar: WideChar;
                                        aCaseMode: TCaseSensitivity): Boolean;
   var
     idx: Integer;
   begin
-    result := FindLast(aString, ANSI(aChar), idx, aCaseMode);
+    result := FindLast(aString, Ansi(aChar), idx, aCaseMode);
     if result then
       Delete(aString, idx, 1);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.DeleteLast(var   aString: UnicodeString;
+  class function WideFn.DeleteLast(var   aString: UnicodeString;
                                    const aSubstring: UnicodeString;
                                          aCaseMode: TCaseSensitivity): Boolean;
   var
@@ -3455,16 +3445,16 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.DeleteLastText(var aString: UnicodeString;
-                                           aChar: ANSIChar): Boolean;
+  class function WideFn.DeleteLastText(var aString: UnicodeString;
+                                           aChar: AnsiChar): Boolean;
   begin
-    result := Delete(aString, WIDE(aChar), csIgnoreCase);
+    result := Delete(aString, Wide(aChar), csIgnoreCase);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.DeleteLastText(var aString: UnicodeString;
-                                           aChar: WIDEChar): Boolean;
+  class function WideFn.DeleteLastText(var aString: UnicodeString;
+                                           aChar: WideChar): Boolean;
   var
     idx: Integer;
   begin
@@ -3475,7 +3465,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.DeleteLastText(var   aString: UnicodeString;
+  class function WideFn.DeleteLastText(var   aString: UnicodeString;
                                        const aSubstring: UnicodeString): Boolean;
   var
     pos: Integer;
@@ -3488,7 +3478,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class procedure WIDEFn.DeleteLeft(var aString: UnicodeString;
+  class procedure WideFn.DeleteLeft(var aString: UnicodeString;
                                         aCount: Integer);
   var
     len: Integer;
@@ -3502,7 +3492,7 @@ implementation
 
     if len > 0 then
     begin
-      case LoSurrogateStrategy(PWIDEChar(aString)[aCount]) of
+      case LoSurrogateStrategy(PWideChar(aString)[aCount]) of
         ssIgnore  : System.Delete(aString, 1, aCount);
         ssAvoid   : System.Delete(aString, 1, aCount + 1);
         ssError   : raise EUnicodeOrphanSurrogate.CreateFmt(ERRFMT_ORPHAN_DELETIONLEAVES_N, [aCount + 1]);
@@ -3514,7 +3504,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.DeleteLeft(var   aString: UnicodeString;
+  class function WideFn.DeleteLeft(var   aString: UnicodeString;
                                    const aSubstring: UnicodeString;
                                          aCaseMode: TCaseSensitivity): Boolean;
   begin
@@ -3525,7 +3515,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.DeleteLeftText(var   aString: UnicodeString;
+  class function WideFn.DeleteLeftText(var   aString: UnicodeString;
                                        const aSubstring: UnicodeString): Boolean;
   begin
     result := DeleteLeft(aString, aSubstring, csIgnoreCase);
@@ -3533,7 +3523,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class procedure WIDEFn.DeleteRight(var aString: UnicodeString;
+  class procedure WideFn.DeleteRight(var aString: UnicodeString;
                                          aCount: Integer);
   var
     len: Integer;
@@ -3551,7 +3541,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.DeleteRight(var   aString: UnicodeString;
+  class function WideFn.DeleteRight(var   aString: UnicodeString;
                                     const aSubstring: UnicodeString;
                                           aCaseMode: TCaseSensitivity): Boolean;
   begin
@@ -3562,7 +3552,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.DeleteRightText(var   aString: UnicodeString;
+  class function WideFn.DeleteRightText(var   aString: UnicodeString;
                                     const aSubstring: UnicodeString): Boolean;
   begin
     result := DeleteRight(aString, aSubstring, csIgnoreCase);
@@ -3570,7 +3560,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Remove(const aString: UnicodeString;
+  class function WideFn.Remove(const aString: UnicodeString;
                                      aIndex: Integer;
                                      aLength: Integer): UnicodeString;
   begin
@@ -3580,18 +3570,18 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Remove(const aString: UnicodeString;
-                                     aChar: ANSIChar;
+  class function WideFn.Remove(const aString: UnicodeString;
+                                     aChar: AnsiChar;
                                      aCaseMode: TCaseSensitivity): UnicodeString;
   begin
     result := aString;
-    Delete(result, WIDE(aChar), aCaseMode);
+    Delete(result, Wide(aChar), aCaseMode);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Remove(const aString: UnicodeString;
-                                     aChar: WIDEChar;
+  class function WideFn.Remove(const aString: UnicodeString;
+                                     aChar: WideChar;
                                      aCaseMode: TCaseSensitivity): UnicodeString;
   begin
     result := aString;
@@ -3600,7 +3590,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Remove(const aString, aSubstring: UnicodeString;
+  class function WideFn.Remove(const aString, aSubstring: UnicodeString;
                                      aCaseMode: TCaseSensitivity): UnicodeString;
   begin
     result := aString;
@@ -3609,17 +3599,17 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.RemoveText(const aString: UnicodeString;
-                                         aChar: ANSIChar): UnicodeString;
+  class function WideFn.RemoveText(const aString: UnicodeString;
+                                         aChar: AnsiChar): UnicodeString;
   begin
     result := aString;
-    Delete(result, WIDE(aChar), csIgnoreCase);
+    Delete(result, Wide(aChar), csIgnoreCase);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.RemoveText(const aString: UnicodeString;
-                                         aChar: WIDEChar): UnicodeString;
+  class function WideFn.RemoveText(const aString: UnicodeString;
+                                         aChar: WideChar): UnicodeString;
   begin
     result := aString;
     Delete(result, aChar, csIgnoreCase);
@@ -3627,7 +3617,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.RemoveText(const aString, aSubstring: UnicodeString): UnicodeString;
+  class function WideFn.RemoveText(const aString, aSubstring: UnicodeString): UnicodeString;
   begin
     result := aString;
     Delete(result, aSubstring, csIgnoreCase);
@@ -3635,7 +3625,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.RemoveAll(const aString, aSubstring: UnicodeString;
+  class function WideFn.RemoveAll(const aString, aSubstring: UnicodeString;
                                         aCaseMode: TCaseSensitivity): UnicodeString;
   begin
     result := aString;
@@ -3644,18 +3634,18 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.RemoveAll(const aString: UnicodeString;
-                                        aChar: ANSIChar;
+  class function WideFn.RemoveAll(const aString: UnicodeString;
+                                        aChar: AnsiChar;
                                         aCaseMode: TCaseSensitivity): UnicodeString;
   begin
     result := aString;
-    DeleteAll(result, WIDE(aChar), aCaseMode);
+    DeleteAll(result, Wide(aChar), aCaseMode);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.RemoveAll(const aString: UnicodeString;
-                                        aChar: WIDEChar;
+  class function WideFn.RemoveAll(const aString: UnicodeString;
+                                        aChar: WideChar;
                                         aCaseMode: TCaseSensitivity): UnicodeString;
   begin
     result := aString;
@@ -3664,17 +3654,17 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.RemoveAllText(const aString: UnicodeString;
-                                            aChar: ANSIChar): UnicodeString;
+  class function WideFn.RemoveAllText(const aString: UnicodeString;
+                                            aChar: AnsiChar): UnicodeString;
   begin
     result := aString;
-    DeleteAll(result, WIDE(aChar), csIgnoreCase);
+    DeleteAll(result, Wide(aChar), csIgnoreCase);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.RemoveAllText(const aString: UnicodeString;
-                                            aChar: WIDEChar): UnicodeString;
+  class function WideFn.RemoveAllText(const aString: UnicodeString;
+                                            aChar: WideChar): UnicodeString;
   begin
     result := aString;
     DeleteAll(result, aChar, csIgnoreCase);
@@ -3682,7 +3672,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.RemoveAllText(const aString, aSubstring: UnicodeString): UnicodeString;
+  class function WideFn.RemoveAllText(const aString, aSubstring: UnicodeString): UnicodeString;
   begin
     result := aString;
     DeleteAll(result, aSubstring, csIgnoreCase);
@@ -3690,18 +3680,18 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.RemoveLast(const aString: UnicodeString;
-                                         aChar: ANSIChar;
+  class function WideFn.RemoveLast(const aString: UnicodeString;
+                                         aChar: AnsiChar;
                                          aCaseMode: TCaseSensitivity): UnicodeString;
   begin
     result := aString;
-    DeleteLast(result, WIDE(aChar), aCaseMode);
+    DeleteLast(result, Wide(aChar), aCaseMode);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.RemoveLast(const aString: UnicodeString;
-                                         aChar: WIDEChar;
+  class function WideFn.RemoveLast(const aString: UnicodeString;
+                                         aChar: WideChar;
                                          aCaseMode: TCaseSensitivity): UnicodeString;
   begin
     result := aString;
@@ -3710,7 +3700,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.RemoveLast(const aString, aSubstring: UnicodeString;
+  class function WideFn.RemoveLast(const aString, aSubstring: UnicodeString;
                                          aCaseMode: TCaseSensitivity): UnicodeString;
   begin
     result := aString;
@@ -3719,17 +3709,17 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.RemoveLastText(const aString: UnicodeString;
-                                             aChar: ANSIChar): UnicodeString;
+  class function WideFn.RemoveLastText(const aString: UnicodeString;
+                                             aChar: AnsiChar): UnicodeString;
   begin
     result := aString;
-    DeleteLast(result, WIDE(aChar), csIgnoreCase);
+    DeleteLast(result, Wide(aChar), csIgnoreCase);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.RemoveLastText(const aString: UnicodeString;
-                                             aChar: WIDEChar): UnicodeString;
+  class function WideFn.RemoveLastText(const aString: UnicodeString;
+                                             aChar: WideChar): UnicodeString;
   begin
     result := aString;
     DeleteLast(result, aChar, csIgnoreCase);
@@ -3737,7 +3727,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.RemoveLastText(const aString, aSubstring: UnicodeString): UnicodeString;
+  class function WideFn.RemoveLastText(const aString, aSubstring: UnicodeString): UnicodeString;
   begin
     result := aString;
     DeleteLast(result, aSubstring, csIgnoreCase);
@@ -3757,7 +3747,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Extract(var aString: UnicodeString;
+  class function WideFn.Extract(var aString: UnicodeString;
                                     aIndex: Integer;
                                     aLength: Integer): UnicodeString;
   begin
@@ -3767,7 +3757,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Extract(var aString: UnicodeString;
+  class function WideFn.Extract(var aString: UnicodeString;
                                     aIndex: Integer;
                                     aLength: Integer;
                                 var aExtract: UnicodeString): Boolean;
@@ -3794,7 +3784,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ExtractLeft(var aString: UnicodeString;
+  class function WideFn.ExtractLeft(var aString: UnicodeString;
                                         aCount: Integer): UnicodeString;
   begin
     ExtractLeft(aString, aCount, result);
@@ -3802,7 +3792,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ExtractLeft(var aString: UnicodeString;
+  class function WideFn.ExtractLeft(var aString: UnicodeString;
                                         aCount: Integer;
                                     var aExtract: UnicodeString): Boolean;
   begin
@@ -3817,8 +3807,8 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ExtractLeft(var  aString: UnicodeString;
-                                         aDelimiter: WIDEChar;
+  class function WideFn.ExtractLeft(var  aString: UnicodeString;
+                                         aDelimiter: WideChar;
                                          aDelimiterOption: TExtractDelimiterOption;
                                          aDelimiterCase: TCaseSensitivity): UnicodeString;
   begin
@@ -3827,17 +3817,17 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ExtractLeft(var  aString: UnicodeString;
-                                         aDelimiter: ANSIChar;
+  class function WideFn.ExtractLeft(var  aString: UnicodeString;
+                                         aDelimiter: AnsiChar;
                                          aDelimiterOption: TExtractDelimiterOption;
                                          aDelimiterCase: TCaseSensitivity): UnicodeString;
   begin
-    ExtractLeft(aString, WIDE(aDelimiter), result, aDelimiterOption, aDelimiterCase);
+    ExtractLeft(aString, Wide(aDelimiter), result, aDelimiterOption, aDelimiterCase);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ExtractLeft(var   aString: UnicodeString;
+  class function WideFn.ExtractLeft(var   aString: UnicodeString;
                                     const aDelimiter: UnicodeString;
                                           aDelimiterOption: TExtractDelimiterOption;
                                           aDelimiterCase: TCaseSensitivity): UnicodeString;
@@ -3847,8 +3837,8 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ExtractLeft(var  aString: UnicodeString;
-                                         aDelimiter: WIDEChar;
+  class function WideFn.ExtractLeft(var  aString: UnicodeString;
+                                         aDelimiter: WideChar;
                                     var  aExtract: UnicodeString;
                                          aDelimiterOption: TExtractDelimiterOption;
                                          aDelimiterCase: TCaseSensitivity): Boolean;
@@ -3876,18 +3866,18 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ExtractLeft(var  aString: UnicodeString;
-                                         aDelimiter: ANSIChar;
+  class function WideFn.ExtractLeft(var  aString: UnicodeString;
+                                         aDelimiter: AnsiChar;
                                     var  aExtract: UnicodeString;
                                          aDelimiterOption: TExtractDelimiterOption;
                                          aDelimiterCase: TCaseSensitivity): Boolean;
   begin
-    result := ExtractLeft(aString, WIDE(aDelimiter), aExtract, aDelimiterOption, aDelimiterCase);
+    result := ExtractLeft(aString, Wide(aDelimiter), aExtract, aDelimiterOption, aDelimiterCase);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ExtractLeft(var   aString: UnicodeString;
+  class function WideFn.ExtractLeft(var   aString: UnicodeString;
                                     const aDelimiter: UnicodeString;
                                     var   aExtract: UnicodeString;
                                           aDelimiterOption: TExtractDelimiterOption;
@@ -3920,8 +3910,8 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ExtractLeftText(var  aString: UnicodeString;
-                                             aDelimiter: WIDEChar;
+  class function WideFn.ExtractLeftText(var  aString: UnicodeString;
+                                             aDelimiter: WideChar;
                                              aDelimiterOption: TExtractDelimiterOption): UnicodeString;
   begin
     ExtractLeft(aString, aDelimiter, result, aDelimiterOption, csIgnoreCase);
@@ -3929,16 +3919,16 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ExtractLeftText(var  aString: UnicodeString;
-                                             aDelimiter: ANSIChar;
+  class function WideFn.ExtractLeftText(var  aString: UnicodeString;
+                                             aDelimiter: AnsiChar;
                                              aDelimiterOption: TExtractDelimiterOption): UnicodeString;
   begin
-    ExtractLeft(aString, WIDE(aDelimiter), result, aDelimiterOption, csIgnoreCase);
+    ExtractLeft(aString, Wide(aDelimiter), result, aDelimiterOption, csIgnoreCase);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ExtractLeftText(var   aString: UnicodeString;
+  class function WideFn.ExtractLeftText(var   aString: UnicodeString;
                                         const aDelimiter: UnicodeString;
                                               aDelimiterOption: TExtractDelimiterOption): UnicodeString;
   begin
@@ -3947,8 +3937,8 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ExtractLeftText(var  aString: UnicodeString;
-                                             aDelimiter: WIDEChar;
+  class function WideFn.ExtractLeftText(var  aString: UnicodeString;
+                                             aDelimiter: WideChar;
                                         var  aExtract: UnicodeString;
                                              aDelimiterOption: TExtractDelimiterOption): Boolean;
   begin
@@ -3957,17 +3947,17 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ExtractLeftText(var  aString: UnicodeString;
-                                             aDelimiter: ANSIChar;
+  class function WideFn.ExtractLeftText(var  aString: UnicodeString;
+                                             aDelimiter: AnsiChar;
                                         var  aExtract: UnicodeString;
                                              aDelimiterOption: TExtractDelimiterOption): Boolean;
   begin
-    result := ExtractLeft(aString, WIDE(aDelimiter), aExtract, aDelimiterOption, csIgnoreCase);
+    result := ExtractLeft(aString, Wide(aDelimiter), aExtract, aDelimiterOption, csIgnoreCase);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ExtractLeftText(var   aString: UnicodeString;
+  class function WideFn.ExtractLeftText(var   aString: UnicodeString;
                                         const aDelimiter: UnicodeString;
                                         var   aExtract: UnicodeString;
                                               aDelimiterOption: TExtractDelimiterOption): Boolean;
@@ -3977,8 +3967,8 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ExtractQuotedValue(var   aString: UnicodeString;
-                                           const aDelimiter: WIDEChar): UnicodeString;
+  class function WideFn.ExtractQuotedValue(var   aString: UnicodeString;
+                                           const aDelimiter: WideChar): UnicodeString;
   var
     i: Integer;
     inQuote: Boolean;
@@ -4014,7 +4004,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ExtractRight(var aString: UnicodeString; aCount: Integer): UnicodeString;
+  class function WideFn.ExtractRight(var aString: UnicodeString; aCount: Integer): UnicodeString;
   begin
     Require('aCount', aCount).IsPositiveOrZero;
 
@@ -4024,7 +4014,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ExtractRight(var aString: UnicodeString;
+  class function WideFn.ExtractRight(var aString: UnicodeString;
                                          aCount: Integer;
                                      var aExtract: UnicodeString): Boolean;
   begin
@@ -4034,7 +4024,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ExtractRightFrom(var aString: UnicodeString;
+  class function WideFn.ExtractRightFrom(var aString: UnicodeString;
                                              aIndex: Integer): UnicodeString;
   begin
     ExtractRightFrom(aString, aIndex, result);
@@ -4042,7 +4032,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ExtractRightFrom(var aString: UnicodeString;
+  class function WideFn.ExtractRightFrom(var aString: UnicodeString;
                                              aIndex: Integer;
                                          var aExtract: UnicodeString): Boolean;
   var
@@ -4062,8 +4052,8 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ExtractRight(var aString: UnicodeString;
-                                         aDelimiter: WIDEChar;
+  class function WideFn.ExtractRight(var aString: UnicodeString;
+                                         aDelimiter: WideChar;
                                          aDelimiterOption: TExtractDelimiterOption;
                                          aDelimiterCase: TCaseSensitivity): UnicodeString;
   begin
@@ -4072,17 +4062,17 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ExtractRight(var aString: UnicodeString;
-                                         aDelimiter: ANSIChar;
+  class function WideFn.ExtractRight(var aString: UnicodeString;
+                                         aDelimiter: AnsiChar;
                                          aDelimiterOption: TExtractDelimiterOption;
                                          aDelimiterCase: TCaseSensitivity): UnicodeString;
   begin
-    ExtractRight(aString, WIDE(aDelimiter), result, aDelimiterOption, aDelimiterCase);
+    ExtractRight(aString, Wide(aDelimiter), result, aDelimiterOption, aDelimiterCase);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ExtractRight(var   aString: UnicodeString;
+  class function WideFn.ExtractRight(var   aString: UnicodeString;
                                      const aDelimiter: UnicodeString;
                                            aDelimiterOption: TExtractDelimiterOption;
                                            aDelimiterCase: TCaseSensitivity): UnicodeString;
@@ -4092,8 +4082,8 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ExtractRight(var  aString: UnicodeString;
-                                          aDelimiter: WIDEChar;
+  class function WideFn.ExtractRight(var  aString: UnicodeString;
+                                          aDelimiter: WideChar;
                                      var  aExtract: UnicodeString;
                                           aDelimiterOption: TExtractDelimiterOption;
                                           aDelimiterCase: TCaseSensitivity): Boolean;
@@ -4124,18 +4114,18 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ExtractRight(var  aString: UnicodeString;
-                                          aDelimiter: ANSIChar;
+  class function WideFn.ExtractRight(var  aString: UnicodeString;
+                                          aDelimiter: AnsiChar;
                                      var  aExtract: UnicodeString;
                                           aDelimiterOption: TExtractDelimiterOption;
                                           aDelimiterCase: TCaseSensitivity): Boolean;
   begin
-    result := ExtractRight(aString, WIDE(aDelimiter), aExtract, aDelimiterOption, aDelimiterCase);
+    result := ExtractRight(aString, Wide(aDelimiter), aExtract, aDelimiterOption, aDelimiterCase);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ExtractRight(var   aString: UnicodeString;
+  class function WideFn.ExtractRight(var   aString: UnicodeString;
                                      const aDelimiter: UnicodeString;
                                      var   aExtract: UnicodeString;
                                            aDelimiterOption: TExtractDelimiterOption;
@@ -4169,8 +4159,8 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ExtractRightText(var  aString: UnicodeString;
-                                              aDelimiter: WIDEChar;
+  class function WideFn.ExtractRightText(var  aString: UnicodeString;
+                                              aDelimiter: WideChar;
                                               aDelimiterOption: TExtractDelimiterOption): UnicodeString;
   begin
     ExtractRight(aString, aDelimiter, result, aDelimiterOption, csIgnoreCase);
@@ -4178,16 +4168,16 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ExtractRightText(var  aString: UnicodeString;
-                                              aDelimiter: ANSIChar;
+  class function WideFn.ExtractRightText(var  aString: UnicodeString;
+                                              aDelimiter: AnsiChar;
                                               aDelimiterOption: TExtractDelimiterOption): UnicodeString;
   begin
-    ExtractRight(aString, WIDE(aDelimiter), result, aDelimiterOption, csIgnoreCase);
+    ExtractRight(aString, Wide(aDelimiter), result, aDelimiterOption, csIgnoreCase);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ExtractRightText(var   aString: UnicodeString;
+  class function WideFn.ExtractRightText(var   aString: UnicodeString;
                                          const aDelimiter: UnicodeString;
                                                aDelimiterOption: TExtractDelimiterOption): UnicodeString;
   begin
@@ -4196,8 +4186,8 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ExtractRightText(var  aString: UnicodeString;
-                                              aDelimiter: WIDEChar;
+  class function WideFn.ExtractRightText(var  aString: UnicodeString;
+                                              aDelimiter: WideChar;
                                          var  aExtract: UnicodeString;
                                               aDelimiterOption: TExtractDelimiterOption): Boolean;
   begin
@@ -4206,17 +4196,17 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ExtractRightText(var  aString: UnicodeString;
-                                              aDelimiter: ANSIChar;
+  class function WideFn.ExtractRightText(var  aString: UnicodeString;
+                                              aDelimiter: AnsiChar;
                                          var  aExtract: UnicodeString;
                                               aDelimiterOption: TExtractDelimiterOption): Boolean;
   begin
-    result := ExtractRight(aString, WIDE(aDelimiter), aExtract, aDelimiterOption, csIgnoreCase);
+    result := ExtractRight(aString, Wide(aDelimiter), aExtract, aDelimiterOption, csIgnoreCase);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ExtractRightText(var   aString: UnicodeString;
+  class function WideFn.ExtractRightText(var   aString: UnicodeString;
                                          const aDelimiter: UnicodeString;
                                          var   aExtract: UnicodeString;
                                                aDelimiterOption: TExtractDelimiterOption): Boolean;
@@ -4231,7 +4221,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ConsumeLeft(var   aString: UnicodeString;
+  class function WideFn.ConsumeLeft(var   aString: UnicodeString;
                                     const aSubstring: UnicodeString;
                                           aCaseMode: TCaseSensitivity): Boolean;
   var
@@ -4246,7 +4236,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ConsumeRight(var   aString: UnicodeString;
+  class function WideFn.ConsumeRight(var   aString: UnicodeString;
                                      const aSubstring: UnicodeString;
                                            aCaseMode: TCaseSensitivity): Boolean;
   var
@@ -4273,7 +4263,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Copy(const aString: UnicodeString;
+  class function WideFn.Copy(const aString: UnicodeString;
                                    aStartPos, aLength: Integer): UnicodeString;
   begin
     Copy(aString, aStartPos, aLength, result);
@@ -4281,7 +4271,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Copy(const aString: UnicodeString;
+  class function WideFn.Copy(const aString: UnicodeString;
                                    aStartPos, aLength: Integer;
                              var   aCopy: UnicodeString): Boolean;
   begin
@@ -4293,7 +4283,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.CopyFrom(const aString: UnicodeString;
+  class function WideFn.CopyFrom(const aString: UnicodeString;
                                        aIndex: Integer): UnicodeString;
   begin
     CopyFrom(aString, aIndex, result);
@@ -4301,7 +4291,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.CopyFrom(const aString: UnicodeString;
+  class function WideFn.CopyFrom(const aString: UnicodeString;
                                        aIndex: Integer;
                                  var   aCopy: UnicodeString): Boolean;
   begin
@@ -4313,7 +4303,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.CopyRange(const aString: UnicodeString;
+  class function WideFn.CopyRange(const aString: UnicodeString;
                                         aStartPos: Integer;
                                         aEndPos: Integer): UnicodeString;
   begin
@@ -4322,7 +4312,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.CopyRange(const aString: UnicodeString;
+  class function WideFn.CopyRange(const aString: UnicodeString;
                                         aStartPos: Integer;
                                         aEndPos: Integer;
                                   var   aCopy: UnicodeString): Boolean;
@@ -4340,7 +4330,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.CopyLeft(const aString: UnicodeString;
+  class function WideFn.CopyLeft(const aString: UnicodeString;
                                        aCount: Integer): UnicodeString;
   begin
     Require('aCount', aCount).IsPositiveOrZero;
@@ -4350,8 +4340,8 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.CopyLeft(const aString: UnicodeString;
-                                    aDelimiter: ANSIChar;
+  class function WideFn.CopyLeft(const aString: UnicodeString;
+                                    aDelimiter: AnsiChar;
                                     aDelimiterOption: TCopyDelimiterOption;
                                     aDelimiterCase: TCaseSensitivity): UnicodeString;
   begin
@@ -4360,17 +4350,17 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.CopyLeft(const aString: UnicodeString;
-                                    aDelimiter: WIDEChar;
+  class function WideFn.CopyLeft(const aString: UnicodeString;
+                                    aDelimiter: WideChar;
                                     aDelimiterOption: TCopyDelimiterOption;
                                     aDelimiterCase: TCaseSensitivity): UnicodeString;
   begin
-    CopyLeft(aString, ANSI(aDelimiter), result, aDelimiterOption, aDelimiterCase);
+    CopyLeft(aString, Ansi(aDelimiter), result, aDelimiterOption, aDelimiterCase);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.CopyLeft(const aString: UnicodeString;
+  class function WideFn.CopyLeft(const aString: UnicodeString;
                               const aDelimiter: UnicodeString;
                                     aDelimiterOption: TCopyDelimiterOption;
                                     aDelimiterCase: TCaseSensitivity): UnicodeString;
@@ -4380,7 +4370,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.CopyLeft(const aString: UnicodeString;
+  class function WideFn.CopyLeft(const aString: UnicodeString;
                                     aCount: Integer;
                               var   aCopy: UnicodeString): Boolean;
   begin
@@ -4392,8 +4382,8 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.CopyLeft(const aString: UnicodeString;
-                                    aDelimiter: ANSIChar;
+  class function WideFn.CopyLeft(const aString: UnicodeString;
+                                    aDelimiter: AnsiChar;
                               var   aCopy: UnicodeString;
                                     aDelimiterOption: TCopyDelimiterOption;
                                     aDelimiterCase: TCaseSensitivity): Boolean;
@@ -4417,18 +4407,18 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.CopyLeft(const aString: UnicodeString;
-                                       aDelimiter: WIDEChar;
+  class function WideFn.CopyLeft(const aString: UnicodeString;
+                                       aDelimiter: WideChar;
                                  var   aCopy: UnicodeString;
                                        aDelimiterOption: TCopyDelimiterOption;
                                        aDelimiterCase: TCaseSensitivity): Boolean;
   begin
-    result := CopyLeft(aString, ANSI(aDelimiter), aCopy, aDelimiterOption, aDelimiterCase);
+    result := CopyLeft(aString, Ansi(aDelimiter), aCopy, aDelimiterOption, aDelimiterCase);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.CopyLeft(const aString: UnicodeString;
+  class function WideFn.CopyLeft(const aString: UnicodeString;
                                  const aDelimiter: UnicodeString;
                                  var   aCopy: UnicodeString;
                                        aDelimiterOption: TCopyDelimiterOption;
@@ -4455,8 +4445,8 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.CopyLeftText(const aString: UnicodeString;
-                                        aDelimiter: ANSIChar;
+  class function WideFn.CopyLeftText(const aString: UnicodeString;
+                                        aDelimiter: AnsiChar;
                                         aDelimiterOption: TCopyDelimiterOption): UnicodeString;
   begin
     CopyLeft(aString, aDelimiter, result, aDelimiterOption, csIgnoreCase);
@@ -4464,16 +4454,16 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.CopyLeftText(const aString: UnicodeString;
-                                        aDelimiter: WIDEChar;
+  class function WideFn.CopyLeftText(const aString: UnicodeString;
+                                        aDelimiter: WideChar;
                                         aDelimiterOption: TCopyDelimiterOption): UnicodeString;
   begin
-    CopyLeft(aString, ANSI(aDelimiter), result, aDelimiterOption, csIgnoreCase);
+    CopyLeft(aString, Ansi(aDelimiter), result, aDelimiterOption, csIgnoreCase);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.CopyLeftText(const aString: UnicodeString;
+  class function WideFn.CopyLeftText(const aString: UnicodeString;
                                   const aDelimiter: UnicodeString;
                                         aDelimiterOption: TCopyDelimiterOption): UnicodeString;
   begin
@@ -4482,8 +4472,8 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.CopyLeftText(const aString: UnicodeString;
-                                        aDelimiter: ANSIChar;
+  class function WideFn.CopyLeftText(const aString: UnicodeString;
+                                        aDelimiter: AnsiChar;
                                   var   aCopy: UnicodeString;
                                         aDelimiterOption: TCopyDelimiterOption): Boolean;
   begin
@@ -4492,17 +4482,17 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.CopyLeftText(const aString: UnicodeString;
-                                        aDelimiter: WIDEChar;
+  class function WideFn.CopyLeftText(const aString: UnicodeString;
+                                        aDelimiter: WideChar;
                                   var   aCopy: UnicodeString;
                                         aDelimiterOption: TCopyDelimiterOption): Boolean;
   begin
-    result := CopyLeft(aString, ANSI(aDelimiter), aCopy, aDelimiterOption, csIgnoreCase);
+    result := CopyLeft(aString, Ansi(aDelimiter), aCopy, aDelimiterOption, csIgnoreCase);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.CopyLeftText(const aString: UnicodeString;
+  class function WideFn.CopyLeftText(const aString: UnicodeString;
                                   const aDelimiter: UnicodeString;
                                   var   aCopy: UnicodeString;
                                         aDelimiterOption: TCopyDelimiterOption): Boolean;
@@ -4512,7 +4502,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.CopyRight(const aString: UnicodeString;
+  class function WideFn.CopyRight(const aString: UnicodeString;
                                     aCount: Integer): UnicodeString;
   begin
     Require('aCount', aCount).IsPositiveOrZero;
@@ -4522,8 +4512,8 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.CopyRight(const aString: UnicodeString;
-                                    aDelimiter: ANSIChar;
+  class function WideFn.CopyRight(const aString: UnicodeString;
+                                    aDelimiter: AnsiChar;
                                     aDelimiterOption: TCopyDelimiterOption;
                                     aDelimiterCase: TCaseSensitivity): UnicodeString;
   begin
@@ -4532,17 +4522,17 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.CopyRight(const aString: UnicodeString;
-                                    aDelimiter: WIDEChar;
+  class function WideFn.CopyRight(const aString: UnicodeString;
+                                    aDelimiter: WideChar;
                                     aDelimiterOption: TCopyDelimiterOption;
                                     aDelimiterCase: TCaseSensitivity): UnicodeString;
   begin
-    CopyRight(aString, ANSI(aDelimiter), result, aDelimiterOption, aDelimiterCase);
+    CopyRight(aString, Ansi(aDelimiter), result, aDelimiterOption, aDelimiterCase);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.CopyRight(const aString: UnicodeString;
+  class function WideFn.CopyRight(const aString: UnicodeString;
                               const aDelimiter: UnicodeString;
                                     aDelimiterOption: TCopyDelimiterOption;
                                     aDelimiterCase: TCaseSensitivity): UnicodeString;
@@ -4552,7 +4542,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.CopyRight(const aString: UnicodeString;
+  class function WideFn.CopyRight(const aString: UnicodeString;
                                     aCount: Integer;
                               var   aCopy: UnicodeString): Boolean;
   begin
@@ -4564,8 +4554,8 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.CopyRight(const aString: UnicodeString;
-                                    aDelimiter: ANSIChar;
+  class function WideFn.CopyRight(const aString: UnicodeString;
+                                    aDelimiter: AnsiChar;
                               var   aCopy: UnicodeString;
                                     aDelimiterOption: TCopyDelimiterOption;
                                     aDelimiterCase: TCaseSensitivity): Boolean;
@@ -4589,18 +4579,18 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.CopyRight(const aString: UnicodeString;
-                                    aDelimiter: WIDEChar;
+  class function WideFn.CopyRight(const aString: UnicodeString;
+                                    aDelimiter: WideChar;
                               var   aCopy: UnicodeString;
                                     aDelimiterOption: TCopyDelimiterOption;
                                     aDelimiterCase: TCaseSensitivity): Boolean;
   begin
-    result := CopyRight(aString, ANSI(aDelimiter), aCopy, aDelimiterOption, aDelimiterCase);
+    result := CopyRight(aString, Ansi(aDelimiter), aCopy, aDelimiterOption, aDelimiterCase);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.CopyRight(const aString: UnicodeString;
+  class function WideFn.CopyRight(const aString: UnicodeString;
                               const aDelimiter: UnicodeString;
                               var   aCopy: UnicodeString;
                                     aDelimiterOption: TCopyDelimiterOption;
@@ -4628,8 +4618,8 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.CopyRightText(const aString: UnicodeString;
-                                        aDelimiter: ANSIChar;
+  class function WideFn.CopyRightText(const aString: UnicodeString;
+                                        aDelimiter: AnsiChar;
                                         aDelimiterOption: TCopyDelimiterOption): UnicodeString;
   begin
     CopyRight(aString, aDelimiter, result, aDelimiterOption, csIgnoreCase);
@@ -4637,16 +4627,16 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.CopyRightText(const aString: UnicodeString;
-                                        aDelimiter: WIDEChar;
+  class function WideFn.CopyRightText(const aString: UnicodeString;
+                                        aDelimiter: WideChar;
                                         aDelimiterOption: TCopyDelimiterOption): UnicodeString;
   begin
-    CopyRight(aString, ANSI(aDelimiter), result, aDelimiterOption, csIgnoreCase);
+    CopyRight(aString, Ansi(aDelimiter), result, aDelimiterOption, csIgnoreCase);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.CopyRightText(const aString: UnicodeString;
+  class function WideFn.CopyRightText(const aString: UnicodeString;
                                   const aDelimiter: UnicodeString;
                                         aDelimiterOption: TCopyDelimiterOption): UnicodeString;
   begin
@@ -4655,8 +4645,8 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.CopyRightText(const aString: UnicodeString;
-                                        aDelimiter: ANSIChar;
+  class function WideFn.CopyRightText(const aString: UnicodeString;
+                                        aDelimiter: AnsiChar;
                                   var   aCopy: UnicodeString;
                                         aDelimiterOption: TCopyDelimiterOption): Boolean;
   begin
@@ -4665,17 +4655,17 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.CopyRightText(const aString: UnicodeString;
-                                        aDelimiter: WIDEChar;
+  class function WideFn.CopyRightText(const aString: UnicodeString;
+                                        aDelimiter: WideChar;
                                   var   aCopy: UnicodeString;
                                         aDelimiterOption: TCopyDelimiterOption): Boolean;
   begin
-    result := CopyRight(aString, ANSI(aDelimiter), aCopy, aDelimiterOption, csIgnoreCase);
+    result := CopyRight(aString, Ansi(aDelimiter), aCopy, aDelimiterOption, csIgnoreCase);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.CopyRightText(const aString: UnicodeString;
+  class function WideFn.CopyRightText(const aString: UnicodeString;
                                   const aDelimiter: UnicodeString;
                                   var   aCopy: UnicodeString;
                                         aDelimiterOption: TCopyDelimiterOption): Boolean;
@@ -4708,9 +4698,9 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Replace(const aString: UnicodeString;
-                                      aChar: ANSIChar;
-                                      aReplacement: ANSIChar;
+  class function WideFn.Replace(const aString: UnicodeString;
+                                      aChar: AnsiChar;
+                                      aReplacement: AnsiChar;
                                       aCaseMode: TCaseSensitivity): UnicodeString;
   begin
     Replace(aString, aChar, aReplacement, result, aCaseMode);
@@ -4718,18 +4708,18 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Replace(const aString: UnicodeString;
-                                      aChar: WIDEChar;
-                                      aReplacement: WIDEChar;
+  class function WideFn.Replace(const aString: UnicodeString;
+                                      aChar: WideChar;
+                                      aReplacement: WideChar;
                                       aCaseMode: TCaseSensitivity): UnicodeString;
   begin
-    Replace(aString, ANSI(aChar), ANSI(aReplacement), result, aCaseMode);
+    Replace(aString, Ansi(aChar), Ansi(aReplacement), result, aCaseMode);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Replace(const aString: UnicodeString;
-                                      aChar: ANSIChar;
+  class function WideFn.Replace(const aString: UnicodeString;
+                                      aChar: AnsiChar;
                                 const aReplacement: UnicodeString;
                                       aCaseMode: TCaseSensitivity): UnicodeString;
   begin
@@ -4738,8 +4728,8 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Replace(const aString: UnicodeString;
-                                      aChar: WIDEChar;
+  class function WideFn.Replace(const aString: UnicodeString;
+                                      aChar: WideChar;
                                 const aReplacement: UnicodeString;
                                       aCaseMode: TCaseSensitivity): UnicodeString;
   begin
@@ -4748,9 +4738,9 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Replace(const aString: UnicodeString;
+  class function WideFn.Replace(const aString: UnicodeString;
                                 const aSubstring: UnicodeString;
-                                      aReplacement: ANSIChar;
+                                      aReplacement: AnsiChar;
                                       aCaseMode: TCaseSensitivity): UnicodeString;
   begin
     Replace(aString, aSubstring, aReplacement, result, aCaseMode);
@@ -4758,17 +4748,17 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Replace(const aString: UnicodeString;
+  class function WideFn.Replace(const aString: UnicodeString;
                                 const aSubstring: UnicodeString;
-                                      aReplacement: WIDEChar;
+                                      aReplacement: WideChar;
                                       aCaseMode: TCaseSensitivity): UnicodeString;
   begin
-    Replace(aString, aSubstring, ANSI(aReplacement), result, aCaseMode);
+    Replace(aString, aSubstring, Ansi(aReplacement), result, aCaseMode);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Replace(const aString: UnicodeString;
+  class function WideFn.Replace(const aString: UnicodeString;
                                 const aSubstring: UnicodeString;
                                 const aReplacement: UnicodeString;
                                       aCaseMode: TCaseSensitivity): UnicodeString;
@@ -4780,9 +4770,9 @@ implementation
 //
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Replace(const aString: UnicodeString;
-                                      aChar: WIDEChar;
-                                      aReplacement: WIDEChar;
+  class function WideFn.Replace(const aString: UnicodeString;
+                                      aChar: WideChar;
+                                      aReplacement: WideChar;
                                 var   aResult: UnicodeString;
                                       aCaseMode: TCaseSensitivity): Boolean;
   var
@@ -4793,24 +4783,24 @@ implementation
     aResult := aString;
     result := (aChar <> aReplacement) and Find(aString, aChar, p, aCaseMode);
     if result then
-      PWIDEChar(aResult)[p - 1] := aReplacement;
+      PWideChar(aResult)[p - 1] := aReplacement;
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Replace(const aString: UnicodeString;
-                                      aChar: ANSIChar;
-                                      aReplacement: ANSIChar;
+  class function WideFn.Replace(const aString: UnicodeString;
+                                      aChar: AnsiChar;
+                                      aReplacement: AnsiChar;
                                 var   aResult: UnicodeString;
                                       aCaseMode: TCaseSensitivity): Boolean;
   begin
-    result := Replace(aString, WIDE(aChar), WIDE(aReplacement), aResult, aCaseMode);
+    result := Replace(aString, Wide(aChar), Wide(aReplacement), aResult, aCaseMode);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Replace(const aString: UnicodeString;
-                                      aChar: WIDEChar;
+  class function WideFn.Replace(const aString: UnicodeString;
+                                      aChar: WideChar;
                                 const aReplacement: UnicodeString;
                                 var   aResult: UnicodeString;
                                       aCaseMode: TCaseSensitivity): Boolean;
@@ -4833,8 +4823,8 @@ implementation
           FastMove(aResult, p + 1, p + replaceLen, strLen - p);
           FastCopy(aReplacement, aResult, p, replaceLen);
         end
-        else if (aChar <> PWIDEChar(aReplacement)[0]) then
-          PWIDEChar(aResult)[p - 1] := PWIDEChar(aReplacement)[0]
+        else if (aChar <> PWideChar(aReplacement)[0]) then
+          PWideChar(aResult)[p - 1] := PWideChar(aReplacement)[0]
         else
           result := FALSE;
       end
@@ -4845,20 +4835,20 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Replace(const aString: UnicodeString;
-                                      aChar: ANSIChar;
+  class function WideFn.Replace(const aString: UnicodeString;
+                                      aChar: AnsiChar;
                                 const aReplacement: UnicodeString;
                                 var   aResult: UnicodeString;
                                       aCaseMode: TCaseSensitivity): Boolean;
   begin
-    result := Replace(aString, WIDE(aChar), aReplacement, aResult, aCaseMode);
+    result := Replace(aString, Wide(aChar), aReplacement, aResult, aCaseMode);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Replace(const aString: UnicodeString;
+  class function WideFn.Replace(const aString: UnicodeString;
                                 const aSubstring: UnicodeString;
-                                      aReplacement: WIDEChar;
+                                      aReplacement: WideChar;
                                 var   aResult: UnicodeString;
                                       aCaseMode: TCaseSensitivity): Boolean;
   var
@@ -4881,27 +4871,27 @@ implementation
         SetLength(aResult, strLen - (subLen - 1));
       end
       else
-        result := (aReplacement <> PWIDEChar(aSubString)[0]);
+        result := (aReplacement <> PWideChar(aSubString)[0]);
 
       if result then
-        PWIDEChar(aResult)[p - 1] := aReplacement;
+        PWideChar(aResult)[p - 1] := aReplacement;
     end;
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Replace(const aString: UnicodeString;
+  class function WideFn.Replace(const aString: UnicodeString;
                                 const aSubstring: UnicodeString;
-                                      aReplacement: ANSIChar;
+                                      aReplacement: AnsiChar;
                                 var   aResult: UnicodeString;
                                       aCaseMode: TCaseSensitivity): Boolean;
   begin
-    result := Replace(aString, aSubstring, WIDE(aReplacement), aResult, aCaseMode);
+    result := Replace(aString, aSubstring, Wide(aReplacement), aResult, aCaseMode);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Replace(const aString: UnicodeString;
+  class function WideFn.Replace(const aString: UnicodeString;
                                 const aSubstring: UnicodeString;
                                 const aReplacement: UnicodeString;
                                 var   aResult: UnicodeString;
@@ -4931,7 +4921,7 @@ implementation
           FastMove(aResult, p + subLen, p + replaceLen, strLen - (p + subLen - 1));
 
         if (replaceLen = 1) then
-          PWIDEChar(aResult)[p - 1] := PWIDEChar(aReplacement)[0]
+          PWideChar(aResult)[p - 1] := PWideChar(aReplacement)[0]
         else
           FastCopy(aReplacement, aResult, p, replaceLen);
 
@@ -4950,26 +4940,26 @@ implementation
 //
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ReplaceText(const aString: UnicodeString;
-                                          aChar: ANSIChar;
-                                          aReplacement: ANSIChar): UnicodeString;
+  class function WideFn.ReplaceText(const aString: UnicodeString;
+                                          aChar: AnsiChar;
+                                          aReplacement: AnsiChar): UnicodeString;
   begin
     result := Replace(aString, aChar, aReplacement, csIgnoreCase);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ReplaceText(const aString: UnicodeString;
-                                          aChar: WIDEChar;
-                                          aReplacement: WIDEChar): UnicodeString;
+  class function WideFn.ReplaceText(const aString: UnicodeString;
+                                          aChar: WideChar;
+                                          aReplacement: WideChar): UnicodeString;
   begin
-    result := Replace(aString, ANSI(aChar), ANSI(aReplacement), csIgnoreCase);
+    result := Replace(aString, Ansi(aChar), Ansi(aReplacement), csIgnoreCase);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ReplaceText(const aString: UnicodeString;
-                                          aChar: ANSIChar;
+  class function WideFn.ReplaceText(const aString: UnicodeString;
+                                          aChar: AnsiChar;
                                     const aReplacement: UnicodeString): UnicodeString;
   begin
     result := Replace(aString, aChar, aReplacement, csIgnoreCase);
@@ -4977,34 +4967,34 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ReplaceText(const aString: UnicodeString;
-                                          aChar: WIDEChar;
+  class function WideFn.ReplaceText(const aString: UnicodeString;
+                                          aChar: WideChar;
                                     const aReplacement: UnicodeString): UnicodeString;
   begin
-    result := Replace(aString, ANSI(aChar), aReplacement, csIgnoreCase);
+    result := Replace(aString, Ansi(aChar), aReplacement, csIgnoreCase);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ReplaceText(const aString: UnicodeString;
+  class function WideFn.ReplaceText(const aString: UnicodeString;
                                     const aSubstring: UnicodeString;
-                                          aReplacement: ANSIChar): UnicodeString;
+                                          aReplacement: AnsiChar): UnicodeString;
   begin
     result := Replace(aString, aSubString, aReplacement, csIgnoreCase);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ReplaceText(const aString: UnicodeString;
+  class function WideFn.ReplaceText(const aString: UnicodeString;
                                     const aSubstring: UnicodeString;
-                                          aReplacement: WIDEChar): UnicodeString;
+                                          aReplacement: WideChar): UnicodeString;
   begin
-    result := Replace(aString, aSubstring, ANSI(aReplacement), csIgnoreCase);
+    result := Replace(aString, aSubstring, Ansi(aReplacement), csIgnoreCase);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ReplaceText(const aString: UnicodeString;
+  class function WideFn.ReplaceText(const aString: UnicodeString;
                                     const aSubstring: UnicodeString;
                                     const aReplacement: UnicodeString): UnicodeString;
   begin
@@ -5016,9 +5006,9 @@ implementation
 //
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ReplaceText(const aString: UnicodeString;
-                                          aChar: ANSIChar;
-                                          aReplacement: ANSIChar;
+  class function WideFn.ReplaceText(const aString: UnicodeString;
+                                          aChar: AnsiChar;
+                                          aReplacement: AnsiChar;
                                     var   aResult: UnicodeString): Boolean;
   begin
     result := Replace(aString, aChar, aReplacement, aResult, csIgnoreCase);
@@ -5026,18 +5016,18 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ReplaceText(const aString: UnicodeString;
-                                          aChar: WIDEChar;
-                                          aReplacement: WIDEChar;
+  class function WideFn.ReplaceText(const aString: UnicodeString;
+                                          aChar: WideChar;
+                                          aReplacement: WideChar;
                                     var   aResult: UnicodeString): Boolean;
   begin
-    result := Replace(aString, ANSI(aChar), ANSI(aReplacement), aResult, csIgnoreCase);
+    result := Replace(aString, Ansi(aChar), Ansi(aReplacement), aResult, csIgnoreCase);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ReplaceText(const aString: UnicodeString;
-                                          aChar: ANSIChar;
+  class function WideFn.ReplaceText(const aString: UnicodeString;
+                                          aChar: AnsiChar;
                                     const aReplacement: UnicodeString;
                               var   aResult: UnicodeString): Boolean;
   begin
@@ -5046,19 +5036,19 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ReplaceText(const aString: UnicodeString;
-                                          aChar: WIDEChar;
+  class function WideFn.ReplaceText(const aString: UnicodeString;
+                                          aChar: WideChar;
                                     const aReplacement: UnicodeString;
                               var   aResult: UnicodeString): Boolean;
   begin
-    result := Replace(aString, ANSI(aChar), aReplacement, aResult, csIgnoreCase);
+    result := Replace(aString, Ansi(aChar), aReplacement, aResult, csIgnoreCase);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ReplaceText(const aString: UnicodeString;
+  class function WideFn.ReplaceText(const aString: UnicodeString;
                                     const aSubstring: UnicodeString;
-                                          aReplacement: ANSIChar;
+                                          aReplacement: AnsiChar;
                                     var   aResult: UnicodeString): Boolean;
   begin
     result := Replace(aString, aSubString, aReplacement, aResult, csIgnoreCase);
@@ -5066,17 +5056,17 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ReplaceText(const aString: UnicodeString;
+  class function WideFn.ReplaceText(const aString: UnicodeString;
                                     const aSubstring: UnicodeString;
-                                          aReplacement: WIDEChar;
+                                          aReplacement: WideChar;
                                     var   aResult: UnicodeString): Boolean;
   begin
-    result := Replace(aString, aSubstring, ANSI(aReplacement), aResult, csIgnoreCase);
+    result := Replace(aString, aSubstring, Ansi(aReplacement), aResult, csIgnoreCase);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ReplaceText(const aString: UnicodeString;
+  class function WideFn.ReplaceText(const aString: UnicodeString;
                                     const aSubstring: UnicodeString;
                                     const aReplacement: UnicodeString;
                               var   aResult: UnicodeString): Boolean;
@@ -5090,9 +5080,9 @@ implementation
 //
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ReplaceAll(const aString: UnicodeString;
-                                         aChar: WIDEChar;
-                                         aReplacement: WIDEChar;
+  class function WideFn.ReplaceAll(const aString: UnicodeString;
+                                         aChar: WideChar;
+                                         aReplacement: WideChar;
                                    var   aResult: UnicodeString;
                                          aCaseMode: TCaseSensitivity): Boolean;
   var
@@ -5104,24 +5094,24 @@ implementation
     result := (aChar <> aReplacement) and (FindAll(aString, aChar, p, aCaseMode) > 0);
     if result then
       for i := Low(p) to High(p) do
-        PWIDEChar(aResult)[p[i] - 1] := aReplacement;
+        PWideChar(aResult)[p[i] - 1] := aReplacement;
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ReplaceAll(const aString: UnicodeString;
-                                         aChar: ANSIChar;
-                                         aReplacement: ANSIChar;
+  class function WideFn.ReplaceAll(const aString: UnicodeString;
+                                         aChar: AnsiChar;
+                                         aReplacement: AnsiChar;
                                    var   aResult: UnicodeString;
                                          aCaseMode: TCaseSensitivity): Boolean;
   begin
-    result := ReplaceAll(aString, WIDE(aChar), WIDE(aReplacement), aResult);
+    result := ReplaceAll(aString, Wide(aChar), Wide(aReplacement), aResult);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ReplaceAll(const aString: UnicodeString;
-                                         aChar: WIDEChar;
+  class function WideFn.ReplaceAll(const aString: UnicodeString;
+                                         aChar: WideChar;
                                    const aReplacement: UnicodeString;
                                    var   aResult: UnicodeString;
                                          aCaseMode: TCaseSensitivity): Boolean;
@@ -5158,7 +5148,7 @@ implementation
         end;
       end
       else for i := 0 to Pred(occurs) do
-        PWIDEChar(aResult)[pa[i] - 1] := PWIDEChar(aReplacement)[0];
+        PWideChar(aResult)[pa[i] - 1] := PWideChar(aReplacement)[0];
     end
     else
       aResult := RemoveAll(aString, aChar, aCaseMode);
@@ -5166,20 +5156,20 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ReplaceAll(const aString: UnicodeString;
-                                         aChar: ANSIChar;
+  class function WideFn.ReplaceAll(const aString: UnicodeString;
+                                         aChar: AnsiChar;
                                    const aReplacement: UnicodeString;
                                    var   aResult: UnicodeString;
                                          aCaseMode: TCaseSensitivity): Boolean;
   begin
-    result := ReplaceAll(aString, WIDE(aChar), aReplacement, aResult);
+    result := ReplaceAll(aString, Wide(aChar), aReplacement, aResult);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ReplaceAll(const aString: UnicodeString;
+  class function WideFn.ReplaceAll(const aString: UnicodeString;
                                    const aSubstring: UnicodeString;
-                                         aReplacement: WIDEChar;
+                                         aReplacement: WideChar;
                                    var   aResult: UnicodeString;
                                          aCaseMode: TCaseSensitivity): Boolean;
   var
@@ -5210,29 +5200,29 @@ implementation
       begin
         p := pa[i] + (i * nudge);
         FastMove(aResult, p + subLen, p + 1, strLen - (p + subLen - 1));
-        PWIDEChar(aResult)[p - 1] := aReplacement;
+        PWideChar(aResult)[p - 1] := aReplacement;
       end;
 
       SetLength(aResult, strLen + (occurs * nudge));
     end
     else for i := 0 to Pred(occurs) do
-      PWIDEChar(aResult)[pa[i] - 1] := PWIDEChar(aReplacement)[0];
+      PWideChar(aResult)[pa[i] - 1] := PWideChar(aReplacement)[0];
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ReplaceAll(const aString: UnicodeString;
+  class function WideFn.ReplaceAll(const aString: UnicodeString;
                                    const aSubstring: UnicodeString;
-                                         aReplacement: ANSIChar;
+                                         aReplacement: AnsiChar;
                                    var   aResult: UnicodeString;
                                          aCaseMode: TCaseSensitivity): Boolean;
   begin
-    result := ReplaceAll(aString, aSubstring, WIDE(aReplacement), aResult);
+    result := ReplaceAll(aString, aSubstring, Wide(aReplacement), aResult);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ReplaceAll(const aString: UnicodeString;
+  class function WideFn.ReplaceAll(const aString: UnicodeString;
                                    const aSubstring: UnicodeString;
                                    const aReplacement: UnicodeString;
                                    var   aResult: UnicodeString;
@@ -5282,7 +5272,7 @@ implementation
         begin
           p := pa[i] + (i * nudge);
           FastMove(aResult, p + subLen, p + 1, strLen - p);
-          PWIDEChar(aResult)[p - 1] := PWIDEChar(aReplacement)[0];
+          PWideChar(aResult)[p - 1] := PWideChar(aReplacement)[0];
         end;
 
         if nudge < 0 then
@@ -5291,7 +5281,7 @@ implementation
       else if (replaceLen = 1) then
       begin
         for i := 0 to Pred(occurs) do
-          PWIDEChar(aResult)[pa[i] - 1] := PWIDEChar(aReplacement)[0];
+          PWideChar(aResult)[pa[i] - 1] := PWideChar(aReplacement)[0];
       end
       else for i := 0 to Pred(occurs) do
         FastCopy(aReplacement, aResult, pa[i], replaceLen);
@@ -5302,9 +5292,9 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ReplaceAll(const aString: UnicodeString;
-                                         aChar: WIDEChar;
-                                         aReplacement: WIDEChar;
+  class function WideFn.ReplaceAll(const aString: UnicodeString;
+                                         aChar: WideChar;
+                                         aReplacement: WideChar;
                                          aCaseMode: TCaseSensitivity): UnicodeString;
   begin
     ReplaceAll(aString, aChar, aReplacement, result, aCaseMode);
@@ -5312,28 +5302,28 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ReplaceAll(const aString: UnicodeString;
-                                         aChar: ANSIChar;
-                                         aReplacement: ANSIChar;
+  class function WideFn.ReplaceAll(const aString: UnicodeString;
+                                         aChar: AnsiChar;
+                                         aReplacement: AnsiChar;
                                          aCaseMode: TCaseSensitivity): UnicodeString;
   begin
-    ReplaceAll(aString, WIDE(aChar), WIDE(aReplacement), result, aCaseMode);
+    ReplaceAll(aString, Wide(aChar), Wide(aReplacement), result, aCaseMode);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ReplaceAll(const aString: UnicodeString;
-                                         aChar: ANSIChar;
+  class function WideFn.ReplaceAll(const aString: UnicodeString;
+                                         aChar: AnsiChar;
                                    const aReplacement: UnicodeString;
                                          aCaseMode: TCaseSensitivity): UnicodeString;
   begin
-    ReplaceAll(aString, WIDE(aChar), aReplacement, result, aCaseMode);
+    ReplaceAll(aString, Wide(aChar), aReplacement, result, aCaseMode);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ReplaceAll(const aString: UnicodeString;
-                                         aChar: WIDEChar;
+  class function WideFn.ReplaceAll(const aString: UnicodeString;
+                                         aChar: WideChar;
                                    const aReplacement: UnicodeString;
                                          aCaseMode: TCaseSensitivity): UnicodeString;
   begin
@@ -5342,19 +5332,19 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ReplaceAll(const aString: UnicodeString;
+  class function WideFn.ReplaceAll(const aString: UnicodeString;
                                    const aSubstring: UnicodeString;
-                                         aReplacement: ANSIChar;
+                                         aReplacement: AnsiChar;
                                          aCaseMode: TCaseSensitivity): UnicodeString;
   begin
-    ReplaceAll(aString, aSubstring, WIDE(aReplacement), result, aCaseMode);
+    ReplaceAll(aString, aSubstring, Wide(aReplacement), result, aCaseMode);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ReplaceAll(const aString: UnicodeString;
+  class function WideFn.ReplaceAll(const aString: UnicodeString;
                                    const aSubstring: UnicodeString;
-                                         aReplacement: WIDEChar;
+                                         aReplacement: WideChar;
                                          aCaseMode: TCaseSensitivity): UnicodeString;
   begin
     ReplaceAll(aString, aSubstring, aReplacement, result, aCaseMode);
@@ -5362,7 +5352,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ReplaceAll(const aString: UnicodeString;
+  class function WideFn.ReplaceAll(const aString: UnicodeString;
                                    const aSubstring: UnicodeString;
                                    const aReplacement: UnicodeString;
                                          aCaseMode: TCaseSensitivity): UnicodeString;
@@ -5375,9 +5365,9 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ReplaceAllText(const aString: UnicodeString;
-                                             aChar: WIDEChar;
-                                             aReplacement: WIDEChar;
+  class function WideFn.ReplaceAllText(const aString: UnicodeString;
+                                             aChar: WideChar;
+                                             aReplacement: WideChar;
                                        var   aResult: UnicodeString): Boolean;
   begin
     result := ReplaceAll(aString, aChar, aReplacement, aResult, csIgnoreCase);
@@ -5385,28 +5375,28 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ReplaceAllText(const aString: UnicodeString;
-                                             aChar: ANSIChar;
-                                             aReplacement: ANSIChar;
+  class function WideFn.ReplaceAllText(const aString: UnicodeString;
+                                             aChar: AnsiChar;
+                                             aReplacement: AnsiChar;
                                        var   aResult: UnicodeString): Boolean;
   begin
-    result := ReplaceAll(aString, WIDE(aChar), WIDE(aReplacement), aResult, csIgnoreCase);
+    result := ReplaceAll(aString, Wide(aChar), Wide(aReplacement), aResult, csIgnoreCase);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ReplaceAllText(const aString: UnicodeString;
-                                             aChar: ANSIChar;
+  class function WideFn.ReplaceAllText(const aString: UnicodeString;
+                                             aChar: AnsiChar;
                                        const aReplacement: UnicodeString;
                                        var   aResult: UnicodeString): Boolean;
   begin
-    result := ReplaceAll(aString, WIDE(aChar), aReplacement, aResult, csIgnoreCase);
+    result := ReplaceAll(aString, Wide(aChar), aReplacement, aResult, csIgnoreCase);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ReplaceAllText(const aString: UnicodeString;
-                                             aChar: WIDEChar;
+  class function WideFn.ReplaceAllText(const aString: UnicodeString;
+                                             aChar: WideChar;
                                        const aReplacement: UnicodeString;
                                        var   aResult: UnicodeString): Boolean;
   begin
@@ -5415,19 +5405,19 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ReplaceAllText(const aString: UnicodeString;
+  class function WideFn.ReplaceAllText(const aString: UnicodeString;
                                        const aSubstring: UnicodeString;
-                                             aReplacement: ANSIChar;
+                                             aReplacement: AnsiChar;
                                        var   aResult: UnicodeString): Boolean;
   begin
-    result := ReplaceAll(aString, aSubstring, WIDE(aReplacement), aResult, csIgnoreCase);
+    result := ReplaceAll(aString, aSubstring, Wide(aReplacement), aResult, csIgnoreCase);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ReplaceAllText(const aString: UnicodeString;
+  class function WideFn.ReplaceAllText(const aString: UnicodeString;
                                        const aSubstring: UnicodeString;
-                                             aReplacement: WIDEChar;
+                                             aReplacement: WideChar;
                                        var   aResult: UnicodeString): Boolean;
   begin
     result := ReplaceAll(aString, aSubstring, aReplacement, aResult, csIgnoreCase);
@@ -5435,7 +5425,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ReplaceAllText(const aString: UnicodeString;
+  class function WideFn.ReplaceAllText(const aString: UnicodeString;
                                        const aSubstring: UnicodeString;
                                        const aReplacement: UnicodeString;
                                        var   aResult: UnicodeString): Boolean;
@@ -5445,61 +5435,61 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ReplaceAllText(const aString: UnicodeString;
-                                             aChar: ANSIChar;
-                                             aReplacement: ANSIChar): UnicodeString;
+  class function WideFn.ReplaceAllText(const aString: UnicodeString;
+                                             aChar: AnsiChar;
+                                             aReplacement: AnsiChar): UnicodeString;
   begin
-    ReplaceAll(aString, WIDE(aChar), WIDE(aReplacement), result, csIgnoreCase);
+    ReplaceAll(aString, Wide(aChar), Wide(aReplacement), result, csIgnoreCase);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ReplaceAllText(const aString: UnicodeString;
-                                             aChar: WIDEChar;
-                                             aReplacement: WIDEChar): UnicodeString;
-  begin
-    ReplaceAll(aString, aChar, aReplacement, result, csIgnoreCase);
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ReplaceAllText(const aString: UnicodeString;
-                                             aChar: ANSIChar;
-                                       const aReplacement: UnicodeString): UnicodeString;
-  begin
-    ReplaceAll(aString, WIDE(aChar), aReplacement, result, csIgnoreCase);
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ReplaceAllText(const aString: UnicodeString;
-                                             aChar: WIDEChar;
-                                       const aReplacement: UnicodeString): UnicodeString;
+  class function WideFn.ReplaceAllText(const aString: UnicodeString;
+                                             aChar: WideChar;
+                                             aReplacement: WideChar): UnicodeString;
   begin
     ReplaceAll(aString, aChar, aReplacement, result, csIgnoreCase);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ReplaceAllText(const aString: UnicodeString;
-                                       const aSubstring: UnicodeString;
-                                             aReplacement: ANSIChar): UnicodeString;
+  class function WideFn.ReplaceAllText(const aString: UnicodeString;
+                                             aChar: AnsiChar;
+                                       const aReplacement: UnicodeString): UnicodeString;
   begin
-    ReplaceAll(aString, aSubstring, WIDE(aReplacement), result, csIgnoreCase);
+    ReplaceAll(aString, Wide(aChar), aReplacement, result, csIgnoreCase);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ReplaceAllText(const aString: UnicodeString;
+  class function WideFn.ReplaceAllText(const aString: UnicodeString;
+                                             aChar: WideChar;
+                                       const aReplacement: UnicodeString): UnicodeString;
+  begin
+    ReplaceAll(aString, aChar, aReplacement, result, csIgnoreCase);
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
+  class function WideFn.ReplaceAllText(const aString: UnicodeString;
                                        const aSubstring: UnicodeString;
-                                             aReplacement: WIDEChar): UnicodeString;
+                                             aReplacement: AnsiChar): UnicodeString;
+  begin
+    ReplaceAll(aString, aSubstring, Wide(aReplacement), result, csIgnoreCase);
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
+  class function WideFn.ReplaceAllText(const aString: UnicodeString;
+                                       const aSubstring: UnicodeString;
+                                             aReplacement: WideChar): UnicodeString;
   begin
     ReplaceAll(aString, aSubstring, aReplacement, result, csIgnoreCase);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ReplaceAllText(const aString: UnicodeString;
+  class function WideFn.ReplaceAllText(const aString: UnicodeString;
                                        const aSubstring: UnicodeString;
                                        const aReplacement: UnicodeString): UnicodeString;
   begin
@@ -5512,9 +5502,9 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ReplaceLast(const aString: UnicodeString;
-                                          aChar: WIDEChar;
-                                          aReplacement: WIDEChar;
+  class function WideFn.ReplaceLast(const aString: UnicodeString;
+                                          aChar: WideChar;
+                                          aReplacement: WideChar;
                                     var   aResult: UnicodeString;
                                           aCaseMode: TCaseSensitivity): Boolean;
   var
@@ -5526,24 +5516,24 @@ implementation
 
     result := (aChar <> aReplacement) and FindLast(aString, aChar, p, aCaseMode);
     if result then
-      PWIDEChar(aResult)[p - 1] := aReplacement;
+      PWideChar(aResult)[p - 1] := aReplacement;
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ReplaceLast(const aString: UnicodeString;
-                                          aChar: ANSIChar;
-                                          aReplacement: ANSIChar;
+  class function WideFn.ReplaceLast(const aString: UnicodeString;
+                                          aChar: AnsiChar;
+                                          aReplacement: AnsiChar;
                                     var   aResult: UnicodeString;
                                           aCaseMode: TCaseSensitivity): Boolean;
   begin
-    result := ReplaceLast(aString, WIDE(aChar), WIDE(aReplacement), aResult, aCaseMode);
+    result := ReplaceLast(aString, Wide(aChar), Wide(aReplacement), aResult, aCaseMode);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ReplaceLast(const aString: UnicodeString;
-                                          aChar: WIDEChar;
+  class function WideFn.ReplaceLast(const aString: UnicodeString;
+                                          aChar: WideChar;
                                     const aReplacement: UnicodeString;
                                     var   aResult: UnicodeString;
                                           aCaseMode: TCaseSensitivity): Boolean;
@@ -5565,8 +5555,8 @@ implementation
           FastMove(aResult, p + 1, p + replaceLen, strLen - p);
           FastCopy(aReplacement, aResult, p, replaceLen);
         end
-        else if (aChar <> PWIDEChar(aReplacement)[0]) then
-          PWIDEChar(aResult)[p - 1] := PWIDEChar(aReplacement)[0]
+        else if (aChar <> PWideChar(aReplacement)[0]) then
+          PWideChar(aResult)[p - 1] := PWideChar(aReplacement)[0]
         else
           result := FALSE;
       end
@@ -5577,20 +5567,20 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ReplaceLast(const aString: UnicodeString;
-                                          aChar: ANSIChar;
+  class function WideFn.ReplaceLast(const aString: UnicodeString;
+                                          aChar: AnsiChar;
                                     const aReplacement: UnicodeString;
                                     var   aResult: UnicodeString;
                                           aCaseMode: TCaseSensitivity): Boolean;
   begin
-    result := ReplaceLast(aString, WIDE(aChar), aReplacement, aResult, aCaseMode);
+    result := ReplaceLast(aString, Wide(aChar), aReplacement, aResult, aCaseMode);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ReplaceLast(const aString: UnicodeString;
+  class function WideFn.ReplaceLast(const aString: UnicodeString;
                                     const aSubstring: UnicodeString;
-                                          aReplacement: WIDEChar;
+                                          aReplacement: WideChar;
                                     var   aResult: UnicodeString;
                                           aCaseMode: TCaseSensitivity): Boolean;
   var
@@ -5613,27 +5603,27 @@ implementation
         SetLength(aResult, strLen - (subLen - 1));
       end
       else
-        result := (aReplacement <> PWIDEChar(aSubString)[0]);
+        result := (aReplacement <> PWideChar(aSubString)[0]);
 
       if result then
-        PWIDEChar(aResult)[p - 1] := aReplacement;
+        PWideChar(aResult)[p - 1] := aReplacement;
     end;
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ReplaceLast(const aString: UnicodeString;
+  class function WideFn.ReplaceLast(const aString: UnicodeString;
                                     const aSubstring: UnicodeString;
-                                          aReplacement: ANSIChar;
+                                          aReplacement: AnsiChar;
                                     var   aResult: UnicodeString;
                                           aCaseMode: TCaseSensitivity): Boolean;
   begin
-    result := ReplaceLast(aString, aSubstring, WIDE(aReplacement), aResult, aCaseMode);
+    result := ReplaceLast(aString, aSubstring, Wide(aReplacement), aResult, aCaseMode);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ReplaceLast(const aString: UnicodeString;
+  class function WideFn.ReplaceLast(const aString: UnicodeString;
                                     const aSubstring: UnicodeString;
                                     const aReplacement: UnicodeString;
                                     var   aResult: UnicodeString;
@@ -5666,7 +5656,7 @@ implementation
           FastMove(aResult, p + subLen, p + replaceLen, strLen - (p + subLen - 1));
 
         if (replaceLen = 1) then
-          PWIDEChar(aResult)[p - 1] := PWIDEChar(aReplacement)[0]
+          PWideChar(aResult)[p - 1] := PWideChar(aReplacement)[0]
         else
           FastCopy(aReplacement, aResult, p, replaceLen);
 
@@ -5682,39 +5672,19 @@ implementation
 //
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ReplaceLast(const aString: UnicodeString;
-                                          aChar: ANSIChar;
-                                          aReplacement: ANSIChar;
+  class function WideFn.ReplaceLast(const aString: UnicodeString;
+                                          aChar: AnsiChar;
+                                          aReplacement: AnsiChar;
                                           aCaseMode: TCaseSensitivity): UnicodeString;
   begin
-    ReplaceLast(aString, WIDE(aChar), WIDE(aReplacement), result, aCaseMode);
+    ReplaceLast(aString, Wide(aChar), Wide(aReplacement), result, aCaseMode);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ReplaceLast(const aString: UnicodeString;
-                                          aChar: WIDEChar;
-                                          aReplacement: WIDEChar;
-                                          aCaseMode: TCaseSensitivity): UnicodeString;
-  begin
-    ReplaceLast(aString, aChar, aReplacement, result, aCaseMode);
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ReplaceLast(const aString: UnicodeString;
-                                          aChar: ANSIChar;
-                                    const aReplacement: UnicodeString;
-                                          aCaseMode: TCaseSensitivity): UnicodeString;
-  begin
-    ReplaceLast(aString, WIDE(aChar), aReplacement, result, aCaseMode);
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ReplaceLast(const aString: UnicodeString;
-                                          aChar: WIDEChar;
-                                    const aReplacement: UnicodeString;
+  class function WideFn.ReplaceLast(const aString: UnicodeString;
+                                          aChar: WideChar;
+                                          aReplacement: WideChar;
                                           aCaseMode: TCaseSensitivity): UnicodeString;
   begin
     ReplaceLast(aString, aChar, aReplacement, result, aCaseMode);
@@ -5722,19 +5692,39 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ReplaceLast(const aString: UnicodeString;
-                                    const aSubstring: UnicodeString;
-                                          aReplacement: ANSIChar;
+  class function WideFn.ReplaceLast(const aString: UnicodeString;
+                                          aChar: AnsiChar;
+                                    const aReplacement: UnicodeString;
                                           aCaseMode: TCaseSensitivity): UnicodeString;
   begin
-    ReplaceLast(aString, aSubstring, WIDE(aReplacement), result, aCaseMode);
+    ReplaceLast(aString, Wide(aChar), aReplacement, result, aCaseMode);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ReplaceLast(const aString: UnicodeString;
+  class function WideFn.ReplaceLast(const aString: UnicodeString;
+                                          aChar: WideChar;
+                                    const aReplacement: UnicodeString;
+                                          aCaseMode: TCaseSensitivity): UnicodeString;
+  begin
+    ReplaceLast(aString, aChar, aReplacement, result, aCaseMode);
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
+  class function WideFn.ReplaceLast(const aString: UnicodeString;
                                     const aSubstring: UnicodeString;
-                                          aReplacement: WIDEChar;
+                                          aReplacement: AnsiChar;
+                                          aCaseMode: TCaseSensitivity): UnicodeString;
+  begin
+    ReplaceLast(aString, aSubstring, Wide(aReplacement), result, aCaseMode);
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
+  class function WideFn.ReplaceLast(const aString: UnicodeString;
+                                    const aSubstring: UnicodeString;
+                                          aReplacement: WideChar;
                                           aCaseMode: TCaseSensitivity): UnicodeString;
   begin
     ReplaceLast(aString, aSubstring, aReplacement, result, aCaseMode);
@@ -5742,7 +5732,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ReplaceLast(const aString: UnicodeString;
+  class function WideFn.ReplaceLast(const aString: UnicodeString;
                                     const aSubstring: UnicodeString;
                                     const aReplacement: UnicodeString;
                                           aCaseMode: TCaseSensitivity): UnicodeString;
@@ -5755,61 +5745,61 @@ implementation
 //
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ReplaceLastText(const aString: UnicodeString;
-                                              aChar: ANSIChar;
-                                              aReplacement: ANSIChar): UnicodeString;
+  class function WideFn.ReplaceLastText(const aString: UnicodeString;
+                                              aChar: AnsiChar;
+                                              aReplacement: AnsiChar): UnicodeString;
   begin
-    result := ReplaceLast(aString, WIDE(aChar), WIDE(aReplacement), csIgnoreCase);
+    result := ReplaceLast(aString, Wide(aChar), Wide(aReplacement), csIgnoreCase);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ReplaceLastText(const aString: UnicodeString;
-                                              aChar: WIDEChar;
-                                              aReplacement: WIDEChar): UnicodeString;
-  begin
-    result := ReplaceLast(aString, aChar, aReplacement, csIgnoreCase);
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ReplaceLastText(const aString: UnicodeString;
-                                              aChar: ANSIChar;
-                                        const aReplacement: UnicodeString): UnicodeString;
-  begin
-    result := ReplaceLast(aString, WIDE(aChar), aReplacement, csIgnoreCase);
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ReplaceLastText(const aString: UnicodeString;
-                                              aChar: WIDEChar;
-                                        const aReplacement: UnicodeString): UnicodeString;
+  class function WideFn.ReplaceLastText(const aString: UnicodeString;
+                                              aChar: WideChar;
+                                              aReplacement: WideChar): UnicodeString;
   begin
     result := ReplaceLast(aString, aChar, aReplacement, csIgnoreCase);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ReplaceLastText(const aString: UnicodeString;
-                                        const aSubstring: UnicodeString;
-                                              aReplacement: ANSIChar): UnicodeString;
+  class function WideFn.ReplaceLastText(const aString: UnicodeString;
+                                              aChar: AnsiChar;
+                                        const aReplacement: UnicodeString): UnicodeString;
   begin
-    result := ReplaceLast(aString, aSubString, WIDE(aReplacement), csIgnoreCase);
+    result := ReplaceLast(aString, Wide(aChar), aReplacement, csIgnoreCase);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ReplaceLastText(const aString: UnicodeString;
+  class function WideFn.ReplaceLastText(const aString: UnicodeString;
+                                              aChar: WideChar;
+                                        const aReplacement: UnicodeString): UnicodeString;
+  begin
+    result := ReplaceLast(aString, aChar, aReplacement, csIgnoreCase);
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
+  class function WideFn.ReplaceLastText(const aString: UnicodeString;
                                         const aSubstring: UnicodeString;
-                                              aReplacement: WIDEChar): UnicodeString;
+                                              aReplacement: AnsiChar): UnicodeString;
+  begin
+    result := ReplaceLast(aString, aSubString, Wide(aReplacement), csIgnoreCase);
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
+  class function WideFn.ReplaceLastText(const aString: UnicodeString;
+                                        const aSubstring: UnicodeString;
+                                              aReplacement: WideChar): UnicodeString;
   begin
     result := ReplaceLast(aString, aSubstring, aReplacement, csIgnoreCase);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ReplaceLastText(const aString: UnicodeString;
+  class function WideFn.ReplaceLastText(const aString: UnicodeString;
                                         const aSubstring: UnicodeString;
                                         const aReplacement: UnicodeString): UnicodeString;
   begin
@@ -5821,39 +5811,19 @@ implementation
 //
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ReplaceLastText(const aString: UnicodeString;
-                                              aChar: ANSIChar;
-                                              aReplacement: ANSIChar;
+  class function WideFn.ReplaceLastText(const aString: UnicodeString;
+                                              aChar: AnsiChar;
+                                              aReplacement: AnsiChar;
                                         var   aResult: UnicodeString): Boolean;
   begin
-    result := ReplaceLast(aString, WIDE(aChar), WIDE(aReplacement), aResult, csIgnoreCase);
+    result := ReplaceLast(aString, Wide(aChar), Wide(aReplacement), aResult, csIgnoreCase);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ReplaceLastText(const aString: UnicodeString;
-                                              aChar: WIDEChar;
-                                              aReplacement: WIDEChar;
-                                        var   aResult: UnicodeString): Boolean;
-  begin
-    result := ReplaceLast(aString, aChar, aReplacement, aResult, csIgnoreCase);
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ReplaceLastText(const aString: UnicodeString;
-                                              aChar: ANSIChar;
-                                        const aReplacement: UnicodeString;
-                                        var   aResult: UnicodeString): Boolean;
-  begin
-    result := ReplaceLast(aString, WIDE(aChar), aReplacement, aResult, csIgnoreCase);
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ReplaceLastText(const aString: UnicodeString;
-                                              aChar: WIDEChar;
-                                        const aReplacement: UnicodeString;
+  class function WideFn.ReplaceLastText(const aString: UnicodeString;
+                                              aChar: WideChar;
+                                              aReplacement: WideChar;
                                         var   aResult: UnicodeString): Boolean;
   begin
     result := ReplaceLast(aString, aChar, aReplacement, aResult, csIgnoreCase);
@@ -5861,19 +5831,39 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ReplaceLastText(const aString: UnicodeString;
-                                        const aSubstring: UnicodeString;
-                                              aReplacement: ANSIChar;
+  class function WideFn.ReplaceLastText(const aString: UnicodeString;
+                                              aChar: AnsiChar;
+                                        const aReplacement: UnicodeString;
                                         var   aResult: UnicodeString): Boolean;
   begin
-    result := ReplaceLast(aString, aSubString, WIDE(aReplacement), aResult, csIgnoreCase);
+    result := ReplaceLast(aString, Wide(aChar), aReplacement, aResult, csIgnoreCase);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ReplaceLastText(const aString: UnicodeString;
+  class function WideFn.ReplaceLastText(const aString: UnicodeString;
+                                              aChar: WideChar;
+                                        const aReplacement: UnicodeString;
+                                        var   aResult: UnicodeString): Boolean;
+  begin
+    result := ReplaceLast(aString, aChar, aReplacement, aResult, csIgnoreCase);
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
+  class function WideFn.ReplaceLastText(const aString: UnicodeString;
                                         const aSubstring: UnicodeString;
-                                              aReplacement: WIDEChar;
+                                              aReplacement: AnsiChar;
+                                        var   aResult: UnicodeString): Boolean;
+  begin
+    result := ReplaceLast(aString, aSubString, Wide(aReplacement), aResult, csIgnoreCase);
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
+  class function WideFn.ReplaceLastText(const aString: UnicodeString;
+                                        const aSubstring: UnicodeString;
+                                              aReplacement: WideChar;
                                         var   aResult: UnicodeString): Boolean;
   begin
     result := ReplaceLast(aString, aSubstring, aReplacement, aResult, csIgnoreCase);
@@ -5881,7 +5871,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.ReplaceLastText(const aString: UnicodeString;
+  class function WideFn.ReplaceLastText(const aString: UnicodeString;
                                         const aSubstring: UnicodeString;
                                         const aReplacement: UnicodeString;
                                         var   aResult: UnicodeString): Boolean;
@@ -5907,7 +5897,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Tag(const aString, aTag: UnicodeString): UnicodeString;
+  class function WideFn.Tag(const aString, aTag: UnicodeString): UnicodeString;
   {
     Returns a specified string enclosed in an XML style tag.
 
@@ -5921,7 +5911,7 @@ implementation
     tlen: Integer;
     rlen: Integer;
     blen: Integer;
-    p: PWIDEChar;
+    p: PWideChar;
     buf: PByte absolute p;
   begin
     tlen := Length(aTag);
@@ -5933,7 +5923,7 @@ implementation
     rlen := blen + (tlen * 2) + 5;
     SetLength(result, rlen);
 
-    p := PWIDEChar(result);
+    p := PWideChar(result);
     p[0]        := '<';
     p[tlen + 1] := '>';
 
@@ -5950,19 +5940,19 @@ implementation
     if blen > 0 then
     begin
       blen := blen shl 1;
-      WIDEFn.CopyToBuffer(aString, blen, buf, tlen + 4);
+      WideFn.CopyToBuffer(aString, blen, buf, tlen + 4);
     end;
 
-    WIDEFn.CopyToBuffer(aTag, tlen, buf, 2);
-    WIDEFn.CopyToBuffer(aTag, tlen, buf, tlen + blen + 8);
+    WideFn.CopyToBuffer(aTag, tlen, buf, 2);
+    WideFn.CopyToBuffer(aTag, tlen, buf, tlen + blen + 8);
   end;
 
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.LTrim(const aString: UnicodeString): UnicodeString;
+  class function WideFn.LTrim(const aString: UnicodeString): UnicodeString;
   var
-    chars: PWIDEChar absolute aString;
+    chars: PWideChar absolute aString;
     i: Integer;
     strLen: Integer;
   begin
@@ -5983,10 +5973,10 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.LTrim(const aString: UnicodeString;
-                                    aChar: WIDEChar): UnicodeString;
+  class function WideFn.LTrim(const aString: UnicodeString;
+                                    aChar: WideChar): UnicodeString;
   var
-    chars: PWIDEChar absolute aString;
+    chars: PWideChar absolute aString;
     i: Integer;
     strLen: Integer;
   begin
@@ -6007,7 +5997,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.LTrim(const aString: UnicodeString;
+  class function WideFn.LTrim(const aString: UnicodeString;
                                     aCount: Integer): UnicodeString;
   begin
     if (aCount > 0) and (aString <> '') then
@@ -6018,9 +6008,9 @@ implementation
 
 
 
-  class function WIDEFn.RTrim(const aString: UnicodeString): UnicodeString;
+  class function WideFn.RTrim(const aString: UnicodeString): UnicodeString;
   var
-    chars: PWIDEChar absolute aString;
+    chars: PWideChar absolute aString;
     i: Integer;
     strLen: Integer;
   begin
@@ -6038,10 +6028,10 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.RTrim(const aString: UnicodeString;
-                                    aChar: WIDEChar): UnicodeString;
+  class function WideFn.RTrim(const aString: UnicodeString;
+                                    aChar: WideChar): UnicodeString;
   var
-    chars: PWIDEChar absolute aString;
+    chars: PWideChar absolute aString;
     i: Integer;
     strLen: Integer;
   begin
@@ -6059,7 +6049,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.RTrim(const aString: UnicodeString;
+  class function WideFn.RTrim(const aString: UnicodeString;
                                     aCount: Integer): UnicodeString;
   begin
     result := aString;
@@ -6071,7 +6061,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Trim(const aString: UnicodeString): UnicodeString;
+  class function WideFn.Trim(const aString: UnicodeString): UnicodeString;
   begin
     result := LTrim(RTrim(aString));
   end;
@@ -6079,8 +6069,8 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Trim(const aString: UnicodeString;
-                                   aChar: WIDEChar): UnicodeString;
+  class function WideFn.Trim(const aString: UnicodeString;
+                                   aChar: WideChar): UnicodeString;
   begin
     result := LTrim(RTrim(aString, aChar), aChar);
   end;
@@ -6088,7 +6078,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Trim(const aString: UnicodeString;
+  class function WideFn.Trim(const aString: UnicodeString;
                                    aCount: Integer): UnicodeString;
   begin
     result := LTrim(RTrim(aString, aCount), aCount);
@@ -6096,14 +6086,14 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Unbrace(const aString: UnicodeString): UnicodeString;
+  class function WideFn.Unbrace(const aString: UnicodeString): UnicodeString;
   const
-    MATCH_SET : set of ANSIChar = ['!','@','#','%','&','*','-','_',
+    MATCH_SET : set of AnsiChar = ['!','@','#','%','&','*','-','_',
                                    '+','=',':','/','?','\','|','~'];
   var
     rlen: Integer;
-    firstChar: WIDEChar;
-    lastChar: WIDEChar;
+    firstChar: WideChar;
+    lastChar: WideChar;
   begin
     result := aString;
 
@@ -6126,7 +6116,7 @@ implementation
       '(' : if lastChar <> ')' then EXIT;
       '[' : if lastChar <> ']' then EXIT;
     else
-      if NOT (ANSIChar(firstChar) in MATCH_SET)
+      if NOT (AnsiChar(firstChar) in MATCH_SET)
           or (lastChar <> firstChar) then
         EXIT;
     end;
@@ -6139,10 +6129,10 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Unquote(const aString: UnicodeString): UnicodeString;
+  class function WideFn.Unquote(const aString: UnicodeString): UnicodeString;
   var
     i, j, maxi: Integer;
-    qc: WIDEChar;
+    qc: WideChar;
   begin
     if Length(aString) < 2 then
       EXIT;
@@ -6194,10 +6184,10 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Camelcase(const aString: UnicodeString;
+  class function WideFn.Camelcase(const aString: UnicodeString;
                                         aInitialLower: Boolean): UnicodeString;
   var
-    chars: PWIDEChar absolute result;
+    chars: PWideChar absolute result;
   begin
     result := Trim(Startcase(aString));
 
@@ -6217,29 +6207,29 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Lowercase(aChar: WIDEChar): WIDEChar;
+  class function WideFn.Lowercase(aChar: WideChar): WideChar;
   var
-    p: PWIDEChar;
+    p: PWideChar;
     l: Cardinal absolute p;
   begin
     l := MAKELONG(Word(aChar), 0);
     p := Windows.CharLowerW(p);
 
-    result := WIDEChar(LOWORD(l));
+    result := WideChar(LOWORD(l));
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Lowercase(const aString: UnicodeString): UnicodeString;
+  class function WideFn.Lowercase(const aString: UnicodeString): UnicodeString;
   begin
     result := aString;
     if result <> '' then
-      CharLowerBuffW(PWIDEChar(result), Length(result));
+      CharLowerBuffW(PWideChar(result), Length(result));
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Skewercase(const aString: UnicodeString): UnicodeString;
+  class function WideFn.Skewercase(const aString: UnicodeString): UnicodeString;
   begin
     result := Trim(aString);
 
@@ -6253,7 +6243,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Snakecase(const aString: UnicodeString): UnicodeString;
+  class function WideFn.Snakecase(const aString: UnicodeString): UnicodeString;
   begin
     result := Trim(aString);
 
@@ -6267,7 +6257,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Startcase(const aString: UnicodeString): UnicodeString;
+  class function WideFn.Startcase(const aString: UnicodeString): UnicodeString;
   {
     Applies a naive start-case transformation to a specified string.
 
@@ -6283,9 +6273,9 @@ implementation
   var
     i: Integer;
     len: Integer;
-    prev: WIDEChar;
+    prev: WideChar;
     prevAlpha: Boolean;
-    ch: WIDEChar;
+    ch: WideChar;
   begin
     result := aString;
 
@@ -6320,60 +6310,60 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Titlecase(const aString: UnicodeString): UnicodeString;
+  class function WideFn.Titlecase(const aString: UnicodeString): UnicodeString;
   begin
     result := Titlecase(aString, LowercaseWordsForTitlecase)
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Titlecase(const aString: UnicodeString;
-                                  const aLower: TWIDEStringArray): UnicodeString;
+  class function WideFn.Titlecase(const aString: UnicodeString;
+                                  const aLower: TWideStringArray): UnicodeString;
   begin
     // TODO:
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Titlecase(const aString: UnicodeString;
-                                        aLower: TWIDEStringList): UnicodeString;
+  class function WideFn.Titlecase(const aString: UnicodeString;
+                                        aLower: TWideStringList): UnicodeString;
   var
     i: Integer;
-    pieces: TWIDEStringArray;
+    pieces: TWideStringArray;
     p: TCharIndexArray;
   begin
-    result := WIDE.Startcase(aString);
+    result := Wide.Startcase(aString);
 
-    WIDE.Split(result, ' ', pieces);
+    Wide.Split(result, ' ', pieces);
 
     FindAll(result, ' ', p);
 
     for i := 0 to High(p) - 1 do
-      if   WIDE.IsAlphaNumeric(result[p[i] - 1])
+      if   Wide.IsAlphaNumeric(result[p[i] - 1])
        and (aLower.IndexOf(pieces[i + 1]) <> -1) then
-        result[p[i] + 1] := WIDE.Lowercase(result[p[i] + 1]);
+        result[p[i] + 1] := Wide.Lowercase(result[p[i] + 1]);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Uppercase(aChar: WIDEChar): WIDEChar;
+  class function WideFn.Uppercase(aChar: WideChar): WideChar;
   var
-    p: PWIDEChar;
+    p: PWideChar;
     l: Cardinal absolute p;
   begin
     l := MAKELONG(Word(aChar), 0);
     p := Windows.CharUpperW(p);
 
-    result := WIDEChar(LOWORD(l));
+    result := WideChar(LOWORD(l));
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Uppercase(const aString: UnicodeString): UnicodeString;
+  class function WideFn.Uppercase(const aString: UnicodeString): UnicodeString;
   begin
     result := aString;
     if result <> '' then
-      CharUpperBuffW(PWIDEChar(result), Length(result));
+      CharUpperBuffW(PWideChar(result), Length(result));
   end;
 
 
@@ -6389,7 +6379,7 @@ implementation
 
 
 initialization
-  LowercaseWordsForTitlecase := TWIDEStringList.Create;
+  LowercaseWordsForTitlecase := TWideStringList.Create;
   LowercaseWordsForTitlecase.Sorted := TRUE;
 
   LowercaseWordsForTitlecase.Add('a');

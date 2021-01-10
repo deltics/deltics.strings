@@ -2,7 +2,7 @@
 {$i deltics.strings.inc}
 
 
-  unit Deltics.Strings.Encoding.ASCII;
+  unit Deltics.Strings.Encoding.Ascii;
 
 
 interface
@@ -16,8 +16,8 @@ interface
     protected
       constructor Create; override;
     public
-      function GetByteCount(const aChars: PWIDEChar; const aCount: Integer): Integer; override;
-      function GetCharCount(const aBytes: PByte; const aCount: Integer): Integer; override;
+      function GetByteCount(const aChars: PWIDEChar; const aNumChars: Integer): Integer; override;
+      function GetCharCount(const aBytes; const aNumBytes: Integer): Integer; override;
     end;
 
 
@@ -29,21 +29,21 @@ implementation
 
   constructor TASCIIEncoding.Create;
   begin
-    inherited Create(CP_ASCII);
+    inherited Create(cpASCII);
   end;
 
 
   function TASCIIEncoding.GetByteCount(const aChars: PWIDEChar;
-                                       const aCount: Integer): Integer;
+                                       const aNumChars: Integer): Integer;
   begin
-    result := aCount div 2;
+    result := aNumChars div 2;
   end;
 
 
-  function TASCIIEncoding.GetCharCount(const aBytes: PByte;
-                                       const aCount: Integer): Integer;
+  function TASCIIEncoding.GetCharCount(const aBytes;
+                                       const aNumBytes: Integer): Integer;
   begin
-    result := aCount;
+    result := aNumBytes;
   end;
 
 

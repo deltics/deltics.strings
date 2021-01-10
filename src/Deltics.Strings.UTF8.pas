@@ -2,7 +2,7 @@
 {$i deltics.strings.inc}
 
 
-  unit Deltics.Strings.UTF8;
+  unit Deltics.Strings.Utf8;
 
 
 interface
@@ -12,20 +12,22 @@ interface
 
 
   type
-    UTF8Fn = class
+    Utf8Fn = class
       // Transcoding
-      class function Encode(const aString: String): UTF8String;
-      class function FromANSI(const aString: ANSIString): UTF8String; overload;
-      class function FromANSI(const aString: PANSIChar; aMaxLen: Integer = -1): UTF8String; overload;
+      class function Encode(const aString: String): Utf8String;
+      class function FromANSI(const aString: ANSIString): Utf8String; overload;
+      class function FromANSI(const aString: PANSIChar; aMaxLen: Integer = -1): Utf8String; overload;
       class function FromString(const aString: String): Utf8String;
-      class function FromWIDE(const aString: UnicodeString): UTF8String; overload;
-      class function FromWIDE(const aString: PWIDEChar; aMaxLen: Integer = -1): UTF8String; overload;
+      class function FromWIDE(const aString: UnicodeString): Utf8String; overload;
+      class function FromWIDE(const aString: PWIDEChar; aMaxLen: Integer = -1): Utf8String; overload;
 
       // Buffer operations
-      class function Alloc(const aString: UTF8String): PUTF8Char;
-      class function Len(const aBuffer: PUTF8Char): Integer;
-      class procedure CopyToBuffer(const aString: UTF8String; aMaxBytes: Integer; aBuffer: Pointer; aOffset: Integer);
-      class function FromBuffer(aBuffer: PUTF8Char; aLen: Integer = -1): UTF8String;
+      class function Alloc(const aString: Utf8String): PUtf8Char;
+      class function Len(const aBuffer: PUtf8Char): Integer;
+      class procedure CopyToBuffer(const aString: Utf8String; aMaxBytes: Integer; aBuffer: Pointer; aOffset: Integer);
+      class function FromBuffer(aBuffer: PUtf8Char; aLen: Integer = -1): Utf8String;
+
+      class function Append(const aString: Utf8String; const aChar: Utf8Char): Utf8String;
     end;
 
 
@@ -41,10 +43,10 @@ implementation
     Deltics.Pointers;
 
 
-{ _UTF8 ------------------------------------------------------------------------------------------ }
+{ _Utf8 ------------------------------------------------------------------------------------------ }
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function UTF8Fn.Encode(const aString: String): UTF8String;
+  class function Utf8Fn.Encode(const aString: String): Utf8String;
   begin
   {$ifdef UNICODE}
     result := FromWIDE(aString);
@@ -55,22 +57,22 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function UTF8Fn.FromANSI(const aString: ANSIString): UTF8String;
+  class function Utf8Fn.FromANSI(const aString: ANSIString): Utf8String;
   begin
     result := FromWIDE(WIDE.FromANSI(aString));
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function UTF8Fn.FromANSI(const aString: PANSIChar;
-                                       aMaxLen: Integer): UTF8String;
+  class function Utf8Fn.FromANSI(const aString: PANSIChar;
+                                       aMaxLen: Integer): Utf8String;
   begin
     result := FromWIDE(WIDE.FromANSI(Copy(aString, 1, aMaxLen)));
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function UTF8Fn.FromString(const aString: String): Utf8String;
+  class function Utf8Fn.FromString(const aString: String): Utf8String;
   begin
   {$ifdef UNICODE}
     result := FromWIDE(aString);
@@ -81,40 +83,40 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function UTF8Fn.FromWIDE(const aString: UnicodeString): UTF8String;
+  class function Utf8Fn.FromWIDE(const aString: UnicodeString): Utf8String;
   begin
     result := FromWIDE(PWIDEChar(aString), Length(aString));
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function UTF8Fn.FromWIDE(const aString: PWIDEChar;
-                                       aMaxLen: Integer): UTF8String;
+  class function Utf8Fn.FromWIDE(const aString: PWIDEChar;
+                                       aMaxLen: Integer): Utf8String;
   var
     len: Integer;
   begin
-    len := WideCharToMultiByte(CP_UTF8, 0, aString, -1, NIL, 0, NIL, NIL);
+    len := WideCharToMultiByte(CP_Utf8, 0, aString, -1, NIL, 0, NIL, NIL);
     Dec(len);
 
     SetLength(result, len);
-    WideCharToMultiByte(CP_UTF8, 0, aString, aMaxLen, PANSIChar(result), len, NIL, NIL);
+    WideCharToMultiByte(CP_Utf8, 0, aString, aMaxLen, PANSIChar(result), len, NIL, NIL);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function UTF8Fn.Alloc(const aString: UTF8String): PUTF8Char;
+  class function Utf8Fn.Alloc(const aString: Utf8String): PUtf8Char;
   var
     len: Integer;
   begin
     len     := Length(aString) + 1;
     result  := AllocMem(len);
 
-    CopyMemory(result, PUTF8Char(aString), len);
+    CopyMemory(result, PUtf8Char(aString), len);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function UTF8Fn.Len(const aBuffer: PUTF8Char): Integer;
+  class function Utf8Fn.Len(const aBuffer: PUtf8Char): Integer;
   begin
   {$ifdef DELPHIXE4__}
     result := ANSIStrings.StrLen(PANSIChar(aBuffer));
@@ -125,7 +127,18 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class procedure UTF8Fn.CopyToBuffer(const aString: UTF8String;
+  class function Utf8Fn.Append(const aString: Utf8String;
+                               const aChar: Utf8Char): Utf8String;
+  begin
+    result := aString;
+
+    SetLength(result, Length(result) + 1);
+    result[Length(result)] := aChar;
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
+  class procedure Utf8Fn.CopyToBuffer(const aString: Utf8String;
                                             aMaxBytes: Integer;
                                             aBuffer: Pointer;
                                             aOffset: Integer);
@@ -137,13 +150,13 @@ implementation
     if (aMaxBytes < len) then
       len := aMaxBytes;
 
-    CopyMemory(Memory.ByteOffset(aBuffer, aOffset), PUTF8Char(aString), len);
+    CopyMemory(Memory.ByteOffset(aBuffer, aOffset), PUtf8Char(aString), len);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function UTF8Fn.FromBuffer(aBuffer: PUTF8Char;
-                                   aLen: Integer): UTF8String;
+  class function Utf8Fn.FromBuffer(aBuffer: PUtf8Char;
+                                   aLen: Integer): Utf8String;
   begin
     if aLen = -1 then
       aLen := Len(aBuffer);
