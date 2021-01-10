@@ -2,7 +2,7 @@
 {$i deltics.strings.inc}
 
 
-  unit Deltics.Strings.Encoding.UTF16;
+  unit Deltics.Strings.Encoding.Utf16;
 
 
 interface
@@ -12,25 +12,23 @@ interface
 
 
   type
-    TUTF16LEEncoding = class(TEncodingImplementation)
+    TUtf16LEEncoding = class(TEncoding)
     protected
       constructor Create; override;
-      function get_BOM: TBOM; override;
     public
-      function GetByteCount(const aChars: PWIDEChar; const aCount: Integer): Integer; override;
-      function GetCharCount(const aBytes: PByte; const aCount: Integer): Integer; override;
-      function Decode(const aBytes: PByte; const aByteCount: Integer; const aChars: PWIDEChar; const aCharCount: Integer): Integer; override;
-      function Encode(const aChars: PWIDEChar; const aCharCount: Integer; const aBytes: PByte; const aByteCount: Integer): Integer; override;
+      function Decode(const aBytes; const aNumBytes: Integer; const aChars: PWideChar; const aMaxChars: Integer): Integer; override;
+      function Encode(const aChars: PWideChar; const aNumChars: Integer; const aBytes; const aMaxBytes: Integer): Integer; override;
+      function GetByteCount(const aChars: PWideChar; const aNumChars: Integer): Integer; override;
+      function GetCharCount(const aBytes; const aNumBytes: Integer): Integer; override;
     end;
 
 
-    TUTF16BEEncoding = class(TUTF16LEEncoding)
+    TUtf16Encoding = class(TUtf16LEEncoding)
     protected
       constructor Create; override;
-      function get_BOM: TBOM; override;
     public
-      function Decode(const aBytes: PByte; const aByteCount: Integer; const aChars: PWIDEChar; const aCharCount: Integer): Integer; override;
-      function Encode(const aChars: PWIDEChar; const aCharCount: Integer; const aBytes: PByte; const aByteCount: Integer): Integer; override;
+      function Decode(const aBytes; const aNumBytes: Integer; const aChars: PWideChar; const aMaxChars: Integer): Integer; override;
+      function Encode(const aChars: PWideChar; const aNumChars: Integer; const aBytes; const aMaxBytes: Integer): Integer; override;
     end;
 
 
@@ -38,56 +36,55 @@ implementation
 
   uses
     Windows,
-    Deltics.ReverseBytes;
+    Deltics.ReverseBytes,
+    Deltics.Strings.Encoding.Bom;
 
 
 { TUTF16LEEncoding }
 
-  constructor TUTF16LEEncoding.Create;
+  constructor TUtf16LEEncoding.Create;
   begin
-    inherited Create(CP_UTF16LE);
+    inherited Create(cpUtf16LE, Utf16LEBom.AsBytes);
   end;
 
 
-  function TUTF16LEEncoding.get_BOM: TBOM;
+  function TUtf16LEEncoding.Decode(const aBytes;
+                                   const aNumBytes: Integer;
+                                   const aChars: PWideChar;
+                                   const aMaxChars: Integer): Integer;
   begin
-    SetLength(result, 2);
-    result[0] := BOM_UTF16LE[0];
-    result[1] := BOM_UTF16LE[1];
+    result := aNumBytes div 2;
+    if result > aMaxChars then
+      result := aMaxChars;
+
+    CopyMemory(@aBytes, aChars, result * 2);
   end;
 
 
-  function TUTF16LEEncoding.GetByteCount(const aChars: PWIDEChar;
-                                         const aCount: Integer): Integer;
+  function TUtf16LEEncoding.Encode(const aChars: PWideChar;
+                                   const aNumChars: Integer;
+                                   const aBytes;
+                                   const aMaxBytes: Integer): Integer;
   begin
-    result := aCount * 2;
+    result := aNumChars * 2;
+    if result > aMaxBytes then
+      result := aMaxBytes;
+
+    CopyMemory(aChars, @aBytes, result);
   end;
 
 
-  function TUTF16LEEncoding.GetCharCount(const aBytes: PByte;
-                                         const aCount: Integer): Integer;
+  function TUtf16LEEncoding.GetByteCount(const aChars: PWideChar;
+                                         const aNumChars: Integer): Integer;
   begin
-    result := aCount div 2;
+    result := aNumChars * 2;
   end;
 
 
-  function TUTF16LEEncoding.Decode(const aBytes: PByte;
-                                   const aByteCount: Integer;
-                                   const aChars: PWIDEChar;
-                                   const aCharCount: Integer): Integer;
+  function TUtf16LEEncoding.GetCharCount(const aBytes;
+                                         const aNumBytes: Integer): Integer;
   begin
-    CopyMemory(aBytes, aChars, aByteCount);
-    result := aByteCount;
-  end;
-
-
-  function TUTF16LEEncoding.Encode(const aChars: PWIDEChar;
-                                   const aCharCount: Integer;
-                                   const aBytes: PByte;
-                                   const aByteCount: Integer): Integer;
-  begin
-    CopyMemory(aChars, aBytes, aByteCount);
-    result := aByteCount;
+    result := aNumBytes div 2;
   end;
 
 
@@ -97,37 +94,29 @@ implementation
 
 { TUTF16BEEncoding }
 
-  constructor TUTF16BEEncoding.Create;
+  constructor TUtf16Encoding.Create;
   begin
-    inherited Create(CP_UTF16);
+    inherited Create(cpUtf16, Utf16Bom.AsBytes);
   end;
 
 
-  function TUTF16BEEncoding.get_BOM: TBOM;
+  function TUtf16Encoding.Decode(const aBytes;
+                                 const aNumBytes: Integer;
+                                 const aChars: PWideChar;
+                                 const aMaxChars: Integer): Integer;
   begin
-    SetLength(result, 2);
-    result[0] := BOM_UTF16BE[0];
-    result[1] := BOM_UTF16BE[1];
+    result := inherited Decode(aBytes, aNumBytes, aChars, aMaxChars);
+    ReverseBytes(System.PWord(aChars), result);
   end;
 
 
-  function TUTF16BEEncoding.Decode(const aBytes: PByte;
-                                   const aByteCount: Integer;
-                                   const aChars: PWIDEChar;
-                                   const aCharCount: Integer): Integer;
+  function TUtf16Encoding.Encode(const aChars: PWideChar;
+                                 const aNumChars: Integer;
+                                 const aBytes;
+                                 const aMaxBytes: Integer): Integer;
   begin
-    result := inherited Decode(aBytes, aByteCount, aChars, aCharCount);
-    ReverseBytes(System.PWord(aChars), aCharCount);
-  end;
-
-
-  function TUTF16BEEncoding.Encode(const aChars: PWIDEChar;
-                                   const aCharCount: Integer;
-                                   const aBytes: PByte;
-                                   const aByteCount: Integer): Integer;
-  begin
-    result := inherited Encode(aChars, aCharCount, aBytes, aByteCount);
-    ReverseBytes(System.PWord(aBytes), aCharCount);
+    result := inherited Encode(aChars, aNumChars, aBytes, aMaxBytes);
+    ReverseBytes(System.PWord(@aBytes), aNumChars);
   end;
 
 

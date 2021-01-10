@@ -1,6 +1,5 @@
-
+﻿
 {$i deltics.strings.inc}
-
 
   unit Deltics.Strings.Encoding;
 
@@ -9,78 +8,83 @@ interface
 
   uses
     Classes,
-    SysUtils;
-
-
-  const
-    CP_UTF32LE  = 12000;
-    CP_UTF32    = 12001;
-    CP_UTF16LE  = 1200;
-    CP_UTF16    = 1201;
-    CP_ASCII    = 20217;
-    CP_UTF8     = 65001;
-
-  const
-    BOM_UTF8    : array[0..2] of Byte = ($EF, $BB, $BF);
-//    BOM_UTF16   : array[0..1] of Byte = ($FE, $FF);
-    BOM_UTF16BE : array[0..1] of Byte = ($FE, $FF);
-    BOM_UTF16LE : array[0..1] of Byte = ($FF, $FE);
-//    BOM_UTF32   : array[0..3] of Byte = ($00, $00, $FE, $FF);
-    BOM_UTF32BE : array[0..3] of Byte = ($00, $00, $FE, $FF);
-    BOM_UTF32LE : array[0..3] of Byte = ($FF, $FE, $00, $00);
-
-    BOMCHAR_UTF16LE = WIDEChar($FEFF);
-    BOMCHAR_UTF16BE = WIDEChar($FFFE);
+    SysUtils,
+    Deltics.Strings.Encoding.Bom,
+    Deltics.Strings.Types;
 
 
   type
+    TCodepage = Cardinal;
+
+
+  const
+    cpUtf32LE  = 12000;
+    cpUtf32    = 12001;
+    cpUtf16LE  = 1200;
+    cpUtf16    = 1201;
+    cpASCII    = 20217;
+    cpUtf8     = 65001;
+
+
+  type
+    Encoding = class;
     TEncoding = class;
-    TEncodingImplementation = class;
     TEncodingClass = class of TEncoding;
 
 
-    TBOM = array of Byte;
-
-
-    TEncoding = class
+    Encoding = class
     public
+      class function ANSI: TEncoding;
       class function ASCII: TEncoding;
-      class function UTF8: TEncoding;
-      class function UTF16: TEncoding;
-      class function UTF16BE: TEncoding;
-      class function UTF16LE: TEncoding;
-      class function UTF32: TEncoding;
-      class function UTF32BE: TEncoding;
-      class function UTF32LE: TEncoding;
+      class function Utf8: TEncoding;
+      class function Utf16: TEncoding;
+      class function Utf16LE: TEncoding;
+      class function Utf32: TEncoding;
+      class function Utf32LE: TEncoding;
+      class function ForCodepage(const aCodepage: TCodepage): TEncoding;
       class function Identify(const aBOM: TBOM; var aEncoding: TEncoding): Boolean; overload;
       class function Identify(const aStream: TStream; var aEncoding: TEncoding): Boolean; overload;
-      class function Identify(const aBytes: PByte; const aCount: Integer; var aEncoding: TEncoding): Boolean; overload;
+      class function Identify(const aBytes; const aNumBytes: Integer; var aEncoding: TEncoding): Boolean; overload;
+
+    private
+      fBom: TBOM;
+      fCodepage: TCodepage;
+    public
+      property Bom: TBOM read fBom;
+      property Codepage: TCodepage read fCodepage;
     end;
 
 
-    TEncodingImplementation = class(TEncoding)
+    TEncoding = class(Encoding)
     private
-      fCodePage: Word;
       class function Instance(var aEncoding: TEncoding; const aClass: TEncodingClass): TEncoding; // TODO: Check this:  static;
+    private
+      function get_IsUnicode: Boolean;
+      function get_IsUtf16: Boolean;
+      function get_IsUtf32: Boolean;
     protected
       constructor Create; overload; virtual; abstract;
-      constructor Create(const aCodePage: Word); overload;
-      function get_BOM: TBOM; virtual;
+      constructor Create(const aCodePage: Cardinal); overload;
+      constructor Create(const aCodePage: Cardinal; const aBom: TBOM); overload;
     public
-      function GetByteCount(const aChars: PWIDEChar; const aCount: Integer): Integer; overload; virtual; abstract;
-      function GetCharCount(const aBytes: PByte; const aCount: Integer): Integer; overload; virtual; abstract;
-      function Decode(const aBytes: PByte; const aByteCount: Integer; const aChars: PWIDEChar; const aCharCount: Integer): Integer; overload; virtual; abstract;
-      function Encode(const aChars: PWIDEChar; const aCharCount: Integer; const aBytes: PByte; const aByteCount: Integer): Integer; overload; virtual; abstract;
-      property BOM: TBOM read get_BOM;
+      function GetByteCount(const aChars: PWIDEChar; const aNumChars: Integer): Integer; overload; virtual; abstract;
+      function GetCharCount(const aBytes; const aNumBytes: Integer): Integer; overload; virtual; abstract;
+      function Decode(const aBytes; const aNumBytes: Integer; const aChars: PWIDEChar; const aMaxChars: Integer): Integer; overload; virtual; abstract;
+      function Encode(const aChars: PWIDEChar; const aNumChars: Integer; const aBytes; const aMaxBytes: Integer): Integer; overload; virtual; abstract;
+      property IsUnicode: Boolean read get_IsUnicode;
+      property IsUtf16: Boolean read get_IsUtf16;
+      property IsUtf32: Boolean read get_IsUtf32;
     end;
 
 
-    TMultiByteEncoding = class(TEncodingImplementation)
+    TMultiByteEncoding = class(TEncoding)
+    protected
+      constructor Create; override;
     public
-      function GetByteCount(const aChars: PWIDEChar; const aCount: Integer): Integer; override;
-      function GetCharCount(const aBytes: PByte; const aCount: Integer): Integer; override;
-      function Decode(const aBytes: PByte; const aByteCount: Integer; const aChars: PWIDEChar; const aCharCount: Integer): Integer; override;
-      function Encode(const aChars: PWIDEChar; const aCharCount: Integer; const aBytes: PByte; const aByteCount: Integer): Integer; override;
+      function GetByteCount(const aChars: PWIDEChar; const aNumChars: Integer): Integer; override;
+      function GetCharCount(const aBytes; const aNumBytes: Integer): Integer; override;
+      function Decode(const aBytes; const aNumBytes: Integer; const aChars: PWIDEChar; const aMaxChars: Integer): Integer; override;
+      function Encode(const aChars: PWIDEChar; const aNumChars: Integer; const aBytes; const aMaxBytes: Integer): Integer; override;
     end;
 
 
@@ -89,7 +93,9 @@ interface
 implementation
 
   uses
+    SyncObjs,
     Windows,
+    Deltics.Exceptions,
     Deltics.Strings.Encoding.ASCII,
     Deltics.Strings.Encoding.UTF8,
     Deltics.Strings.Encoding.UTF16,
@@ -97,7 +103,7 @@ implementation
 
 
   type
-    PEncoding = ^TEncoding;
+    PEncoding = ^Encoding;
 
   var
     _ASCII    : TEncoding = NIL;
@@ -106,6 +112,51 @@ implementation
     _UTF16LE  : TEncoding = NIL;
     _UTF32    : TEncoding = NIL;
     _UTF32LE  : TEncoding = NIL;
+
+    _AnsiEncodings: array of TEncoding;
+    _AnsiEncodingsLock: TCriticalSection;
+
+
+  function _AnsiEncodingForCodepage(const aCodepage: Word): TEncoding;
+  var
+    i: Integer;
+  begin
+    _AnsiEncodingsLock.Enter;
+    try
+      for i := 0 to High(_AnsiEncodings) do
+      begin
+        result := _AnsiEncodings[i];
+        if result.Codepage = aCodepage then
+          EXIT;
+      end;
+
+      result := TMultiByteEncoding.Create(aCodepage);
+      SetLength(_AnsiEncodings, Length(_AnsiEncodings) + 1);
+
+      _AnsiEncodings[Length(_AnsiEncodings) - 1] := result;
+
+    finally
+      _AnsiEncodingsLock.Leave;
+    end;
+  end;
+
+
+  procedure _AnsiEncodingsFinalize;
+  var
+    i: Integer;
+  begin
+    _AnsiEncodingsLock.Enter;
+    try
+      for i := 0 to High(_AnsiEncodings) do
+        _AnsiEncodings[i].Free;
+
+      SetLength(_AnsiEncodings, 0);
+
+    finally
+      _AnsiEncodingsLock.Leave;
+      _AnsiEncodingsLock.Free;
+    end;
+  end;
 
 
 {$ifdef 32BIT}
@@ -128,14 +179,14 @@ implementation
 {$endif}
 
 
-  class function TEncodingImplementation.Instance(var aEncoding: TEncoding;
-                                                  const aClass: TEncodingClass): TEncoding;
+  class function TEncoding.Instance(var   aEncoding: TEncoding;
+                                    const aClass: TEncodingClass): TEncoding;
   var
     enc: TEncoding;
   begin
     if NOT Assigned(aEncoding) then
     begin
-      enc   := aClass.Create;
+      enc := aClass.Create;
       if InterlockedCompareExchangePointer(aEncoding, enc, NIL) <> NIL then
         enc.Free;
     end;
@@ -144,60 +195,55 @@ implementation
   end;
 
 
-  class function TEncoding.ASCII: TEncoding;
+  class function Encoding.ANSI: TEncoding;
   begin
-    result := TEncodingImplementation.Instance(_ASCII, TASCIIEncoding);
+    result := _AnsiEncodingForCodepage(GetACP);
   end;
 
-  class function TEncoding.UTF8: TEncoding;
+  class function Encoding.ASCII: TEncoding;
   begin
-    result := TEncodingImplementation.Instance(_UTF8, TUTF8Encoding);
+    result := TEncoding.Instance(_ASCII, TASCIIEncoding);
   end;
 
-  class function TEncoding.UTF16: TEncoding;
+  class function Encoding.Utf8: TEncoding;
   begin
-    result := TEncodingImplementation.Instance(_UTF16, TUTF16BEEncoding);
+    result := TEncoding.Instance(_UTF8, TUtf8Encoding);
   end;
 
-  class function TEncoding.UTF16BE: TEncoding;
+  class function Encoding.Utf16: TEncoding;
   begin
-    result := TEncodingImplementation.Instance(_UTF16, TUTF16BEEncoding);
+    result := TEncoding.Instance(_UTF16, TUtf16Encoding);
   end;
 
-  class function TEncoding.UTF16LE: TEncoding;
+  class function Encoding.Utf16LE: TEncoding;
   begin
-    result := TEncodingImplementation.Instance(_UTF16LE, TUTF16LEEncoding);
+    result := TEncoding.Instance(_UTF16LE, TUtf16LEEncoding);
   end;
 
-  class function TEncoding.UTF32: TEncoding;
+  class function Encoding.Utf32: TEncoding;
   begin
-    result := TEncodingImplementation.Instance(_UTF32, TUTF32BEEncoding);
+    result := TEncoding.Instance(_UTF32, TUtf32Encoding);
   end;
 
-  class function TEncoding.UTF32BE: TEncoding;
+  class function Encoding.Utf32LE: TEncoding;
   begin
-    result := TEncodingImplementation.Instance(_UTF32, TUTF32BEEncoding);
-  end;
-
-  class function TEncoding.UTF32LE: TEncoding;
-  begin
-    result := TEncodingImplementation.Instance(_UTF32LE, TUTF32LEEncoding);
+    result := TEncoding.Instance(_UTF32LE, TUtf32LEEncoding);
   end;
 
 
-  class function TEncoding.Identify(const aBOM: TBOM;
-                                    var aEncoding: TEncoding): Boolean;
+  class function Encoding.Identify(const aBom: TBOM;
+                                   var   aEncoding: TEncoding): Boolean;
 
-    function HasBOM(const aTestEncoding: TEncoding): Boolean;
+    function HasBom(const aTestEncoding: TEncoding): Boolean;
     var
-      encBOM: TBOM;
+      encBom: TBOM;
     begin
-      encBOM := TEncodingImplementation(aTestEncoding).BOM;
+      encBom := aTestEncoding.Bom;
 
       if (Length(aBOM) < Length(encBOM)) then
         result := FALSE
       else
-        result := CompareMem(@aBOM, @encBOM, Length(encBOM));
+        result := CompareMem(@aBOM[0], @encBOM[0], Length(encBOM));
 
       if result then
         aEncoding := aTestEncoding;
@@ -215,32 +261,31 @@ implementation
 
     result := TRUE;
 
-    if NOT HasBOM(TEncoding.UTF32) then
-      if NOT HasBOM(TEncoding.UTF32LE) then
-        if NOT HasBOM(TEncoding.UTF16) then
-          if NOT HasBOM(TEncoding.UTF16LE) then
-            if NOT HasBOM(TEncoding.UTF8) then
-            begin
-              // We failed to identify a recognisable BOM.  There is one last
-              //  heuristic... if the BOM passed was at least two bytes of which
-              //  one is non-zero (null), then we can infer a UTF16 encoding with
-              //  the position of the zero (null) determining the endianness
+    if HasBOM(Encoding.Utf32) then EXIT;
+    if HasBOM(Encoding.Utf32LE) then EXIT;
+    if HasBOM(Encoding.Utf16) then EXIT;
+    if HasBOM(Encoding.Utf16LE) then EXIT;
+    if HasBOM(Encoding.Utf8) then EXIT;
 
-              if (Length(aBOM) >= 2) then
-              begin
-                if (aBOM[0] <> 0) and (aBOM[1] = 0) then
-                  aEncoding := TEncoding.UTF16
-                else if (aBOM[0] = 0) and (aBOM[1] <> 0) then
-                  aEncoding := TEncoding.UTF16LE;
-              end;
+    // We failed to identify a recognisable BOM.  There is one last
+    //  heuristic... if the BOM passed was at least two bytes of which
+    //  one is non-zero (null), then we can infer a UTF16 encoding with
+    //  the position of the zero (null) determining the endianness
 
-              result := FALSE;
-            end;
+    result := FALSE;
+
+    // TODO: Are there heuristic techniques for identifying UTF8/32 or
+    //        other encodings other than UTF16 .. ?
+
+    if (aBOM[0] <> 0) and (aBOM[1] = 0) then
+      aEncoding := Encoding.Utf16LE
+    else if (aBOM[0] = 0) and (aBOM[1] <> 0) then
+      aEncoding := Encoding.Utf16;
   end;
 
 
-  class function TEncoding.Identify(const aStream: TStream;
-                                    var aEncoding: TEncoding): Boolean;
+  class function Encoding.Identify(const aStream: TStream;
+                                   var   aEncoding: TEncoding): Boolean;
   var
     restorePos: Int64;
     bom: TBOM;
@@ -262,7 +307,7 @@ implementation
         //  the stream on the first byte immediately following
         //  the BOM
 
-        bom         := TEncodingImplementation(aEncoding).BOM;
+        bom         := aEncoding.Bom;
         restorePos  := restorePos + Length(bom);
       end;
 
@@ -272,23 +317,37 @@ implementation
   end;
 
 
-  class function TEncoding.Identify(const aBytes: PByte;
-                                    const aCount: Integer;
-                                    var aEncoding: TEncoding): Boolean;
+  class function Encoding.ForCodepage(const aCodepage: TCodepage): TEncoding;
+  begin
+    case aCodepage of
+      cpUtf32    : result := Encoding.Utf32;
+      cpUtf32LE  : result := Encoding.Utf32LE;
+      cpUtf16    : result := Encoding.Utf16;
+      cpUtf16LE  : result := Encoding.Utf16LE;
+      cpUtf8     : result := Encoding.Utf8;
+      cpASCII    : result := Encoding.ASCII;
+    else
+      result := _AnsiEncodingForCodepage(aCodepage);
+    end;
+  end;
+
+
+  class function Encoding.Identify(const aBytes;
+                                   const aNumBytes: Integer;
+                                   var   aEncoding: TEncoding): Boolean;
   var
     bom: TBOM;
   begin
-    result := (aCount >= 2);
-
+    result := (aNumBytes >= 2);
     if NOT result then
       EXIT;
 
-    if aCount > 4 then
+    if aNumBytes > 4 then
       SetLength(bom, 4)
     else
-      SetLength(bom, aCount);
+      SetLength(bom, aNumBytes);
 
-    CopyMemory(@bom, aBytes, Length(bom));
+    CopyMemory(@bom[0], @aBytes, Length(bom));
 
     result := Identify(bom, aEncoding);
   end;
@@ -299,7 +358,7 @@ implementation
 
 
 
-  constructor TEncodingImplementation.Create(const aCodePage: Word);
+  constructor TEncoding.Create(const aCodePage: Cardinal);
   begin
     inherited Create;
 
@@ -309,53 +368,88 @@ implementation
 
 
 
-  function TEncodingImplementation.get_BOM: TBOM;
+  constructor TEncoding.Create(const aCodePage: Cardinal; const aBom: TBOM);
   begin
-    SetLength(result, 0);
+    Create(aCodepage);
+
+    fBom := aBom;
   end;
 
 
 
+
+
+
+
+
+
+  function TEncoding.get_IsUnicode: Boolean;
+  begin
+    result := (fCodepage = cpUtf8)
+           or (fCodepage = cpUtf16) or (fCodepage = cpUtf16LE)
+           or (fCodepage = cpUtf32) or (fCodepage = cpUtf32LE);
+  end;
+
+
+  function TEncoding.get_IsUtf16: Boolean;
+  begin
+    result := (fCodepage = cpUtf16) or (fCodepage = cpUtf16LE);
+  end;
+
+
+  function TEncoding.get_IsUtf32: Boolean;
+  begin
+    result := (fCodepage = cpUtf32) or (fCodepage = cpUtf32LE);
+  end;
 
 
 
 
 { TMultiByteEncoding }
 
-  function TMultiByteEncoding.GetByteCount(const aChars: PWIDEChar;
-                                           const aCount: Integer): Integer;
+  function TMultiByteEncoding.GetByteCount(const aChars: PWideChar;
+                                           const aNumChars: Integer): Integer;
   begin
-    result := WideCharToMultiByte(fCodePage, 0, aChars, aCount, NIL, 0, NIL, NIL);
+    result := WideCharToMultiByte(fCodePage, 0, aChars, aNumChars, NIL, 0, NIL, NIL);
   end;
 
 
-  function TMultiByteEncoding.GetCharCount(const aBytes: PByte;
-                                           const aCount: Integer): Integer;
+  function TMultiByteEncoding.GetCharCount(const aBytes;
+                                           const aNumBytes: Integer): Integer;
   begin
-    result := MultiByteToWideChar(fCodePage, 0, PANSIChar(aBytes), aCount, NIL, 0);
+    result := MultiByteToWideChar(fCodePage, 0, @aBytes, aNumBytes, NIL, 0);
   end;
 
 
   function TMultiByteEncoding.Encode(const aChars: PWIDEChar;
-                                     const aCharCount: Integer;
-                                     const aBytes: PByte;
-                                     const aByteCount: Integer): Integer;
+                                     const aNumChars: Integer;
+                                     const aBytes;
+                                     const aMaxBytes: Integer): Integer;
   begin
-    result := WideCharToMultiByte(fCodePage, 0, aChars, aCharCount, PANSIChar(aBytes), aByteCount, NIL, NIL);
+    result := WideCharToMultiByte(fCodePage, 0, aChars, aNumChars, @aBytes, aMaxBytes, NIL, NIL);
   end;
 
 
-  function TMultiByteEncoding.Decode(const aBytes: PByte;
-                                     const aByteCount: Integer;
-                                     const aChars: PWIDEChar;
-                                     const aCharCount: Integer): Integer;
+  constructor TMultiByteEncoding.Create;
   begin
-    result := MultiByteToWideChar(fCodePage, 0, PANSIChar(aBytes), aByteCount, aChars, aCharCount);
+    raise ENotSupported.CreateFmt('%s does not support a default constructor.  You must '
+                                + 'override the constructor to identify the Codepage '
+                                + '(at minimum) and BOM (if applicable).', [Classname]);
+  end;
+
+
+  function TMultiByteEncoding.Decode(const aBytes;
+                                     const aNumBytes: Integer;
+                                     const aChars: PWIDEChar;
+                                     const aMaxChars: Integer): Integer;
+  begin
+    result := MultiByteToWideChar(fCodePage, 0, PANSIChar(@aBytes), aNumBytes, aChars, aMaxChars);
   end;
 
 
 
 initialization
+  _AnsiEncodingsLock := TCriticalSection.Create;
 
 finalization
   _ASCII.Free;
@@ -372,4 +466,5 @@ finalization
   _UTF32    := NIL;
   _UTF32LE  := NIL;
 
+  _AnsiEncodingsFinalize;
 end.

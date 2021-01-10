@@ -1,4 +1,4 @@
-{
+﻿{
   * X11 (MIT) LICENSE *
 
   Copyright � 2013 Jolyon Smith
@@ -52,10 +52,11 @@ interface
   uses
     Classes,
     SysUtils,
-    Deltics.Strings.ANSI,
-    Deltics.Strings.UTF8,
-    Deltics.Strings.WIDE,
+    Deltics.Strings.Ansi,
+    Deltics.Strings.Utf8,
+    Deltics.Strings.Wide,
     Deltics.Strings.Encoding,
+    Deltics.Strings.Encoding.Bom,
     Deltics.Strings.StringBuilder,
     Deltics.Strings.StringList,
     Deltics.Strings.Templates,
@@ -64,30 +65,32 @@ interface
 
 
   type
+    Encoding          = Deltics.Strings.Encoding.Encoding;
     TEncoding         = Deltics.Strings.Encoding.TEncoding;
+    TBOM              = Deltics.Strings.Encoding.Bom.TBOM;
 
     ASCIIString       = Deltics.Strings.Types.ASCIIString;
     ASCIIChar         = Deltics.Strings.Types.ASCIIChar;
 
-    UTF8Char          = Deltics.Strings.Types.UTF8Char;
-    PUTF8Char         = Deltics.Strings.Types.PUTF8Char;
+    Utf8Char          = Deltics.Strings.Types.Utf8Char;
+    PUtf8Char         = Deltics.Strings.Types.PUtf8Char;
 
-    UTF8String        = Deltics.Strings.Types.UTF8String;
+    Utf8String        = Deltics.Strings.Types.Utf8String;
     UnicodeString     = Deltics.Strings.Types.UnicodeString;
 
     TCharIndexArray   = Deltics.Strings.Types.TCharIndexArray;
-    TUTF8StringArray  = Deltics.Strings.Types.TUTF8StringArray;
+    TUtf8StringArray  = Deltics.Strings.Types.TUtf8StringArray;
 
-    TANSICharSet      = Deltics.Strings.Types.TANSICharSet;
-    TANSIStringArray  = Deltics.Strings.Types.TANSIStringArray;
-    TANSIStringList   = Deltics.Strings.StringList.TANSIStringList;
-    TANSIStrings      = Deltics.Strings.StringList.TANSIStrings;
+    TAnsiCharSet      = Deltics.Strings.Types.TAnsiCharSet;
+    TAnsiStringArray  = Deltics.Strings.Types.TAnsiStringArray;
+    TAnsiStringList   = Deltics.Strings.StringList.TAnsiStringList;
+    TAnsiStrings      = Deltics.Strings.StringList.TAnsiStrings;
 
-    TWIDEStringArray  = Deltics.Strings.Types.TWIDEStringArray;
-    TWIDEStringList   = Deltics.Strings.StringList.TWIDEStringList;
-    TWIDEStrings      = Deltics.Strings.StringList.TWIDEStrings;
+    TWideStringArray  = Deltics.Strings.Types.TWideStringArray;
+    TWideStringList   = Deltics.Strings.StringList.TWideStringList;
+    TWideStrings      = Deltics.Strings.StringList.TWideStrings;
 
-    TUnicodeStringArray  = Deltics.Strings.Types.TWIDEStringArray;
+    TUnicodeStringArray  = Deltics.Strings.Types.TWideStringArray;
 
     TCaseSensitivity        = Deltics.Strings.Types.TCaseSensitivity;
     TCompareResult          = Deltics.Strings.Types.TCompareResult;
@@ -114,8 +117,21 @@ interface
 
     Utils = Deltics.Strings.Utils.Utils;
 
+    Utf8Bom     = Deltics.Strings.Encoding.Bom.Utf8Bom;
+    Utf16Bom    = Deltics.Strings.Encoding.Bom.Utf16Bom;
+    Utf16LEBom  = Deltics.Strings.Encoding.Bom.Utf16LEBom;
+    Utf32Bom    = Deltics.Strings.Encoding.Bom.Utf32Bom;
+    Utf32LEBom  = Deltics.Strings.Encoding.Bom.Utf32LEBom;
+
 
   const
+    cpUtf32LE  = Deltics.Strings.Encoding.cpUtf32LE;
+    cpUtf32    = Deltics.Strings.Encoding.cpUtf32;
+    cpUtf16LE  = Deltics.Strings.Encoding.cpUtf16LE;
+    cpUtf16    = Deltics.Strings.Encoding.cpUtf16;
+    cpASCII    = Deltics.Strings.Encoding.cpASCII;
+    cpUtf8     = Deltics.Strings.Encoding.cpUtf8;
+
     csCaseSensitive  = Deltics.Strings.Types.csCaseSensitive;
     csIgnoreCase     = Deltics.Strings.Types.csIgnoreCase;
 
@@ -159,19 +175,19 @@ interface
 
 
   type
-    ANSIFn = class(Deltics.Strings.ANSI.ANSIFn)
+    AnsiFn = class(Deltics.Strings.Ansi.AnsiFn)
     public
-      class function Alloc(const aString: ANSIString): PANSIChar;
-      class function AllocWIDE(const aString: ANSIString): PWIDEChar;
+      class function Alloc(const aString: AnsiString): PAnsiChar;
+      class function AllocWide(const aString: AnsiString): PWideChar;
     end;
 
-    WIDEFn = class(Deltics.Strings.WIDE.WIDEFn)
+    WideFn = class(Deltics.Strings.Wide.WideFn)
     public
-      class function Alloc(const aString: UnicodeString): PWIDEChar;
-      class function AllocANSI(const aString: UnicodeString): PANSIChar;
+      class function Alloc(const aString: UnicodeString): PWideChar;
+      class function AllocAnsi(const aString: UnicodeString): PAnsiChar;
     end;
 
-    UTF8Fn = class(Deltics.Strings.UTF8.UTF8Fn);
+    Utf8Fn = class(Deltics.Strings.Utf8.Utf8Fn);
 
     ASCIIFn = class
     public
@@ -180,60 +196,60 @@ interface
     end;
 
   {$ifdef UNICODE}
-    STRFn = class(Deltics.Strings.WIDE.WIDEFn)
+    STRFn = class(Deltics.Strings.Wide.WideFn)
     public
-      class function AllocANSI(const aString: String): PANSIChar;
-      class function AllocWIDE(const aString: String): PWIDEChar;
-      class function FromWIDE(const aString: String): UnicodeString; overload;
+      class function AllocAnsi(const aString: String): PAnsiChar;
+      class function AllocWide(const aString: String): PWideChar;
+      class function FromWide(const aString: String): UnicodeString; overload;
     end;
   {$else}
-    STRFn = class(Deltics.Strings.ANSI.ANSIFn)
+    STRFn = class(Deltics.Strings.Ansi.AnsiFn)
     public
-      class function AllocANSI(const aString: String): PANSIChar;
-      class function AllocWIDE(const aString: String): PWIDEChar;
-      class function FromANSI(const aString: String): ANSIString; overload;
+      class function AllocAnsi(const aString: String): PAnsiChar;
+      class function AllocWide(const aString: String): PWideChar;
+      class function FromAnsi(const aString: String): AnsiString; overload;
     end;
   {$endif}
 
 
-  ANSIClass   = class of ANSIFn;
-  UTF8Class   = class of UTF8Fn;
-  WIDEClass   = class of WIDEFn;
+  AnsiClass   = class of AnsiFn;
+  Utf8Class   = class of Utf8Fn;
+  WideClass   = class of WideFn;
   STRClass    = class of STRFn;
   ASCIIClass  = class of ASCIIFn;
 
-  function ANSI: ANSIClass; overload; {$ifdef InlineMethods} inline; {$endif}
-  function ANSI(aBuffer: PANSIChar; aLen: Integer): ANSIString; overload;
-  function ANSI(aInteger: Integer): ANSIString; overload;
-  function ANSI(aChar: ANSIChar): ANSIChar; overload;
-  function ANSI(aChar: WIDEChar): ANSIChar; overload;
-  function ANSI(aString: UnicodeString): ANSIString; overload;
-  procedure ANSI(aChar: WIDEChar; var aMBCS: ANSIString); overload;
+  function Ansi: AnsiClass; overload; {$ifdef InlineMethods} inline; {$endif}
+  function Ansi(aBuffer: PAnsiChar; aLen: Integer): AnsiString; overload;
+  function Ansi(aInteger: Integer): AnsiString; overload;
+  function Ansi(aChar: AnsiChar): AnsiChar; overload;
+  function Ansi(aChar: WideChar): AnsiChar; overload;
+  function Ansi(aString: UnicodeString): AnsiString; overload;
+  procedure Ansi(aChar: WideChar; var aMBCS: AnsiString); overload;
 
-  function WIDE: WIDEClass; overload; {$ifdef InlineMethods} inline; {$endif}
-  function WIDE(aBuffer: PWIDEChar; aLen: Integer): UnicodeString; overload;
-  function WIDE(aChar: ANSIChar): WIDEChar; overload;
-  function WIDE(aChar: WIDEChar): WIDEChar; overload;
-  function WIDE(aString: ANSIString): UnicodeString; overload;
-  function WIDE(const aInteger: Integer): UnicodeString; overload;
+  function Wide: WideClass; overload; {$ifdef InlineMethods} inline; {$endif}
+  function Wide(aBuffer: PWideChar; aLen: Integer): UnicodeString; overload;
+  function Wide(aChar: AnsiChar): WideChar; overload;
+  function Wide(aChar: WideChar): WideChar; overload;
+  function Wide(aString: AnsiString): UnicodeString; overload;
+  function Wide(const aInteger: Integer): UnicodeString; overload;
 
   function STR: STRClass; overload; {$ifdef InlineMethods} inline; {$endif}
   function STR(aInteger: Integer): String; overload;
-  function STR(aString: ANSIString): String; overload;
+  function STR(aString: AnsiString): String; overload;
   function STR(aString: UnicodeString): String; overload;
 
-  function UTF8: UTF8Class; overload; {$ifdef InlineMethods} inline; {$endif}
+  function Utf8: Utf8Class; overload; {$ifdef InlineMethods} inline; {$endif}
   function ASCII: ASCIIClass; overload; {$ifdef InlineMethods} inline; {$endif}
 
 
   {$ifdef TYPE_HELPERS}
   type
-    TANSIStringHelper = record helper for ANSIString
+    TAnsiStringHelper = record helper for AnsiString
     private
       function get_Length: Integer; inline;
     public
-      function Split(aChar: ANSIChar; var aLeft, aRight: ANSIString): Boolean; overload;
-      function Split(aChar: ANSIChar; var aArray: TANSIStringArray): Boolean; overload;
+      function Split(aChar: AnsiChar; var aLeft, aRight: AnsiString): Boolean; overload;
+      function Split(aChar: AnsiChar; var aArray: TAnsiStringArray): Boolean; overload;
       property Length: Integer read get_Length;
     end;
 
@@ -243,18 +259,18 @@ interface
     public
       function BeginsWith(const aString: String): Boolean;
       function BeginsWithText(const aString: String): Boolean;
-      function Contains(aChar: ANSIChar): Boolean; overload;
-      function Contains(aChar: WIDEChar): Boolean; overload;
+      function Contains(aChar: AnsiChar): Boolean; overload;
+      function Contains(aChar: WideChar): Boolean; overload;
       function Contains(const aString: String): Boolean; overload;
-      function EndsWith(const aChar: WIDEChar): Boolean; overload;
+      function EndsWith(const aChar: WideChar): Boolean; overload;
       function EndsWith(const aString: String): Boolean; overload;
       function EqualsText(const aString: String): Boolean;
       function IsEmpty: Boolean; inline;
       function IsNotEmpty: Boolean; inline;
       function IsNotEmptyOrWhitespace: Boolean; inline;
       function IsOneOfText(const aArray: array of String): Boolean;
-      function Split(aChar: WIDEChar; var aLeft, aRight: UnicodeString): Boolean; overload;
-      function Split(aChar: WIDEChar; var aArray: TWIDEStringArray): Integer; overload;
+      function Split(aChar: WideChar; var aLeft, aRight: UnicodeString): Boolean; overload;
+      function Split(aChar: WideChar; var aArray: TWideStringArray): Integer; overload;
       function ToLower: String;
       function ToUpper: String;
       function Startcase: String;
@@ -300,7 +316,7 @@ implementation
   {$endif}
   { vcl: }
   {$ifdef DELPHIXE4__}
-    ANSIStrings,
+    AnsiStrings,
   {$endif}
   {$ifdef __DELPHIXE2}
     StrUtils,
@@ -311,50 +327,50 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function ANSIFn.Alloc(const aString: ANSIString): PANSIChar;
+  class function AnsiFn.Alloc(const aString: AnsiString): PAnsiChar;
   var
     len: Integer;
   begin
     len     := Length(aString) + 1;
     result  := AllocMem(len);
 
-    CopyMemory(result, PANSIChar(aString), len);
+    CopyMemory(result, PAnsiChar(aString), len);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function ANSIFn.AllocWIDE(const aString: ANSIString): PWIDEChar;
+  class function AnsiFn.AllocWide(const aString: AnsiString): PWideChar;
   begin
-    result := WIDE.Alloc(WIDE.FromANSI(aString));
+    result := Wide.Alloc(Wide.FromAnsi(aString));
   end;
 
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.Alloc(const aString: UnicodeString): PWIDEChar;
+  class function WideFn.Alloc(const aString: UnicodeString): PWideChar;
   var
     len: Integer;
   begin
     len     := (Length(aString) + 1) * 2;
     result  := AllocMem(len);
 
-    CopyMemory(result, PWIDEChar(aString), len);
+    CopyMemory(result, PWideChar(aString), len);
   end;
 
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WIDEFn.AllocANSI(const aString: UnicodeString): PANSIChar;
+  class function WideFn.AllocAnsi(const aString: UnicodeString): PAnsiChar;
   var
     len: Integer;
-    s: ANSIString;
+    s: AnsiString;
   begin
-    s := ANSI.FromWIDE(aString);
+    s := Ansi.FromWide(aString);
 
     len     := Length(s) + 1;
     result  := AllocMem(len);
 
-    CopyMemory(result, PANSIChar(s), len);
+    CopyMemory(result, PAnsiChar(s), len);
   end;
 
 
@@ -363,38 +379,38 @@ implementation
 
 {$ifdef UNICODE}
 
-  class function STRFn.AllocANSI(const aString: String): PANSIChar;
+  class function STRFn.AllocAnsi(const aString: String): PAnsiChar;
   begin
-    result := WIDE.AllocANSI(aString);
+    result := Wide.AllocAnsi(aString);
   end;
 
 
-  class function STRFn.AllocWIDE(const aString: String): PWIDEChar;
+  class function STRFn.AllocWide(const aString: String): PWideChar;
   begin
-    result := WIDE.Alloc(aString);
+    result := Wide.Alloc(aString);
   end;
 
 
-  class function STRFn.FromWIDE(const aString: String): UnicodeString;
+  class function STRFn.FromWide(const aString: String): UnicodeString;
   begin
     result := aString;
   end;
 
 {$else}
 
-  class function STRFn.AllocWIDE(const aString: String): PWIDEChar;
+  class function STRFn.AllocWide(const aString: String): PWideChar;
   begin
-    result := ANSI.AllocWIDE(aString);
+    result := Ansi.AllocWide(aString);
   end;
 
 
-  class function STRFn.AllocANSI(const aString: String): PANSIChar;
+  class function STRFn.AllocAnsi(const aString: String): PAnsiChar;
   begin
-    result := ANSI.Alloc(aString);
+    result := Ansi.Alloc(aString);
   end;
 
 
-  class function STRFn.FromANSI(const aString: String): ANSIString;
+  class function STRFn.FromAnsi(const aString: String): AnsiString;
   begin
     result := aString;
   end;
@@ -438,27 +454,27 @@ implementation
 
 { Factories -------------------------------------------------------------------------------------- }
 
-  { ANSI - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
+  { Ansi - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
 
-  function ANSI: ANSIClass;
+  function Ansi: AnsiClass;
   begin
-    result := ANSIFn;
+    result := AnsiFn;
   end;
 
-  function ANSI(aBuffer: PANSIChar; aLen: Integer): ANSIString;
+  function Ansi(aBuffer: PAnsiChar; aLen: Integer): AnsiString;
   begin
     SetLength(result, aLen);
     if aLen > 0 then
       Move(aBuffer^, result[1], aLen);
   end;
 
-  function ANSI(aChar: ANSIChar): ANSIChar;
+  function Ansi(aChar: AnsiChar): AnsiChar;
   begin
     result := aChar;
   end;
 
 
-  function ANSI(aChar: WIDEChar): ANSIChar;
+  function Ansi(aChar: WideChar): AnsiChar;
   var
     usedDefault: BOOL;
   begin
@@ -472,17 +488,17 @@ implementation
 
     if (WideCharToMultiByte(CP_ACP, 0, @aChar, 0, NIL, 0, '?', @usedDefault) > 1)
      or (usedDefault and NOT AllowUnicodeDataLoss) then
-      raise EUnicodeRequiresMultibyte.Create('Unicode character ''' + aChar + ''' does not map to a single-byte character in the default ANSI codepage');
+      raise EUnicodeRequiresMultibyte.Create('Unicode character ''' + aChar + ''' does not map to a single-byte character in the default Ansi codepage');
 
     if WideCharToMultiByte(CP_ACP, 0, @aChar, 1, @result, 1, '?', @usedDefault) = 0 then
-      raise EUnicode.Create('Unexpected error converting Unicode character ''' + aChar + ''' to the default ANSI codepage');
+      raise EUnicode.Create('Unexpected error converting Unicode character ''' + aChar + ''' to the default Ansi codepage');
 
     if usedDefault and NOT AllowUnicodeDataLoss then
-      raise EUnicodeDataloss.Create('Unicode character ''' + aChar + ''' is not supported in the current ANSI codepage');
+      raise EUnicodeDataloss.Create('Unicode character ''' + aChar + ''' is not supported in the current Ansi codepage');
   end;
 
 
-  procedure ANSI(aChar: WIDEChar; var aMBCS: ANSIString);
+  procedure Ansi(aChar: WideChar; var aMBCS: AnsiString);
   var
     len: Integer;
     usedDefault: BOOL;
@@ -491,24 +507,24 @@ implementation
 
     SetLength(aMBCS, len);
 
-    if WideCharToMultiByte(CP_ACP, 0, @aChar, 1, PANSIChar(aMBCS), len, '?', @usedDefault) = 0 then
-      raise EUnicode.Create('Unexpected error converting Unicode character ''' + aChar + ''' to the default ANSI codepage');
+    if WideCharToMultiByte(CP_ACP, 0, @aChar, 1, PAnsiChar(aMBCS), len, '?', @usedDefault) = 0 then
+      raise EUnicode.Create('Unexpected error converting Unicode character ''' + aChar + ''' to the default Ansi codepage');
 
     if usedDefault and NOT AllowUnicodeDataLoss then
-      raise EUnicodeDataloss.Create('Unicode character ''' + aChar + ''' is not supported in the current ANSI codepage');
+      raise EUnicodeDataloss.Create('Unicode character ''' + aChar + ''' is not supported in the current Ansi codepage');
   end;
 
 
-  function ANSI(aString: UnicodeString): ANSIString;
+  function Ansi(aString: UnicodeString): AnsiString;
   begin
-    result := ANSI.FromWIDE(aString);
+    result := Ansi.FromWide(aString);
   end;
 
 
-  function ANSI(aInteger: Integer): ANSIString;
+  function Ansi(aInteger: Integer): AnsiString;
   begin
   {$ifdef UNICODE}
-    result := ANSI.FromWIDE(IntToStr(aInteger));
+    result := Ansi.FromWide(IntToStr(aInteger));
   {$else}
     result := Format('%d', [aInteger]);
   {$endif}
@@ -516,44 +532,44 @@ implementation
 
 
 
-  { WIDE - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
+  { Wide - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
 
 
-  function WIDE: WIDEClass;
+  function Wide: WideClass;
   begin
-    result := WIDEFn;
+    result := WideFn;
   end;
 
-  function WIDE(aBuffer: PWIDEChar; aLen: Integer): UnicodeString;
+  function Wide(aBuffer: PWideChar; aLen: Integer): UnicodeString;
   begin
     SetLength(result, aLen);
     if aLen > 0 then
       Move(aBuffer^, result[1], aLen * 2);
   end;
 
-  function WIDE(aChar: ANSIChar): WIDEChar;
+  function Wide(aChar: AnsiChar): WideChar;
   begin
     MultiByteToWideChar(CP_ACP, 0, @aChar, 1, @result, 1);
   end;
 
-  function WIDE(aChar: WIDEChar): WIDEChar;
+  function Wide(aChar: WideChar): WideChar;
   begin
     result := aChar;
   end;
 
 
-  function WIDE(aString: ANSIString): UnicodeString;
+  function Wide(aString: AnsiString): UnicodeString;
   begin
-    result := WIDE.FromANSI(aString);
+    result := Wide.FromAnsi(aString);
   end;
 
 
-  function WIDE(const aInteger: Integer): UnicodeString;
+  function Wide(const aInteger: Integer): UnicodeString;
   begin
   {$ifdef UNICODE}
     result := IntToStr(aInteger);
   {$else}
-    result := WIDE.Format('%d', [aInteger]);
+    result := Wide.Format('%d', [aInteger]);
   {$endif}
   end;
 
@@ -572,10 +588,10 @@ implementation
     result := IntToStr(aInteger);
   end;
 
-  function STR(aString: ANSIString): String;
+  function STR(aString: AnsiString): String;
   begin
   {$ifdef UNICODE}
-    result := WIDE(aString);
+    result := Wide(aString);
   {$else}
     result := aString;
   {$endif}
@@ -584,7 +600,7 @@ implementation
   function STR(aString: UnicodeString): String;
   begin
   {$ifNdef UNICODE}
-    result := ANSI(aString);
+    result := Ansi(aString);
   {$else}
     result := aString;
   {$endif}
@@ -592,11 +608,11 @@ implementation
 
 
 
-  { UTF8 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
+  { Utf8 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
 
-  function UTF8: UTF8Class;
+  function Utf8: Utf8Class;
   begin
-    result := UTF8Fn;
+    result := Utf8Fn;
   end;
 
 
@@ -611,23 +627,23 @@ implementation
 
 {$ifdef TYPE_HELPERS}
 
-{ TANSIStringHelper ------------------------------------------------------------------------------ }
+{ TAnsiStringHelper ------------------------------------------------------------------------------ }
 
-  function TANSIStringHelper.get_Length: Integer;
+  function TAnsiStringHelper.get_Length: Integer;
   begin
     result := System.Length(self);
   end;
 
 
-  function TANSIStringHelper.Split(aChar: ANSIChar; var aLeft, aRight: ANSIString): Boolean;
+  function TAnsiStringHelper.Split(aChar: AnsiChar; var aLeft, aRight: AnsiString): Boolean;
   begin
-    result := ANSI.Split(self, aChar, aLeft, aRight);
+    result := Ansi.Split(self, aChar, aLeft, aRight);
   end;
 
 
-  function TANSIStringHelper.Split(aChar: ANSIChar; var aArray: TANSIStringArray): Boolean;
+  function TAnsiStringHelper.Split(aChar: AnsiChar; var aArray: TAnsiStringArray): Boolean;
   begin
-    result := ANSI.Split(self, aChar, aArray);
+    result := Ansi.Split(self, aChar, aArray);
   end;
 
 
@@ -642,48 +658,48 @@ implementation
 
   function TStringHelper.BeginsWith(const aString: String): Boolean;
   begin
-    result := WIDE.BeginsWith(self, aString, csCaseSensitive);
+    result := Wide.BeginsWith(self, aString, csCaseSensitive);
   end;
 
   function TStringHelper.BeginsWithText(const aString: String): Boolean;
   begin
-    result := WIDE.BeginsWith(self, aString, csIgnoreCase);
+    result := Wide.BeginsWith(self, aString, csIgnoreCase);
   end;
 
-  function TStringHelper.Contains(aChar: ANSIChar): Boolean;
+  function TStringHelper.Contains(aChar: AnsiChar): Boolean;
   var
     notUsed: Integer;
   begin
-    result := WIDE.Find(self, WIDE.FromANSI(aChar), notUsed);
+    result := Wide.Find(self, Wide.FromAnsi(aChar), notUsed);
   end;
 
-  function TStringHelper.Contains(aChar: WIDEChar): Boolean;
+  function TStringHelper.Contains(aChar: WideChar): Boolean;
   var
     notUsed: Integer;
   begin
-    result := WIDE.Find(self, aChar, notUsed);
+    result := Wide.Find(self, aChar, notUsed);
   end;
 
   function TStringHelper.Contains(const aString: String): Boolean;
   var
     notUsed: Integer;
   begin
-    result := WIDE.Find(self, aString, notUsed);
+    result := Wide.Find(self, aString, notUsed);
   end;
 
-  function TStringHelper.EndsWith(const aChar: WIDEChar): Boolean;
+  function TStringHelper.EndsWith(const aChar: WideChar): Boolean;
   begin
-    result := WIDE.EndsWith(self, aChar);
+    result := Wide.EndsWith(self, aChar);
   end;
 
   function TStringHelper.EndsWith(const aString: String): Boolean;
   begin
-    result := WIDE.EndsWith(self, aString);
+    result := Wide.EndsWith(self, aString);
   end;
 
   function TStringHelper.EqualsText(const aString: String): Boolean;
   begin
-    result := (WIDE.Compare(self, aString, csIgnoreCase) = isEqual);
+    result := (Wide.Compare(self, aString, csIgnoreCase) = isEqual);
   end;
 
   function TStringHelper.IsEmpty: Boolean;
@@ -717,30 +733,30 @@ implementation
   end;
 
 
-  function TStringHelper.Split(aChar: WIDEChar; var aLeft, aRight: String): Boolean;
+  function TStringHelper.Split(aChar: WideChar; var aLeft, aRight: String): Boolean;
   begin
-    result := WIDE.Split(self, aChar, aLeft, aRight);
+    result := Wide.Split(self, aChar, aLeft, aRight);
   end;
 
-  function TStringHelper.Split(aChar: WIDEChar; var aArray: TWIDEStringArray): Integer;
+  function TStringHelper.Split(aChar: WideChar; var aArray: TWideStringArray): Integer;
   begin
-    result := WIDE.Split(self, aChar, aArray);
+    result := Wide.Split(self, aChar, aArray);
   end;
 
   function TStringHelper.Startcase: String;
   begin
-    result := WIDE.Startcase(self);
+    result := Wide.Startcase(self);
   end;
 
   function TStringHelper.ToLower: String;
   begin
-    result := WIDE.Lowercase(self);
+    result := Wide.Lowercase(self);
   end;
 
 
   function TStringHelper.ToUpper: String;
   begin
-    result := WIDE.Uppercase(self);
+    result := Wide.Uppercase(self);
   end;
 
 

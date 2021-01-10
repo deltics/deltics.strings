@@ -9,20 +9,19 @@ interface
 
   uses
     Classes,
-    SysUtils,
-    Deltics.Strings.Encoding;
+    SysUtils;
 
 
   type
   {$ifdef UNICODE}
-    UTF8String      = System.UTF8String;
-    UnicodeString   = System.UnicodeString;
+    Utf8String    = System.Utf8String;
+    UnicodeString = System.UnicodeString;
   {$else}
-    UTF8String    = type ANSIString;
+    Utf8String    = type AnsiString;
     UnicodeString = type WideString;
   {$endif}
 
-    TANSICharSet = set of ANSIChar;
+    TAnsiCharSet = set of AnsiChar;
 
     TStringProcessingFlag = (
                              rsFromStart,
@@ -54,26 +53,26 @@ interface
 
 
   type
-    UTF8Char    = type ANSIChar;
-    PUTF8Char   = ^UTF8Char;
+    Utf8Char    = type AnsiChar;
+    PUtf8Char   = ^Utf8Char;
 
-    ASCIIString = type ANSIString;
-    ASCIIChar   = type UTF8Char;
+    ASCIIString = type AnsiString;
+    ASCIIChar   = type Utf8Char;
 
     TCharIndexArray   = array of Integer;
-    TANSIStringArray  = array of ANSIString;
-    TUTF8StringArray  = array of UTF8String;
-    TWIDEStringArray  = array of UnicodeString;
+    TAnsiStringArray  = array of AnsiString;
+    TUtf8StringArray  = array of Utf8String;
+    TWideStringArray  = array of UnicodeString;
 
   {$ifdef UNICODE}
-    TStringArray = TWIDEStringArray;
+    TStringArray = TWideStringArray;
   {$else}
-    TStringArray = TANSIStringArray;
+    TStringArray = TAnsiStringArray;
   {$endif}
 
-    TANSICharArray  = array of ANSIChar;
-    TUTF8CharArray  = array of UTF8Char;
-    TWIDECharArray  = array of WIDEChar;
+    TAnsiCharArray  = array of AnsiChar;
+    TUtf8CharArray  = array of Utf8Char;
+    TWideCharArray  = array of WideChar;
 
     TAlphaCase  = (
                    acNotAlpha,
@@ -117,24 +116,24 @@ interface
                    );
 
 
-    TANSITestCharFn = function(aChar: ANSIChar): LongBool; stdcall;
-    TWIDETestCharFn = function(aChar: WIDEChar): LongBool; stdcall;
+    TAnsiTestCharFn = function(aChar: AnsiChar): LongBool; stdcall;
+    TWideTestCharFn = function(aChar: WideChar): LongBool; stdcall;
 
 
-    IANSIStringBuilder = interface
+    IAnsiStringBuilder = interface
     ['{BA0B6994-0769-4145-95F2-2A112662E6AC}']
     end;
 
-    IWIDEStringBuilder = interface
+    IWideStringBuilder = interface
     ['{B75835B8-7D6C-4DE7-9743-CB7DF02ABFD9}']
     end;
 
 
 
   {$ifdef UNICODE}
-    IStringBuilder = IWIDEStringBuilder;
+    IStringBuilder = IWideStringBuilder;
   {$else}
-    IStringBuilder = IANSIStringBuilder;
+    IStringBuilder = IAnsiStringBuilder;
   {$endif}
 
 
