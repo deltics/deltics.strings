@@ -9,17 +9,20 @@ interface
 
   uses
     Classes,
-    SysUtils;
+    SysUtils,
+    Deltics.Strings.Types.BOM,
+    Deltics.Strings.Types.Core;
 
 
   type
-  {$ifdef UNICODE}
-    Utf8String    = System.Utf8String;
-    UnicodeString = System.UnicodeString;
-  {$else}
-    Utf8String    = type AnsiString;
-    UnicodeString = type WideString;
-  {$endif}
+    Utf8String    = Deltics.Strings.Types.Core.Utf8String;
+    UnicodeString = Deltics.Strings.Types.Core.UnicodeString;
+
+    Utf8Char    = Deltics.Strings.Types.Core.Utf8Char;
+    PUtf8Char   = Deltics.Strings.Types.Core.PUtf8Char;
+
+    AsciiString = Deltics.Strings.Types.Core.AsciiString;
+    AsciiChar   = Deltics.Strings.Types.Core.AsciiChar;
 
     TAnsiCharSet = set of AnsiChar;
 
@@ -53,12 +56,6 @@ interface
 
 
   type
-    Utf8Char    = type AnsiChar;
-    PUtf8Char   = ^Utf8Char;
-
-    ASCIIString = type AnsiString;
-    ASCIIChar   = type Utf8Char;
-
     TCharIndexArray   = array of Integer;
     TAnsiStringArray  = array of AnsiString;
     TUtf8StringArray  = array of Utf8String;
@@ -148,6 +145,17 @@ interface
                                 doDeleteOptionalDelimiter,
                                 doExtractOptionalDelimiter
                                ];
+
+
+  type
+    Utf8Bom     = Deltics.Strings.Types.BOM.Utf8Bom;
+    Utf16Bom    = Deltics.Strings.Types.BOM.Utf16Bom;
+    Utf16LEBom  = Deltics.Strings.Types.BOM.Utf16LEBom;
+    Utf32Bom    = Deltics.Strings.Types.BOM.Utf32Bom;
+    Utf32LEBom  = Deltics.Strings.Types.BOM.Utf32LEBom;
+
+
+
 
 implementation
 

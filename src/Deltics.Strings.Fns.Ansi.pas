@@ -2,7 +2,7 @@
 {$i deltics.strings.inc}
 
 
-  unit Deltics.Strings.Ansi;
+  unit Deltics.Strings.Fns.Ansi;
 
 
 interface
@@ -441,8 +441,8 @@ implementation
     Deltics.Pointers,
     Deltics.ReverseBytes,
     Deltics.Strings,
-    Deltics.Strings.Utf8,
-    Deltics.Strings.Wide,
+    Deltics.Strings.Fns.Utf8,
+    Deltics.Strings.Fns.Wide,
     Deltics.Strings.Utils;
 
 

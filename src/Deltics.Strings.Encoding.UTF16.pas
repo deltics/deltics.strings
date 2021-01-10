@@ -37,7 +37,7 @@ implementation
   uses
     Windows,
     Deltics.ReverseBytes,
-    Deltics.Strings.Encoding.Bom;
+    Deltics.Strings.Types;
 
 
 { TUTF16LEEncoding }

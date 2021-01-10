@@ -28,7 +28,7 @@ implementation
 
   uses
     Windows,
-    Deltics.Strings.Encoding.Bom;
+    Deltics.Strings.Types;
 
 
 { TUTF32LEEncoding }

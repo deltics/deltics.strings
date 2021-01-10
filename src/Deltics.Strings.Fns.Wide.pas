@@ -2,7 +2,7 @@
 {$i deltics.strings.inc}
 
 
-  unit Deltics.Strings.Wide;
+  unit Deltics.Strings.Fns.Wide;
 
 
 interface

@@ -26,9 +26,9 @@ implementation
 
   uses
   {$ifdef __DELPHI2007}
-    Deltics.Strings.ANSI;
+    Deltics.Strings.Fns.ANSI;
   {$else}
-    Deltics.Strings.WIDE;
+    Deltics.Strings.Fns.WIDE;
   {$endif}
 
 
@@ -61,10 +61,10 @@ implementation
   procedure RuntimeTests.STRIsImplementedCorrectly;
   begin
   {$ifdef __DELPHI2007}
-    Test('STR.InheritsFrom(ANSIFn)').Assert(STR.InheritsFrom(Deltics.Strings.ANSI.ANSIFn));
+    Test('STR.InheritsFrom(ANSIFn)').Assert(STR.InheritsFrom(Deltics.Strings.Fns.ANSI.ANSIFn));
   {$endif}
   {$ifdef DELPHI2009__}
-    Test('STR.InheritsFrom(WIDEFn)').Assert(STR.InheritsFrom(Deltics.Strings.WIDE.WIDEFn));
+    Test('STR.InheritsFrom(WIDEFn)').Assert(STR.InheritsFrom(Deltics.Strings.Fns.WIDE.WIDEFn));
   {$endif}
   end;
 

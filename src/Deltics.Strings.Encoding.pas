@@ -9,7 +9,7 @@ interface
   uses
     Classes,
     SysUtils,
-    Deltics.Strings.Encoding.Bom,
+    Deltics.Strings.Types.BOM,
     Deltics.Strings.Types;
 
 

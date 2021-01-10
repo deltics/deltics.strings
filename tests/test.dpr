@@ -8,11 +8,11 @@
 uses
   Deltics.Smoketest,
   Deltics.Strings in '..\src\Deltics.Strings.pas',
-  Deltics.Strings.Ansi in '..\src\Deltics.Strings.Ansi.pas',
-  Deltics.Strings.Utf8 in '..\src\Deltics.Strings.Utf8.pas',
-  Deltics.Strings.Wide in '..\src\Deltics.Strings.Wide.pas',
+  Deltics.Strings.Fns.Ansi in '..\src\Deltics.Strings.Fns.Ansi.pas',
+  Deltics.Strings.Fns.Utf8 in '..\src\Deltics.Strings.Fns.Utf8.pas',
+  Deltics.Strings.Fns.Wide in '..\src\Deltics.Strings.Fns.Wide.pas',
   Deltics.Strings.Encoding in '..\src\Deltics.Strings.Encoding.pas',
-  Deltics.Strings.Encoding.Bom in '..\src\Deltics.Strings.Encoding.Bom.pas',
+  Deltics.Strings.Types.BOM in '..\src\Deltics.Strings.Types.BOM.pas',
   Deltics.Strings.Encoding.Ascii in '..\src\Deltics.Strings.Encoding.Ascii.pas',
   Deltics.Strings.Encoding.Utf8 in '..\src\Deltics.Strings.Encoding.Utf8.pas',
   Deltics.Strings.Encoding.Utf16 in '..\src\Deltics.Strings.Encoding.Utf16.pas',
@@ -36,7 +36,8 @@ uses
   Test.Transcoding in 'Test.Transcoding.pas',
   Test.Utils in 'Test.Utils.pas',
   Test.DeleteLeft in 'Test.DeleteLeft.pas',
-  Test.Encoding in 'Test.Encoding.pas';
+  Test.Encoding in 'Test.Encoding.pas',
+  Deltics.Strings.Types.Core in '..\src\Deltics.Strings.Types.Core.pas';
 
 begin
   TestRun.Test(RuntimeTests, DELPHI_VERSION);

@@ -52,22 +52,21 @@ interface
   uses
     Classes,
     SysUtils,
-    Deltics.Strings.Ansi,
-    Deltics.Strings.Utf8,
-    Deltics.Strings.Wide,
     Deltics.Strings.Encoding,
-    Deltics.Strings.Encoding.Bom,
+    Deltics.Strings.Fns.Ansi,
+    Deltics.Strings.Fns.Utf8,
+    Deltics.Strings.Fns.Wide,
     Deltics.Strings.StringBuilder,
     Deltics.Strings.StringList,
     Deltics.Strings.Templates,
     Deltics.Strings.Types,
+    Deltics.Strings.Types.BOM,
     Deltics.Strings.Utils;
 
 
   type
     Encoding          = Deltics.Strings.Encoding.Encoding;
     TEncoding         = Deltics.Strings.Encoding.TEncoding;
-    TBOM              = Deltics.Strings.Encoding.Bom.TBOM;
 
     ASCIIString       = Deltics.Strings.Types.ASCIIString;
     ASCIIChar         = Deltics.Strings.Types.ASCIIChar;
@@ -117,11 +116,13 @@ interface
 
     Utils = Deltics.Strings.Utils.Utils;
 
-    Utf8Bom     = Deltics.Strings.Encoding.Bom.Utf8Bom;
-    Utf16Bom    = Deltics.Strings.Encoding.Bom.Utf16Bom;
-    Utf16LEBom  = Deltics.Strings.Encoding.Bom.Utf16LEBom;
-    Utf32Bom    = Deltics.Strings.Encoding.Bom.Utf32Bom;
-    Utf32LEBom  = Deltics.Strings.Encoding.Bom.Utf32LEBom;
+    TBOM        = Deltics.Strings.Types.BOM.TBOM;
+
+    Utf8Bom     = Deltics.Strings.Types.BOM.Utf8Bom;
+    Utf16Bom    = Deltics.Strings.Types.BOM.Utf16Bom;
+    Utf16LEBom  = Deltics.Strings.Types.BOM.Utf16LEBom;
+    Utf32Bom    = Deltics.Strings.Types.BOM.Utf32Bom;
+    Utf32LEBom  = Deltics.Strings.Types.BOM.Utf32LEBom;
 
 
   const
@@ -175,19 +176,19 @@ interface
 
 
   type
-    AnsiFn = class(Deltics.Strings.Ansi.AnsiFn)
+    AnsiFn = class(Deltics.Strings.Fns.Ansi.AnsiFn)
     public
       class function Alloc(const aString: AnsiString): PAnsiChar;
       class function AllocWide(const aString: AnsiString): PWideChar;
     end;
 
-    WideFn = class(Deltics.Strings.Wide.WideFn)
+    WideFn = class(Deltics.Strings.Fns.Wide.WideFn)
     public
       class function Alloc(const aString: UnicodeString): PWideChar;
       class function AllocAnsi(const aString: UnicodeString): PAnsiChar;
     end;
 
-    Utf8Fn = class(Deltics.Strings.Utf8.Utf8Fn);
+    Utf8Fn = class(Deltics.Strings.Fns.Utf8.Utf8Fn);
 
     ASCIIFn = class
     public
@@ -196,14 +197,14 @@ interface
     end;
 
   {$ifdef UNICODE}
-    STRFn = class(Deltics.Strings.Wide.WideFn)
+    STRFn = class(Deltics.Strings.Fns.Wide.WideFn)
     public
       class function AllocAnsi(const aString: String): PAnsiChar;
       class function AllocWide(const aString: String): PWideChar;
       class function FromWide(const aString: String): UnicodeString; overload;
     end;
   {$else}
-    STRFn = class(Deltics.Strings.Ansi.AnsiFn)
+    STRFn = class(Deltics.Strings.Fns.Ansi.AnsiFn)
     public
       class function AllocAnsi(const aString: String): PAnsiChar;
       class function AllocWide(const aString: String): PWideChar;

@@ -1,12 +1,12 @@
 {$i deltics.strings.inc}
 
-  unit Deltics.Strings.Encoding.Bom;
+  unit Deltics.Strings.Types.BOM;
 
 
 interface
 
   uses
-    Deltics.Strings.Types;
+    Deltics.Strings.Types.Core;
 
 
   type
@@ -39,6 +39,8 @@ interface
     Utf32LEBom = class
       class function AsBytes: TBOM;
     end;
+
+
 
 
 implementation
