@@ -12,11 +12,11 @@ interface
 
 
   type
-    TASCIIEncoding = class(TMultiByteEncoding)
+    TAsciiEncoding = class(TMultiByteEncoding)
     protected
       constructor Create; override;
     public
-      function GetByteCount(const aChars: PWIDEChar; const aNumChars: Integer): Integer; override;
+      function GetByteCount(const aChars: PWideChar; const aNumChars: Integer): Integer; override;
       function GetCharCount(const aBytes; const aNumBytes: Integer): Integer; override;
     end;
 
@@ -25,22 +25,22 @@ interface
 implementation
 
 
-{ TASCIIEncoding }
+{ TAsciiEncoding }
 
-  constructor TASCIIEncoding.Create;
+  constructor TAsciiEncoding.Create;
   begin
-    inherited Create(cpASCII);
+    inherited Create(cpAscii);
   end;
 
 
-  function TASCIIEncoding.GetByteCount(const aChars: PWIDEChar;
+  function TAsciiEncoding.GetByteCount(const aChars: PWideChar;
                                        const aNumChars: Integer): Integer;
   begin
     result := aNumChars div 2;
   end;
 
 
-  function TASCIIEncoding.GetCharCount(const aBytes;
+  function TAsciiEncoding.GetCharCount(const aBytes;
                                        const aNumBytes: Integer): Integer;
   begin
     result := aNumBytes;

@@ -66,10 +66,10 @@ interface
       constructor Create(const aCodePage: Cardinal); overload;
       constructor Create(const aCodePage: Cardinal; const aBom: TBOM); overload;
     public
-      function GetByteCount(const aChars: PWIDEChar; const aNumChars: Integer): Integer; overload; virtual; abstract;
-      function GetCharCount(const aBytes; const aNumBytes: Integer): Integer; overload; virtual; abstract;
-      function Decode(const aBytes; const aNumBytes: Integer; const aChars: PWIDEChar; const aMaxChars: Integer): Integer; overload; virtual; abstract;
-      function Encode(const aChars: PWIDEChar; const aNumChars: Integer; const aBytes; const aMaxBytes: Integer): Integer; overload; virtual; abstract;
+      function GetByteCount(const aChars: PWIDEChar; const aNumChars: Integer): Integer; virtual; abstract;
+      function GetCharCount(const aBytes; const aNumBytes: Integer): Integer; virtual; abstract;
+      function Decode(const aBytes; const aNumBytes: Integer; const aChars: PWIDEChar; const aMaxChars: Integer): Integer; virtual; abstract;
+      function Encode(const aChars: PWIDEChar; const aNumChars: Integer; const aBytes; const aMaxBytes: Integer): Integer; virtual; abstract;
       property IsUnicode: Boolean read get_IsUnicode;
       property IsUtf16: Boolean read get_IsUtf16;
       property IsUtf32: Boolean read get_IsUtf32;
@@ -95,10 +95,10 @@ implementation
     SyncObjs,
     Windows,
     Deltics.Exceptions,
-    Deltics.Strings.Encoding.ASCII,
-    Deltics.Strings.Encoding.UTF8,
-    Deltics.Strings.Encoding.UTF16,
-    Deltics.Strings.Encoding.UTF32;
+    Deltics.Strings.Encoding.Ascii,
+    Deltics.Strings.Encoding.Utf8,
+    Deltics.Strings.Encoding.Utf16,
+    Deltics.Strings.Encoding.Utf32;
 
 
   type
