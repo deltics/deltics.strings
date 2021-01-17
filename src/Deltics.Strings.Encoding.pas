@@ -249,7 +249,8 @@ implementation
     end;
 
   begin
-    result := FALSE;
+    result    := FALSE;
+    aEncoding := NIL;
 
     // A BOM has a minimum size, so if the BOM passed to us is not
     //  big enough then we know we will not be able to identify any
