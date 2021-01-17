@@ -61,6 +61,7 @@ implementation
   var
     buf: array[0..5] of Byte;
     enc: TEncoding;
+    result: Boolean;
   begin
     buf[0]  := 0;
     buf[1]  := 65;
@@ -69,8 +70,9 @@ implementation
     buf[4]  := 0;
     buf[5]  := 67;
 
-    Encoding.Identify(buf, Length(buf), enc);
+    result := Encoding.Identify(buf, Length(buf), enc);
 
+    Test('result').Assert(NOT result);
     Test('Encoding').Assert(enc).IsNotNIL;
     if Assigned(enc) then
       Test('Codepage').Assert(enc.Codepage).Equals(cpUtf16);
@@ -82,6 +84,7 @@ implementation
     bom: TBOM;
     buf: array[0..7] of Byte;
     enc: TEncoding;
+    result: Boolean;
   begin
     bom := Utf16Bom.AsBytes;
     Memory.Copy(@bom[0], @buf[0], Length(bom));
@@ -93,8 +96,9 @@ implementation
     buf[7]  := 67;
     ReverseBytes(PWord(@buf[0]), Length(buf) div 2);
 
-    Encoding.Identify(buf, Length(buf), enc);
+    result := Encoding.Identify(buf, Length(buf), enc);
 
+    Test('result').Assert(result);
     Test('Encoding').Assert(enc).IsNotNIL;
     if Assigned(enc) then
       Test('Codepage').Assert(enc.Codepage).Equals(cpUtf16LE);
@@ -105,6 +109,7 @@ implementation
   var
     buf: array[0..5] of Byte;
     enc: TEncoding;
+    result: Boolean;
   begin
     buf[0]  := 0;
     buf[1]  := 65;
@@ -114,8 +119,9 @@ implementation
     buf[5]  := 67;
     ReverseBytes(PWord(@buf[0]), Length(buf) div 2);
 
-    Encoding.Identify(buf, Length(buf), enc);
+    result := Encoding.Identify(buf, Length(buf), enc);
 
+    Test('result').Assert(NOT result);
     Test('Encoding').Assert(enc).IsNotNIL;
     if Assigned(enc) then
       Test('Codepage').Assert(enc.Codepage).Equals(cpUtf16LE);
@@ -127,6 +133,7 @@ implementation
     bom: TBOM;
     buf: array[0..7] of Byte;
     enc: TEncoding;
+    result: Boolean;
   begin
     bom := Utf32Bom.AsBytes;
     Memory.Copy(@bom[0], @buf[0], Length(bom));
@@ -135,8 +142,9 @@ implementation
     buf[6]  := 0;
     buf[7]  := 65;
 
-    Encoding.Identify(buf, Length(buf), enc);
+    result := Encoding.Identify(buf, Length(buf), enc);
 
+    Test('result').Assert(result);
     Test('Encoding').Assert(enc).IsNotNIL;
     if Assigned(enc) then
       Test('Codepage').Assert(enc.Codepage).Equals(cpUtf32);
@@ -148,6 +156,7 @@ implementation
     bom: TBOM;
     buf: array[0..7] of Byte;
     enc: TEncoding;
+    result: Boolean;
   begin
     bom := Utf32Bom.AsBytes;
     Memory.Copy(@bom[0], @buf[0], Length(bom));
@@ -157,8 +166,9 @@ implementation
     buf[7]  := 65;
     ReverseBytes(PCardinal(@buf), 2);
 
-    Encoding.Identify(buf, 8, enc);
+    result := Encoding.Identify(buf, 8, enc);
 
+    Test('result').Assert(result);
     Test('Encoding').Assert(enc).IsNotNIL;
     if Assigned(enc) then
       Test('Codepage').Assert(enc.Codepage).Equals(cpUtf32LE);
@@ -170,6 +180,7 @@ implementation
     bom: TBOM;
     buf: array[0..5] of Byte;
     enc: TEncoding;
+    result: Boolean;
   begin
     bom := Utf8Bom.AsBytes;
     Memory.Copy(@bom[0], @buf[0], Length(bom));
@@ -177,7 +188,7 @@ implementation
     buf[4]  := 66;
     buf[5]  := 67;
 
-    Encoding.Identify(buf, 8, enc);
+    result := Encoding.Identify(buf, 8, enc);
 
     Test('Encoding').Assert(enc).IsNotNIL;
     if Assigned(enc) then
