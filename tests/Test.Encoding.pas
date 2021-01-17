@@ -190,6 +190,7 @@ implementation
 
     result := Encoding.Identify(buf, 8, enc);
 
+    Test('result').Assert(result);
     Test('Encoding').Assert(enc).IsNotNIL;
     if Assigned(enc) then
       Test('Codepage').Assert(enc.Codepage).Equals(cpUtf8);
