@@ -98,7 +98,8 @@ interface
       function Clone: IStringList;
       function Contains(const aString: String): Boolean;
       function ContainsName(const aName: String): Boolean;
-      procedure Delete(const aIndex: Integer);
+      procedure Delete(const aIndex: Integer); overload;
+      procedure Delete(const aString: String); overload;
     {$ifdef ForInEnumerators}
       function GetEnumerator: TStringsEnumerator;
     {$endif}
@@ -167,7 +168,8 @@ interface
       function Clone: IStringList;
       function Contains(const aString: String): Boolean;
       function ContainsName(const aName: String): Boolean;
-      procedure Delete(const aIndex: Integer);
+      procedure Delete(const aIndex: Integer); overload;
+      procedure Delete(const aString: String); overload;
     {$ifdef ForInEnumerators}
       function GetEnumerator: TStringsEnumerator;
     {$endif}
@@ -521,6 +523,17 @@ implementation
   procedure TComInterfacedStringList.Delete(const aIndex: Integer);
   begin
     fList.Delete(aIndex);
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  procedure TComInterfacedStringList.Delete(const aString: String);
+  var
+    idx: Integer;
+  begin
+    idx := IndexOf(aString);
+    if idx <> -1 then
+      Delete(idx);
   end;
 
 
