@@ -2,19 +2,19 @@
 {$i deltics.strings.inc}
 
 
-  unit Deltics.Strings.Parsers.ANSI.AsInteger;
+  unit Deltics.Strings.Parsers.Ansi.AsInteger;
 
 
 interface
 
-  function CheckInteger(aBuffer: PANSIChar; aLen: Integer): Boolean;
-  function ParseInteger(aBuffer: PANSIChar; aLen: Integer; var aValue: Integer): Boolean;
+  function CheckInteger(aBuffer: PAnsiChar; aLen: Integer): Boolean;
+  function ParseInteger(aBuffer: PAnsiChar; aLen: Integer; var aValue: Integer): Boolean;
 
 implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  function Init(var aBuffer: PANSIChar;
+  function Init(var aBuffer: PAnsiChar;
                 var aLen: Integer;
                 var aBase: Integer;
                 var aNeg: Boolean): Boolean; {$ifdef DELPHI2006__} inline; {$endif}
@@ -154,10 +154,10 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  function CheckInteger(aBuffer: PANSIChar;
+  function CheckInteger(aBuffer: PAnsiChar;
                         aLen: Integer): Boolean;
   var
-    pc: PANSIChar absolute aBuffer;
+    pc: PAnsiChar absolute aBuffer;
     i: Integer;
     neg: Boolean;
     base: Integer;
@@ -215,11 +215,11 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  function ParseInteger(    aBuffer: PANSIChar;
+  function ParseInteger(    aBuffer: PAnsiChar;
                             aLen: Integer;
                         var aValue: Integer): Boolean;
   var
-    pc: PANSIChar absolute aBuffer;
+    pc: PAnsiChar absolute aBuffer;
     i: Integer;
     neg: Boolean;
     base: Integer;

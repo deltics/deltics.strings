@@ -2,7 +2,7 @@
 {$i deltics.strings.inc}
 
 
-  unit Deltics.Strings.Parsers.ANSI;
+  unit Deltics.Strings.Parsers.Ansi;
 
 
 interface
@@ -12,27 +12,27 @@ interface
 
 
   type
-    ANSIParser = class
+    AnsiParser = class
     public
-      class function AsBoolean(aBuffer: PANSIChar; aLen: Integer): Boolean; overload; {$ifdef InlineMethods} inline; {$endif}
-      class function AsBoolean(aBuffer: PANSIChar; aLen: Integer; aDefault: Boolean): Boolean; overload; {$ifdef InlineMethods} inline; {$endif}
-      class function AsBoolean(const aString: ANSIString): Boolean; overload; {$ifdef InlineMethods} inline; {$endif}
-      class function AsBoolean(const aString: ANSIString; aDefault: Boolean): Boolean; overload; {$ifdef InlineMethods} inline; {$endif}
-      class function AsInteger(aBuffer: PANSIChar; aLen: Integer): Integer; overload; {$ifdef InlineMethods} inline; {$endif}
-      class function AsInteger(aBuffer: PANSIChar; aLen: Integer; aDefault: Integer): Integer; overload; {$ifdef InlineMethods} inline; {$endif}
-      class function AsInteger(const aString: ANSIString): Integer; overload; {$ifdef InlineMethods} inline; {$endif}
-      class function AsInteger(const aString: ANSIString; aDefault: Integer): Integer; overload; {$ifdef InlineMethods} inline; {$endif}
+      class function AsBoolean(aBuffer: PAnsiChar; aLen: Integer): Boolean; overload; {$ifdef InlineMethods} inline; {$endif}
+      class function AsBoolean(aBuffer: PAnsiChar; aLen: Integer; aDefault: Boolean): Boolean; overload; {$ifdef InlineMethods} inline; {$endif}
+      class function AsBoolean(const aString: AnsiString): Boolean; overload; {$ifdef InlineMethods} inline; {$endif}
+      class function AsBoolean(const aString: AnsiString; aDefault: Boolean): Boolean; overload; {$ifdef InlineMethods} inline; {$endif}
+      class function AsInteger(aBuffer: PAnsiChar; aLen: Integer): Integer; overload; {$ifdef InlineMethods} inline; {$endif}
+      class function AsInteger(aBuffer: PAnsiChar; aLen: Integer; aDefault: Integer): Integer; overload; {$ifdef InlineMethods} inline; {$endif}
+      class function AsInteger(const aString: AnsiString): Integer; overload; {$ifdef InlineMethods} inline; {$endif}
+      class function AsInteger(const aString: AnsiString; aDefault: Integer): Integer; overload; {$ifdef InlineMethods} inline; {$endif}
 
-      class function IsBoolean(aBuffer: PANSIChar; aLen: Integer): Boolean; overload; {$ifdef InlineMethods} inline; {$endif}
-      class function IsBoolean(aBuffer: PANSIChar; aLen: Integer; var aValue: Boolean): Boolean; overload; {$ifdef InlineMethods} inline; {$endif}
-      class function IsBoolean(const aString: ANSIString): Boolean; overload; {$ifdef InlineMethods} inline; {$endif}
-      class function IsBoolean(const aString: ANSIString; var aValue: Boolean): Boolean; overload; {$ifdef InlineMethods} inline; {$endif}
-      class function IsInteger(aBuffer: PANSIChar; aLen: Integer): Boolean; overload; {$ifdef InlineMethods} inline; {$endif}
-      class function IsInteger(aBuffer: PANSIChar; aLen: Integer; var aValue: Integer): Boolean; overload; {$ifdef InlineMethods} inline; {$endif}
-      class function IsInteger(const aString: ANSIString): Boolean; overload; {$ifdef InlineMethods} inline; {$endif}
-      class function IsInteger(const aString: ANSIString; var aValue: Integer): Boolean; overload; {$ifdef InlineMethods} inline; {$endif}
+      class function IsBoolean(aBuffer: PAnsiChar; aLen: Integer): Boolean; overload; {$ifdef InlineMethods} inline; {$endif}
+      class function IsBoolean(aBuffer: PAnsiChar; aLen: Integer; var aValue: Boolean): Boolean; overload; {$ifdef InlineMethods} inline; {$endif}
+      class function IsBoolean(const aString: AnsiString): Boolean; overload; {$ifdef InlineMethods} inline; {$endif}
+      class function IsBoolean(const aString: AnsiString; var aValue: Boolean): Boolean; overload; {$ifdef InlineMethods} inline; {$endif}
+      class function IsInteger(aBuffer: PAnsiChar; aLen: Integer): Boolean; overload; {$ifdef InlineMethods} inline; {$endif}
+      class function IsInteger(aBuffer: PAnsiChar; aLen: Integer; var aValue: Integer): Boolean; overload; {$ifdef InlineMethods} inline; {$endif}
+      class function IsInteger(const aString: AnsiString): Boolean; overload; {$ifdef InlineMethods} inline; {$endif}
+      class function IsInteger(const aString: AnsiString; var aValue: Integer): Boolean; overload; {$ifdef InlineMethods} inline; {$endif}
     end;
-    ANSIParserClass = class of ANSIParser;
+    AnsiParserClass = class of AnsiParser;
 
 
 
@@ -42,21 +42,21 @@ implementation
   uses
     SysUtils,
     Deltics.Strings,
-    Deltics.Strings.Parsers.ANSI.AsBoolean,
-    Deltics.Strings.Parsers.ANSI.AsInteger;
+    Deltics.Strings.Parsers.Ansi.AsBoolean,
+    Deltics.Strings.Parsers.Ansi.AsInteger;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function ANSIParser.AsInteger(aBuffer: PANSIChar;
+  class function AnsiParser.AsInteger(aBuffer: PAnsiChar;
                                       aLen: Integer): Integer;
   begin
     if NOT ParseInteger(aBuffer, aLen, result) then
-      raise EConvertError.CreateFmt('''%s'' is not a valid integer expression', [ANSI(aBuffer, aLen)]);
+      raise EConvertError.CreateFmt('''%s'' is not a valid integer expression', [Ansi(aBuffer, aLen)]);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function ANSIParser.AsInteger(aBuffer: PANSIChar;
+  class function AnsiParser.AsInteger(aBuffer: PAnsiChar;
                                       aLen: Integer;
                                       aDefault: Integer): Integer;
   begin
@@ -66,18 +66,18 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function ANSIParser.AsInteger(const aString: ANSIString): Integer;
+  class function AnsiParser.AsInteger(const aString: AnsiString): Integer;
   begin
-    if NOT ParseInteger(PANSIChar(aString), Length(aString), result) then
+    if NOT ParseInteger(PAnsiChar(aString), Length(aString), result) then
       raise EConvertError.CreateFmt('''%s'' is not a valid integer expression', [aString]);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function ANSIParser.AsInteger(const aString: ANSIString;
+  class function AnsiParser.AsInteger(const aString: AnsiString;
                                             aDefault: Integer): Integer;
   begin
-    if NOT ParseInteger(PANSIChar(aString), Length(aString), result) then
+    if NOT ParseInteger(PAnsiChar(aString), Length(aString), result) then
       result := aDefault;
   end;
 
@@ -88,16 +88,16 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function ANSIParser.AsBoolean(aBuffer: PANSIChar;
+  class function AnsiParser.AsBoolean(aBuffer: PAnsiChar;
                                       aLen: Integer): Boolean;
   begin
     if NOT ParseBoolean(aBuffer, aLen, result) then
-      raise EConvertError.CreateFmt('''%s'' is not a valid boolean expression', [ANSI(aBuffer, aLen)]);
+      raise EConvertError.CreateFmt('''%s'' is not a valid boolean expression', [Ansi(aBuffer, aLen)]);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function ANSIParser.AsBoolean(aBuffer: PANSIChar;
+  class function AnsiParser.AsBoolean(aBuffer: PAnsiChar;
                                       aLen: Integer;
                                       aDefault: Boolean): Boolean;
   begin
@@ -107,18 +107,18 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function ANSIParser.AsBoolean(const aString: ANSIString): Boolean;
+  class function AnsiParser.AsBoolean(const aString: AnsiString): Boolean;
   begin
-    if NOT ParseBoolean(PANSIChar(aString), Length(aString), result) then
+    if NOT ParseBoolean(PAnsiChar(aString), Length(aString), result) then
       raise EConvertError.CreateFmt('''%s'' is not a valid boolean expression', [aString]);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function ANSIParser.AsBoolean(const aString: ANSIString;
+  class function AnsiParser.AsBoolean(const aString: AnsiString;
                                             aDefault: Boolean): Boolean;
   begin
-    if NOT ParseBoolean(PANSIChar(aString), Length(aString), result) then
+    if NOT ParseBoolean(PAnsiChar(aString), Length(aString), result) then
       result := aDefault;
   end;
 
@@ -130,7 +130,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function ANSIParser.IsBoolean(aBuffer: PANSIChar;
+  class function AnsiParser.IsBoolean(aBuffer: PAnsiChar;
                                       aLen: Integer): Boolean;
   begin
     result := CheckBoolean(aBuffer, aLen);
@@ -138,7 +138,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function ANSIParser.IsBoolean(    aBuffer: PANSIChar;
+  class function AnsiParser.IsBoolean(    aBuffer: PAnsiChar;
                                           aLen: Integer;
                                       var aValue: Boolean): Boolean;
   begin
@@ -147,17 +147,17 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function ANSIParser.IsBoolean(const aString: ANSIString): Boolean;
+  class function AnsiParser.IsBoolean(const aString: AnsiString): Boolean;
   begin
-    result := CheckBoolean(PANSIChar(aString), Length(aString));
+    result := CheckBoolean(PAnsiChar(aString), Length(aString));
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function ANSIParser.IsBoolean(const aString: ANSIString;
+  class function AnsiParser.IsBoolean(const aString: AnsiString;
                                       var   aValue: Boolean): Boolean;
   begin
-    result := ParseBoolean(PANSIChar(aString), Length(aString), aValue);
+    result := ParseBoolean(PAnsiChar(aString), Length(aString), aValue);
   end;
 
 
@@ -168,14 +168,14 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function ANSIParser.IsInteger(aBuffer: PANSIChar; aLen: Integer): Boolean;
+  class function AnsiParser.IsInteger(aBuffer: PAnsiChar; aLen: Integer): Boolean;
   begin
     result := CheckInteger(aBuffer, aLen);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function ANSIParser.IsInteger(    aBuffer: PANSIChar;
+  class function AnsiParser.IsInteger(    aBuffer: PAnsiChar;
                                           aLen: Integer;
                                       var aValue: Integer): Boolean;
   begin
@@ -184,17 +184,17 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function ANSIParser.IsInteger(const aString: ANSIString): Boolean;
+  class function AnsiParser.IsInteger(const aString: AnsiString): Boolean;
   begin
-    result := CheckInteger(PANSIChar(aString), Length(aString));
+    result := CheckInteger(PAnsiChar(aString), Length(aString));
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function ANSIParser.IsInteger(const aString: ANSIString;
+  class function AnsiParser.IsInteger(const aString: AnsiString;
                                       var   aValue: Integer): Boolean;
   begin
-    result := ParseInteger(PANSIChar(aString), Length(aString), aValue);
+    result := ParseInteger(PAnsiChar(aString), Length(aString), aValue);
   end;
 
 

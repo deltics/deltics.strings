@@ -2,19 +2,19 @@
 {$i deltics.strings.inc}
 
 
-  unit Deltics.Strings.Parsers.ANSI.AsDatetime;
+  unit Deltics.Strings.Parsers.Ansi.AsDatetime;
 
 
 interface
 
-  function CheckDatetime(aBuffer: PANSIChar; aLen: Integer): Boolean;
-  function ParseDatetime(aBuffer: PANSIChar; aLen: Integer; var aValue: TDateTime): Boolean;
+  function CheckDatetime(aBuffer: PAnsiChar; aLen: Integer): Boolean;
+  function ParseDatetime(aBuffer: PAnsiChar; aLen: Integer; var aValue: TDateTime): Boolean;
 
 implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  function Init(var aBuffer: PANSIChar;
+  function Init(var aBuffer: PAnsiChar;
                 var aLen: Integer;
                 var aBase: Integer;
                 var aNeg: Boolean): Boolean; 
@@ -151,10 +151,10 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  function CheckDatetime(aBuffer: PANSIChar;
+  function CheckDatetime(aBuffer: PAnsiChar;
                          aLen: Integer): Boolean;
   var
-    pc: PANSIChar absolute aBuffer;
+    pc: PAnsiChar absolute aBuffer;
     i: Integer;
     neg: Boolean;
     base: Integer;
@@ -212,11 +212,11 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  function ParseDatetime(    aBuffer: PANSIChar;
+  function ParseDatetime(    aBuffer: PAnsiChar;
                              aLen: Integer;
                          var aValue: TDatetime): Boolean;
   var
-    pc: PANSIChar absolute aBuffer;
+    pc: PAnsiChar absolute aBuffer;
     i: Integer;
     neg: Boolean;
     base: Integer;

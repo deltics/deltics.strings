@@ -2,13 +2,13 @@
 {$i deltics.strings.inc}
 
 
-  unit Deltics.Strings.Parsers.WIDE.AsBoolean;
+  unit Deltics.Strings.Parsers.Wide.AsBoolean;
 
 
 interface
 
-  function CheckBoolean(aBuffer: PWIDEChar; aLen: Integer): Boolean;
-  function ParseBoolean(aBuffer: PWIDEChar; aLen: Integer; var aValue: Boolean): Boolean;
+  function CheckBoolean(aBuffer: PWideChar; aLen: Integer): Boolean;
+  function ParseBoolean(aBuffer: PWideChar; aLen: Integer; var aValue: Boolean): Boolean;
 
 implementation
 
@@ -17,7 +17,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  function Init(var aBuffer: PWIDEChar;
+  function Init(var aBuffer: PWideChar;
                 var aLen: Integer): Boolean; {$ifdef DELPHI2006__} inline; {$endif}
   begin
     while (aLen > 0) and (aBuffer[0] = ' ') do
@@ -65,7 +65,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  function CheckBoolean(aBuffer: PWIDEChar;
+  function CheckBoolean(aBuffer: PWideChar;
                         aLen: Integer): Boolean;
   begin
     result := Init(aBuffer, aLen);
@@ -83,17 +83,17 @@ implementation
 
       2 : case aBuffer[0] of
             '-'       : result := aBuffer[1] = '1';
-            'n', 'N'  : result := WIDE.SameText(WIDE(aBuffer, aLen), 'no');
-            'o', 'O'  : result := WIDE.SameText(WIDE(aBuffer, aLen), 'ok');
+            'n', 'N'  : result := Wide.SameText(Wide(aBuffer, aLen), 'no');
+            'o', 'O'  : result := Wide.SameText(Wide(aBuffer, aLen), 'ok');
           else
             result := FALSE;
           end;
 
-      3 : result := WIDE.SameText(WIDE(aBuffer, aLen), 'yes');
+      3 : result := Wide.SameText(Wide(aBuffer, aLen), 'yes');
 
-      4 : result := WIDE.SameText(WIDE(aBuffer, aLen), 'true');
+      4 : result := Wide.SameText(Wide(aBuffer, aLen), 'true');
 
-      5 : result := WIDE.SameText(WIDE(aBuffer, aLen), 'false');
+      5 : result := Wide.SameText(Wide(aBuffer, aLen), 'false');
 
     else
       result := FALSE;
@@ -102,7 +102,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  function ParseBoolean(    aBuffer: PWIDEChar;
+  function ParseBoolean(    aBuffer: PWideChar;
                             aLen: Integer;
                         var aValue: Boolean): Boolean;
   begin
@@ -128,27 +128,27 @@ implementation
                           result := aValue;
                         end;
 
-            'n', 'N'  : result := WIDE.SameText(WIDE(aBuffer, aLen), 'no');
+            'n', 'N'  : result := Wide.SameText(Wide(aBuffer, aLen), 'no');
 
             'o', 'O'  : begin
-                          aValue := WIDE.SameText(WIDE(aBuffer, aLen), 'ok');
+                          aValue := Wide.SameText(Wide(aBuffer, aLen), 'ok');
                           result := aValue;
                         end;
           else
             result := FALSE;
           end;
 
-      3 : if WIDE.SameText(WIDE(aBuffer, aLen), 'yes') then
+      3 : if Wide.SameText(Wide(aBuffer, aLen), 'yes') then
             aValue := TRUE
           else
             result := FALSE;
 
-      4 : if WIDE.SameText(WIDE(aBuffer, aLen), 'true') then
+      4 : if Wide.SameText(Wide(aBuffer, aLen), 'true') then
             aValue := TRUE
           else
             result := FALSE;
 
-      5 : result := WIDE.SameText(WIDE(aBuffer, aLen), 'false');
+      5 : result := Wide.SameText(Wide(aBuffer, aLen), 'false');
 
     else
       result := FALSE;

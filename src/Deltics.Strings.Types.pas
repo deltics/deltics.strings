@@ -10,19 +10,21 @@ interface
   uses
     Classes,
     SysUtils,
-    Deltics.Strings.Encoding;
+    Deltics.Strings.Types.BOM,
+    Deltics.Strings.Types.Core;
 
 
   type
-  {$ifdef UNICODE}
-    UTF8String      = System.UTF8String;
-    UnicodeString   = System.UnicodeString;
-  {$else}
-    UTF8String    = type ANSIString;
-    UnicodeString = type WideString;
-  {$endif}
+    Utf8String    = Deltics.Strings.Types.Core.Utf8String;
+    UnicodeString = Deltics.Strings.Types.Core.UnicodeString;
 
-    TANSICharSet = set of ANSIChar;
+    Utf8Char    = Deltics.Strings.Types.Core.Utf8Char;
+    PUtf8Char   = Deltics.Strings.Types.Core.PUtf8Char;
+
+    AsciiString = Deltics.Strings.Types.Core.AsciiString;
+    AsciiChar   = Deltics.Strings.Types.Core.AsciiChar;
+
+    TAnsiCharSet = set of AnsiChar;
 
     TStringProcessingFlag = (
                              rsFromStart,
@@ -54,26 +56,20 @@ interface
 
 
   type
-    UTF8Char    = type ANSIChar;
-    PUTF8Char   = ^UTF8Char;
-
-    ASCIIString = type ANSIString;
-    ASCIIChar   = type UTF8Char;
-
     TCharIndexArray   = array of Integer;
-    TANSIStringArray  = array of ANSIString;
-    TUTF8StringArray  = array of UTF8String;
-    TWIDEStringArray  = array of UnicodeString;
+    TAnsiStringArray  = array of AnsiString;
+    TUtf8StringArray  = array of Utf8String;
+    TWideStringArray  = array of UnicodeString;
 
   {$ifdef UNICODE}
-    TStringArray = TWIDEStringArray;
+    TStringArray = TWideStringArray;
   {$else}
-    TStringArray = TANSIStringArray;
+    TStringArray = TAnsiStringArray;
   {$endif}
 
-    TANSICharArray  = array of ANSIChar;
-    TUTF8CharArray  = array of UTF8Char;
-    TWIDECharArray  = array of WIDEChar;
+    TAnsiCharArray  = array of AnsiChar;
+    TUtf8CharArray  = array of Utf8Char;
+    TWideCharArray  = array of WideChar;
 
     TAlphaCase  = (
                    acNotAlpha,
@@ -117,24 +113,24 @@ interface
                    );
 
 
-    TANSITestCharFn = function(aChar: ANSIChar): LongBool; stdcall;
-    TWIDETestCharFn = function(aChar: WIDEChar): LongBool; stdcall;
+    TAnsiTestCharFn = function(aChar: AnsiChar): LongBool; stdcall;
+    TWideTestCharFn = function(aChar: WideChar): LongBool; stdcall;
 
 
-    IANSIStringBuilder = interface
+    IAnsiStringBuilder = interface
     ['{BA0B6994-0769-4145-95F2-2A112662E6AC}']
     end;
 
-    IWIDEStringBuilder = interface
+    IWideStringBuilder = interface
     ['{B75835B8-7D6C-4DE7-9743-CB7DF02ABFD9}']
     end;
 
 
 
   {$ifdef UNICODE}
-    IStringBuilder = IWIDEStringBuilder;
+    IStringBuilder = IWideStringBuilder;
   {$else}
-    IStringBuilder = IANSIStringBuilder;
+    IStringBuilder = IAnsiStringBuilder;
   {$endif}
 
 
@@ -149,6 +145,18 @@ interface
                                 doDeleteOptionalDelimiter,
                                 doExtractOptionalDelimiter
                                ];
+
+
+  type
+    TBOM        = Deltics.Strings.Types.BOM.TBOM;
+    Utf8Bom     = Deltics.Strings.Types.BOM.Utf8Bom;
+    Utf16Bom    = Deltics.Strings.Types.BOM.Utf16Bom;
+    Utf16LEBom  = Deltics.Strings.Types.BOM.Utf16LEBom;
+    Utf32Bom    = Deltics.Strings.Types.BOM.Utf32Bom;
+    Utf32LEBom  = Deltics.Strings.Types.BOM.Utf32LEBom;
+
+
+
 
 implementation
 

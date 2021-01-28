@@ -2,7 +2,7 @@
 {$i deltics.strings.inc}
 
 
-  unit Deltics.Strings.Encoding.UTF32;
+  unit Deltics.Strings.Encoding.Utf32;
 
 
 interface
@@ -12,44 +12,31 @@ interface
 
 
   type
-    TUTF32LEEncoding = class(TMultiByteEncoding)
+    TUtf32LEEncoding = class(TMultiByteEncoding)
     protected
       constructor Create; override;
-      function get_BOM: TBOM; override;
     end;
 
 
-    TUTF32BEEncoding = class(TUTF32LEEncoding)
+    TUtf32Encoding = class(TUtf32LEEncoding)
     protected
       constructor Create; override;
-      function get_BOM: TBOM; override;
     end;
 
 
 implementation
 
   uses
-    Windows;
-//    Deltics.SysUtils;
+    Windows,
+    Deltics.Strings.Types;
 
 
 { TUTF32LEEncoding }
 
-  constructor TUTF32LEEncoding.Create;
+  constructor TUtf32LEEncoding.Create;
   begin
-    inherited Create(CP_UTF32LE);
+    inherited Create(cpUtf32LE, Utf32LEBom.AsBytes);
   end;
-
-
-  function TUTF32LEEncoding.get_BOM: TBOM;
-  begin
-    SetLength(result, 4);
-    result[0] := BOM_UTF32LE[0];
-    result[1] := BOM_UTF32LE[1];
-    result[2] := BOM_UTF32LE[2];
-    result[3] := BOM_UTF32LE[3];
-  end;
-
 
 
 
@@ -57,20 +44,11 @@ implementation
 
 { TUTF32BEEncoding }
 
-  constructor TUTF32BEEncoding.Create;
+  constructor TUtf32Encoding.Create;
   begin
-    inherited Create(CP_UTF32);
+    inherited Create(cpUtf32, Utf32Bom.AsBytes);
   end;
 
-
-  function TUTF32BEEncoding.get_BOM: TBOM;
-  begin
-    SetLength(result, 4);
-    result[0] := BOM_UTF32BE[0];
-    result[1] := BOM_UTF32BE[1];
-    result[2] := BOM_UTF32BE[2];
-    result[3] := BOM_UTF32BE[3];
-  end;
 
 
 

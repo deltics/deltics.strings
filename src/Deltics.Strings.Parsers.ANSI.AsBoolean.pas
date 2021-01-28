@@ -2,13 +2,13 @@
 {$i deltics.strings.inc}
 
 
-  unit Deltics.Strings.Parsers.ANSI.AsBoolean;
+  unit Deltics.Strings.Parsers.Ansi.AsBoolean;
 
 
 interface
 
-  function CheckBoolean(aBuffer: PANSIChar; aLen: Integer): Boolean;
-  function ParseBoolean(aBuffer: PANSIChar; aLen: Integer; var aValue: Boolean): Boolean;
+  function CheckBoolean(aBuffer: PAnsiChar; aLen: Integer): Boolean;
+  function ParseBoolean(aBuffer: PAnsiChar; aLen: Integer; var aValue: Boolean): Boolean;
 
 implementation
 
@@ -17,7 +17,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  function Init(var aBuffer: PANSIChar;
+  function Init(var aBuffer: PAnsiChar;
                 var aLen: Integer): Boolean; {$ifdef DELPHI2006__} inline; {$endif}
   begin
     while (aLen > 0) and (aBuffer[0] = ' ') do
@@ -65,7 +65,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  function CheckBoolean(aBuffer: PANSIChar;
+  function CheckBoolean(aBuffer: PAnsiChar;
                         aLen: Integer): Boolean;
   begin
     result := Init(aBuffer, aLen);
@@ -83,17 +83,17 @@ implementation
 
       2 : case aBuffer[0] of
             '-'       : result := aBuffer[1] = '1';
-            'n', 'N'  : result := ANSI.SameText(ANSI(aBuffer, aLen), 'no');
-            'o', 'O'  : result := ANSI.SameText(ANSI(aBuffer, aLen), 'ok');
+            'n', 'N'  : result := Ansi.SameText(Ansi(aBuffer, aLen), 'no');
+            'o', 'O'  : result := Ansi.SameText(Ansi(aBuffer, aLen), 'ok');
           else
             result := FALSE;
           end;
 
-      3 : result := ANSI.SameText(ANSI(aBuffer, aLen), 'yes');
+      3 : result := Ansi.SameText(Ansi(aBuffer, aLen), 'yes');
 
-      4 : result := ANSI.SameText(ANSI(aBuffer, aLen), 'true');
+      4 : result := Ansi.SameText(Ansi(aBuffer, aLen), 'true');
 
-      5 : result := ANSI.SameText(ANSI(aBuffer, aLen), 'false');
+      5 : result := Ansi.SameText(Ansi(aBuffer, aLen), 'false');
 
     else
       result := FALSE;
@@ -102,7 +102,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  function ParseBoolean(    aBuffer: PANSIChar;
+  function ParseBoolean(    aBuffer: PAnsiChar;
                             aLen: Integer;
                         var aValue: Boolean): Boolean;
   begin
@@ -128,27 +128,27 @@ implementation
                           result := aValue;
                         end;
 
-            'n', 'N'  : result := ANSI.SameText(ANSI(aBuffer, aLen), 'no');
+            'n', 'N'  : result := Ansi.SameText(Ansi(aBuffer, aLen), 'no');
 
             'o', 'O'  : begin
-                          aValue := ANSI.SameText(ANSI(aBuffer, aLen), 'ok');
+                          aValue := Ansi.SameText(Ansi(aBuffer, aLen), 'ok');
                           result := aValue;
                         end;
           else
             result := FALSE;
           end;
 
-      3 : if ANSI.SameText(ANSI(aBuffer, aLen), 'yes') then
+      3 : if Ansi.SameText(Ansi(aBuffer, aLen), 'yes') then
             aValue := TRUE
           else
             result := FALSE;
 
-      4 : if ANSI.SameText(ANSI(aBuffer, aLen), 'true') then
+      4 : if Ansi.SameText(Ansi(aBuffer, aLen), 'true') then
             aValue := TRUE
           else
             result := FALSE;
 
-      5 : result := ANSI.SameText(ANSI(aBuffer, aLen), 'false');
+      5 : result := Ansi.SameText(Ansi(aBuffer, aLen), 'false');
 
     else
       result := FALSE;

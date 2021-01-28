@@ -2,19 +2,19 @@
 {$i deltics.strings.inc}
 
 
-  unit Deltics.Strings.Parsers.WIDE.AsInteger;
+  unit Deltics.Strings.Parsers.Wide.AsInteger;
 
 
 interface
 
-  function CheckInteger(aBuffer: PWIDEChar; aLen: Integer): Boolean;
-  function ParseInteger(aBuffer: PWIDEChar; aLen: Integer; var aValue: Integer): Boolean;
+  function CheckInteger(aBuffer: PWideChar; aLen: Integer): Boolean;
+  function ParseInteger(aBuffer: PWideChar; aLen: Integer; var aValue: Integer): Boolean;
 
 implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  function Init(var aBuffer: PWIDEChar;
+  function Init(var aBuffer: PWideChar;
                 var aLen: Integer;
                 var aBase: Integer;
                 var aNeg: Boolean): Boolean; {$ifdef DELPHI2006__} inline; {$endif}
@@ -154,10 +154,10 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  function CheckInteger(aBuffer: PWIDEChar;
+  function CheckInteger(aBuffer: PWideChar;
                         aLen: Integer): Boolean;
   var
-    pc: PWIDEChar absolute aBuffer;
+    pc: PWideChar absolute aBuffer;
     i: Integer;
     neg: Boolean;
     base: Integer;
@@ -215,11 +215,11 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  function ParseInteger(    aBuffer: PWIDEChar;
+  function ParseInteger(    aBuffer: PWideChar;
                             aLen: Integer;
                         var aValue: Integer): Boolean;
   var
-    pc: PWIDEChar absolute aBuffer;
+    pc: PWideChar absolute aBuffer;
     i: Integer;
     neg: Boolean;
     base: Integer;
