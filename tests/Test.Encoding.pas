@@ -17,6 +17,7 @@ interface
       procedure DetectsUtf16LEWithBom;
       procedure DetectsUtf32BEWithBom;
       procedure DetectsUtf32LEWithBom;
+      procedure DetectsUtf8WithNoBom;
       procedure DetectsUtf16BEWithNoBom;
       procedure DetectsUtf16LEWithNoBom;
       procedure Utf8Decoding;
@@ -54,6 +55,27 @@ implementation
     Test('Encoding').Assert(enc).IsNotNIL;
     if Assigned(enc) then
       Test('Codepage').Assert(enc.Codepage).Equals(cpUtf16);
+  end;
+
+
+  procedure EncodingTests.DetectsUtf8WithNoBom;
+  var
+    buf: array[0..5] of Byte;
+    enc: TEncoding;
+    result: Boolean;
+  begin
+    buf[0]  := 65;
+    buf[1]  := 66;
+    buf[2]  := 67;
+    buf[3]  := 68;
+    buf[4]  := 69;
+
+    result := Encoding.Identify(buf, Length(buf), enc);
+
+    Test('result').Assert(NOT result);
+    Test('Encoding').Assert(enc).IsNotNIL;
+    if Assigned(enc) then
+      Test('Codepage').Assert(enc.Codepage).Equals(cpUtf8);
   end;
 
 
