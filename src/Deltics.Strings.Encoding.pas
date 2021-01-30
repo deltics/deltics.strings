@@ -274,13 +274,28 @@ implementation
 
     result := FALSE;
 
-    // TODO: Are there heuristic techniques for identifying UTF8/32 or
-    //        other encodings other than UTF16 .. ?
+    // Test the first two bytes in the BOM bytes (which we now know are not in fact
+    //  BOM bytes but the first 2 bytes in the encoded data).
+    //
+    // If one or other byte is 0 (zero) and the other non-zero, then the encoding
+    //  is most likely UTF16 and which byte is which tells us whether it is likely
+    //  to be LE or BE.
+    //
+    // If neither byte is zero (both are non-zero) then it's likely that the data
+    //  is Utf8.
+    //
+    // The above heuristics are not guaranteed to be accurate.  A UTF16 data source
+    //  may have 2 initial non-zero bytes, for example.  So if we use a heuristic to
+    //  identify the encoding, then we return FALSE even though we have set an
+    //  encoding to be used.  If the caller needs certainty or wishes to ignore the
+    //  heuristic encoding then they can choose to do so.
 
     if (aBOM[0] <> 0) and (aBOM[1] = 0) then
       aEncoding := Encoding.Utf16LE
     else if (aBOM[0] = 0) and (aBOM[1] <> 0) then
-      aEncoding := Encoding.Utf16;
+      aEncoding := Encoding.Utf16
+    else if (aBOM[0] <> 0) and (aBOM[1] <> 0) then
+      aEncoding := Encoding.Utf8;
   end;
 
 
