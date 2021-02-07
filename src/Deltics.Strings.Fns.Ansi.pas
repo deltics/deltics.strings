@@ -1104,17 +1104,60 @@ implementation
     chars: PAnsiChar absolute aString;
     i: Integer;
     len: Integer;
+    hasDP: Boolean;
+    signAllowed: Boolean;
+    digitExpected: Boolean;
+    digitRequired: Boolean;
   begin
     result := FALSE;
 
     if NOT HasLength(aString, len) then
       EXIT;
 
-    for i := 0 to Pred(len) do
-      if NOT (IsCharAlphaNumericA(chars[i]) and NOT IsCharAlphaA(chars[i])) then
-        EXIT;
+    hasDP         := FALSE;
+    digitRequired := TRUE;
+    digitExpected := FALSE;
+    signAllowed   := TRUE;
 
-    result := TRUE;
+    for i := 0 to Pred(len) do
+    begin
+      case chars[i] of
+        '.' : if digitExpected or hasDP then
+                EXIT
+              else
+              begin
+                hasDP         := TRUE;
+                digitExpected := TRUE;
+              end;
+
+        '+', '-'  : if digitExpected or NOT signAllowed then
+                      EXIT
+                    else
+                    begin
+                      signAllowed   := FALSE;
+                      digitExpected := TRUE;
+                      digitRequired := TRUE;
+                    end;
+
+        'e', 'E'  : if digitExpected then
+                      EXIT
+                    else
+                    begin
+                      signAllowed   := TRUE;
+                      digitRequired := TRUE;
+                    end;
+
+        '0'..'9'  : begin
+                      digitExpected := FALSE;
+                      digitRequired := FALSE;
+                      signAllowed   := FALSE;
+                    end;
+      else
+        EXIT;
+      end;
+    end;
+
+    result := NOT digitRequired;
   end;
 
 
