@@ -1,0 +1,52 @@
+
+{$i deltics.strings.inc}
+
+  unit Test.Utf8Functions;
+
+interface
+
+  uses
+    Deltics.Smoketest;
+
+
+  type
+    Utf8Functions = class(TTest)
+      procedure AppendChar;
+      procedure AppendString;
+    end;
+
+
+
+
+implementation
+
+  uses
+    SysUtils,
+    Deltics.Strings,
+    Test.Consts;
+
+
+  {-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - --}
+  procedure Utf8Functions.AppendChar;
+  var
+    sut: Utf8String;
+  begin
+    sut := Utf8.Append('abc', 'd');
+
+    Test('sut').AssertUtf8(sut).Equals('abcd');
+  end;
+
+
+  {-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - --}
+  procedure Utf8Functions.AppendString;
+  var
+    sut: Utf8String;
+  begin
+    sut := Utf8.Append('abc', 'def');
+
+    Test('sut').AssertUtf8(sut).Equals('abcdef');
+  end;
+
+
+
+end.
