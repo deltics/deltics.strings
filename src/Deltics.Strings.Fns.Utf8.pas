@@ -147,10 +147,11 @@ implementation
     p: PUtf8Char;
   begin
     result := aString;
-    p := PUtf8Char(@(result[Length(result)]));
-    Inc(p);
 
     SetLength(result, Length(result) + Length(aValue));
+    p := PUtf8Char(@(result[Length(aString)]));
+    Inc(p);
+
     CopyMemory(p, @aValue[1], Length(aValue));
   end;
 
