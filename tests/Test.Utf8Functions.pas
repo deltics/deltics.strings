@@ -13,6 +13,7 @@ interface
     Utf8Functions = class(TTest)
       procedure AppendChar;
       procedure AppendString;
+      procedure StringOf;
     end;
 
 
@@ -45,6 +46,17 @@ implementation
     sut := Utf8.Append('abc', 'def');
 
     Test('sut').AssertUtf8(sut).Equals('abcdef');
+  end;
+
+
+  {-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - --}
+  procedure Utf8Functions.StringOf;
+  var
+    sut: Utf8String;
+  begin
+    sut := Utf8.StringOf('a', 5);
+
+    Test('sut').AssertUtf8(sut).Equals('aaaaa');
   end;
 
 
