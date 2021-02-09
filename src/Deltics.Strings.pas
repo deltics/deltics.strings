@@ -55,6 +55,7 @@ interface
     Deltics.Strings.Encoding,
     Deltics.Strings.Fns.Ansi,
     Deltics.Strings.Fns.Utf8,
+    Deltics.Strings.Fns.Utf32,
     Deltics.Strings.Fns.Wide,
     Deltics.Strings.StringBuilder,
     Deltics.Strings.StringList,
@@ -74,7 +75,11 @@ interface
     Utf8Char          = Deltics.Strings.Types.Utf8Char;
     PUtf8Char         = Deltics.Strings.Types.PUtf8Char;
 
+    Utf32Char         = Deltics.Strings.Types.Utf32Char;
+    PUtf32Char        = Deltics.Strings.Types.PUtf32Char;
+
     Utf8String        = Deltics.Strings.Types.Utf8String;
+    Utf32Array        = Deltics.Strings.Types.Utf32Array;
     UnicodeString     = Deltics.Strings.Types.UnicodeString;
 
     TCharIndexArray   = Deltics.Strings.Types.TCharIndexArray;
@@ -188,7 +193,8 @@ interface
       class function AllocAnsi(const aString: UnicodeString): PAnsiChar;
     end;
 
-    Utf8Fn = class(Deltics.Strings.Fns.Utf8.Utf8Fn);
+    Utf8Fn  = class(Deltics.Strings.Fns.Utf8.Utf8Fn);
+    Utf32Fn = class(Deltics.Strings.Fns.Utf32.Utf32Fn);
 
     ASCIIFn = class
     public
@@ -215,6 +221,7 @@ interface
 
   AnsiClass   = class of AnsiFn;
   Utf8Class   = class of Utf8Fn;
+  Utf32Class  = class of Utf32Fn;
   WideClass   = class of WideFn;
   STRClass    = class of STRFn;
   ASCIIClass  = class of ASCIIFn;
@@ -240,6 +247,7 @@ interface
   function STR(aString: UnicodeString): String; overload;
 
   function Utf8: Utf8Class; overload; {$ifdef InlineMethods} inline; {$endif}
+  function Utf32: Utf32Class; overload; {$ifdef InlineMethods} inline; {$endif}
   function ASCII: ASCIIClass; overload; {$ifdef InlineMethods} inline; {$endif}
 
 
@@ -614,6 +622,12 @@ implementation
   function Utf8: Utf8Class;
   begin
     result := Utf8Fn;
+  end;
+
+
+  function Utf32: Utf32Class;
+  begin
+    result := Utf32Fn;
   end;
 
 

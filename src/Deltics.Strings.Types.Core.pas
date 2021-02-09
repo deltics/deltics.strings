@@ -7,6 +7,9 @@
 interface
 
   type
+    Codepoint   = type Cardinal;
+    PCodepoint  = ^Codepoint;
+
   {$ifdef UNICODE}
     Utf8String    = System.Utf8String;
     UnicodeString = System.UnicodeString;
@@ -18,8 +21,11 @@ interface
     Utf8Char    = type AnsiChar;
     PUtf8Char   = ^Utf8Char;
 
-    ASCIIString = type AnsiString;
-    ASCIIChar   = type Utf8Char;
+    Utf32Char   = Codepoint;
+    PUtf32Char  = PCodepoint;
+
+    AsciiString = type Utf8String;
+    AsciiChar   = type Utf8Char;
 
 
 implementation
