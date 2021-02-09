@@ -27,7 +27,8 @@ interface
       class procedure CopyToBuffer(const aString: Utf8String; aMaxBytes: Integer; aBuffer: Pointer; aOffset: Integer);
       class function FromBuffer(aBuffer: PUtf8Char; aLen: Integer = -1): Utf8String;
 
-      class function Append(const aString: Utf8String; const aChar: Utf8Char): Utf8String;
+      class function Append(const aString: Utf8String; const aChar: Utf8Char): Utf8String; overload;
+      class function Append(const aString: Utf8String; const aValue: Utf8String): Utf8String; overload;
     end;
 
 
@@ -134,6 +135,21 @@ implementation
 
     SetLength(result, Length(result) + 1);
     result[Length(result)] := aChar;
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
+  class function Utf8Fn.Append(const aString: Utf8String;
+                               const aValue: Utf8String): Utf8String;
+  var
+    p: PUtf8Char;
+  begin
+    result := aString;
+    p := PUtf8Char(@(result[Length(result)]));
+    Inc(p);
+
+    SetLength(result, Length(result) + Length(aValue));
+    CopyMemory(p, @aValue[1], Length(aValue));
   end;
 
 
