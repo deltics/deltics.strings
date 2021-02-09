@@ -31,6 +31,7 @@
         "src\\Deltics.Strings.Encoding.Utf32.pas",
         "src\\Deltics.Strings.Fns.Ansi.pas",
         "src\\Deltics.Strings.Fns.Utf8.pas",
+        "src\\Deltics.Strings.Fns.Utf32.pas",
         "src\\Deltics.Strings.Fns.Wide.pas",
         "src\\Deltics.Strings.Parsers.Ansi.pas",
         "src\\Deltics.Strings.Parsers.Ansi.AsBoolean.pas",
