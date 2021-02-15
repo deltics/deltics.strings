@@ -27,7 +27,10 @@ interface
       class procedure CopyToBuffer(const aString: Utf8String; aMaxBytes: Integer; aBuffer: Pointer; aOffset: Integer);
       class function FromBuffer(aBuffer: PUtf8Char; aLen: Integer = -1): Utf8String;
 
-      class function Append(const aString: Utf8String; const aChar: Utf8Char): Utf8String;
+      // Miscellaneous functions
+      class function Append(const aString: Utf8String; const aChar: Utf8Char): Utf8String; overload;
+      class function Append(const aString: Utf8String; const aValue: Utf8String): Utf8String; overload;
+      class function StringOf(const aChar: Utf8Char; const aLength: Integer): Utf8String;
     end;
 
 
@@ -134,6 +137,34 @@ implementation
 
     SetLength(result, Length(result) + 1);
     result[Length(result)] := aChar;
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
+  class function Utf8Fn.Append(const aString: Utf8String;
+                               const aValue: Utf8String): Utf8String;
+  var
+    p: PUtf8Char;
+  begin
+    result := aString;
+
+    SetLength(result, Length(result) + Length(aValue));
+    p := PUtf8Char(@(result[Length(aString)]));
+    Inc(p);
+
+    CopyMemory(p, @aValue[1], Length(aValue));
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
+  class function Utf8Fn.StringOf(const aChar: Utf8Char;
+                                 const aLength: Integer): Utf8String;
+  var
+    i: Integer;
+  begin
+    SetLength(result, aLength);
+    for i := 1 to aLength do
+      result[i] := aChar;
   end;
 
 

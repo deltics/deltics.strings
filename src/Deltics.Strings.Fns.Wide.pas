@@ -89,12 +89,14 @@ interface
       class function IsAlphaNumeric(aChar: WideChar): Boolean; overload;
       class function IsAlphaNumeric(const aString: UnicodeString): Boolean; overload;
       class function IsEmpty(const aString: UnicodeString): Boolean; overload;
+      class function IsHiSurrogate(const aChar: WideChar): Boolean;
+      class function IsLoSurrogate(const aChar: WideChar): Boolean;
       class function IsLowercase(const aChar: WideChar): Boolean; overload;
       class function IsLowercase(const aString: UnicodeString): Boolean; overload;
       class function IsNull(aChar: WideChar): Boolean;
       class function IsNumeric(aChar: WideChar): Boolean; overload;
       class function IsNumeric(const aString: UnicodeString): Boolean; overload;
-      class function IsSurrogate(aChar: WideChar): Boolean;
+      class function IsSurrogate(const aChar: WideChar): Boolean;
       class function IsUppercase(const aChar: WideChar): Boolean; overload;
       class function IsUppercase(const aString: UnicodeString): Boolean; overload;
       class function NotEmpty(const aString: UnicodeString): Boolean;
@@ -453,31 +455,19 @@ implementation
 
 
   const
-    MIN_HiSurrogate : WideChar = #$D800;
-    MAX_HiSurrogate : WideChar = #$DBFF;
-    MIN_LoSurrogate : WideChar = #$DC00;
-    MAX_LoSurrogate : WideChar = #$DFFF;
-    MIN_Surrogate   : WideChar = #$DC00;
-    MAX_Surrogate   : WideChar = #$DFFF;
+    MIN_HiSurrogate : WideChar = #$d800;
+    MAX_HiSurrogate : WideChar = #$dbff;
+    MIN_LoSurrogate : WideChar = #$dc00;
+    MAX_LoSurrogate : WideChar = #$dfff;
 
   var
     LowercaseWordsForTitlecase: TWideStringList = NIL;
 
 
-  function IsHiSurrogate(aChar: WideChar): Boolean;
-  begin
-    result := (aChar >= MIN_HiSurrogate) and (aChar <= MAX_HiSurrogate);
-  end;
-
-  function IsLoSurrogate(aChar: WideChar): Boolean;
-  begin
-    result := (aChar >= MIN_LoSurrogate) and (aChar <= MAX_LoSurrogate);
-  end;
-
   function LoSurrogateStrategy(aChar: WideChar): TUnicodeSurrogateStrategy; overload;
   begin
     result := UnicodeSurrogateStrategy;
-    if (result <> ssIgnore) and NOT IsLoSurrogate(aChar) then
+    if (result <> ssIgnore) and NOT Wide.IsLoSurrogate(aChar) then
       result := ssIgnore;
   end;
 
@@ -487,14 +477,14 @@ implementation
   begin
     result := UnicodeSurrogateStrategy;
     if (result <> ssIgnore) and (   NOT Wide.HasIndex(aString, aIndex, c)
-                                 or NOT IsLoSurrogate(c)) then
+                                 or NOT Wide.IsLoSurrogate(c)) then
       result := ssIgnore;
   end;
 
   function HiSurrogateStrategy(aChar: WideChar): TUnicodeSurrogateStrategy; overload;
   begin
     result := UnicodeSurrogateStrategy;
-    if (result <> ssIgnore) and NOT IsHiSurrogate(aChar) then
+    if (result <> ssIgnore) and NOT Wide.IsHiSurrogate(aChar) then
       result := ssIgnore;
   end;
 
@@ -504,7 +494,7 @@ implementation
   begin
     result := UnicodeSurrogateStrategy;
     if (result <> ssIgnore) and (   NOT Wide.HasIndex(aString, aIndex, c)
-                                 or NOT IsHiSurrogate(c)) then
+                                 or NOT Wide.IsHiSurrogate(c)) then
       result := ssIgnore;
   end;
 
@@ -833,7 +823,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WideFn.Iif(      aValue: Boolean;
+  class function WideFn.IIf(      aValue: Boolean;
                             const aWhenTrue: UnicodeString;
                             const aWhenFalse: UnicodeString): UnicodeString;
   begin
@@ -2315,6 +2305,20 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
+  class function WideFn.IsHiSurrogate(const aChar: WideChar): Boolean;
+  begin
+    result := (aChar >= MIN_HiSurrogate) and (aChar <= MAX_HiSurrogate);
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
+  class function WideFn.IsLoSurrogate(const aChar: WideChar): Boolean;
+  begin
+    result := (aChar >= MIN_LoSurrogate) and (aChar <= MAX_LoSurrogate);
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class function WideFn.IsLowercase(const aChar: WideChar): Boolean;
   begin
     result := IsCharLowerW(aChar);
@@ -2406,7 +2410,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WideFn.IsSurrogate(aChar: WideChar): Boolean;
+  class function WideFn.IsSurrogate(const aChar: WideChar): Boolean;
   begin
     result := IsHiSurrogate(aChar) or IsLoSurrogate(aChar);
   end;

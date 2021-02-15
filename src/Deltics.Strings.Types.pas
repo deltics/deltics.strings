@@ -15,11 +15,19 @@ interface
 
 
   type
+    Codepoint     = Deltics.Strings.Types.Core.Codepoint;
+    PCodePoint    = Deltics.Strings.Types.Core.PCodepoint;
+
     Utf8String    = Deltics.Strings.Types.Core.Utf8String;
     UnicodeString = Deltics.Strings.Types.Core.UnicodeString;
 
-    Utf8Char    = Deltics.Strings.Types.Core.Utf8Char;
-    PUtf8Char   = Deltics.Strings.Types.Core.PUtf8Char;
+    Utf8Char      = Deltics.Strings.Types.Core.Utf8Char;
+    PUtf8Char     = Deltics.Strings.Types.Core.PUtf8Char;
+
+    Utf32Char     = Deltics.Strings.Types.Core.Utf32Char;
+    PUtf32Char    = Deltics.Strings.Types.Core.PUtf32Char;
+
+    Utf32Array    = array of Utf32Char;
 
     AsciiString = Deltics.Strings.Types.Core.AsciiString;
     AsciiChar   = Deltics.Strings.Types.Core.AsciiChar;

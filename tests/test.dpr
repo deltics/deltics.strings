@@ -5,7 +5,7 @@
 
 
 
-{%File '©'}
+
 
 uses
   Deltics.Smoketest,
@@ -39,7 +39,10 @@ uses
   Test.Transcoding in 'Test.Transcoding.pas',
   Test.Utils in 'Test.Utils.pas',
   Test.DeleteLeft in 'Test.DeleteLeft.pas',
-  Test.Encoding in 'Test.Encoding.pas';
+  Test.Encoding in 'Test.Encoding.pas',
+  Deltics.Strings.Fns.Utf32 in '..\src\Deltics.Strings.Fns.Utf32.pas',
+  Test.Utf32Functions in 'Test.Utf32Functions.pas',
+  Test.Utf8Functions in 'Test.Utf8Functions.pas';
 
 begin
   TestRun.Test(RuntimeTests, DELPHI_VERSION);
@@ -48,4 +51,6 @@ begin
                 UtilsTests]);
   TestRun.Test([DeleteLeft]);
   TestRun.Test(EncodingTests);
+  TestRun.Test(Utf8Functions);
+  TestRun.Test(Utf32Functions);
 end.
