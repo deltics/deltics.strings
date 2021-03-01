@@ -12,13 +12,14 @@
   "content":"source",
   "dependencies":[
     "deltics.contracts:2.0.0",
-    "deltics.exchange:1.0.0",
+    "deltics.exchange:1.0.1-beta.1",
     "deltics.guids:1.0.0",
     "deltics.interfacedobjects:1.2.0",
     "deltics.reversebytes:1.0.0",
     "deltics.math:1.0.0",
+    "deltics.memory:1.0.0-beta.14",
     "deltics.multicast:1.0.0",
-    "deltics.pointers:1.1.1"
+    "deltics.unicode:1.0.0-beta.27"
   ],
   "source":{
       "files":[
