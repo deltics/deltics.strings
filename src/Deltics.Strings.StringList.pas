@@ -70,12 +70,12 @@ interface
   {$endif}
 
     TStringList = class;
-    TStringArray = Deltics.Strings.Types.TStringArray;
+    StringArray = Deltics.Strings.Types.StringArray;
 
 
     IStringList = interface
     ['{7623F313-9BC7-4D9C-9F9F-0A8C8E650874}']
-      function get_AsArray: TStringArray;
+      function get_AsArray: StringArray;
       function get_Capacity: Integer;
       function get_Count: Integer;
       function get_Item(const aIndex: Integer): String;
@@ -110,7 +110,7 @@ interface
       procedure LoadFromFile(const aFilename: String);
       procedure SaveToFile(const aFilename: String);
 
-      property AsArray: TStringArray read get_AsArray;
+      property AsArray: StringArray read get_AsArray;
       property Capacity: Integer read get_Capacity write set_Capacity;
       property Count: Integer read get_Count;
       property Items[const aIndex: Integer]: String read get_Item write set_Item; default;
@@ -146,7 +146,7 @@ interface
     private
       fList: TStringList;
       fUnique: Boolean;
-      function get_AsArray: TStringArray;
+      function get_AsArray: StringArray;
       function get_Capacity: Integer;
       function get_Count: Integer;
       function get_Item(const aIndex: Integer): String;
@@ -556,7 +556,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
-  function TComInterfacedStringList.get_AsArray: TStringArray;
+  function TComInterfacedStringList.get_AsArray: StringArray;
   var
     i: Integer;
   begin

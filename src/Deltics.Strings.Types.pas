@@ -10,29 +10,65 @@ interface
   uses
     Classes,
     SysUtils,
-    Deltics.Strings.Types.BOM,
-    Deltics.Strings.Types.Core;
+    Deltics.Unicode;
 
 
   type
-    Codepoint     = Deltics.Strings.Types.Core.Codepoint;
-    PCodePoint    = Deltics.Strings.Types.Core.PCodepoint;
+  // Codepoint
+    Codepoint         = Deltics.Unicode.Codepoint;
+    PCodepoint        = Deltics.Unicode.PCodepoint;
 
-    Utf8String    = Deltics.Strings.Types.Core.Utf8String;
-    UnicodeString = Deltics.Strings.Types.Core.UnicodeString;
+  // Bom types
+    TBom        = Deltics.Unicode.TBom;
 
-    Utf8Char      = Deltics.Strings.Types.Core.Utf8Char;
-    PUtf8Char     = Deltics.Strings.Types.Core.PUtf8Char;
+    Utf8Bom     = Deltics.Unicode.Utf8Bom;
+    Utf16Bom    = Deltics.Unicode.Utf16Bom;
+    Utf16LEBom  = Deltics.Unicode.Utf16LEBom;
+    Utf32Bom    = Deltics.Unicode.Utf32Bom;
+    Utf32LEBom  = Deltics.Unicode.Utf32LEBom;
 
-    Utf32Char     = Deltics.Strings.Types.Core.Utf32Char;
-    PUtf32Char    = Deltics.Strings.Types.Core.PUtf32Char;
+  // String types
+   {AnsiString}
+    AsciiString       = Deltics.Unicode.AsciiString;
+    UnicodeString     = Deltics.Unicode.UnicodeString;
+    Utf8String        = Deltics.Unicode.Utf8String;
+   {WideString}
 
-    Utf32Array    = array of Utf32Char;
+  // Char types
+   {AnsiChar}
+    AsciiChar         = Deltics.Unicode.AsciiChar;
+    Utf8Char          = Deltics.Unicode.Utf8Char;
+    Utf16Char         = Deltics.Unicode.Utf16Char;
+    Utf32Char         = Deltics.Unicode.Utf32Char;
+   {WideChar}
 
-    AsciiString = Deltics.Strings.Types.Core.AsciiString;
-    AsciiChar   = Deltics.Strings.Types.Core.AsciiChar;
+   {PAnsiChar}
+    PAsciiChar        = Deltics.Unicode.PAsciiChar;
+    PUtf8Char         = Deltics.Unicode.PUtf8Char;
+    PUtf16Char        = Deltics.Unicode.PUtf16Char;
+    PUtf32Char        = Deltics.Unicode.PUtf32Char;
+   {PWideChar}
 
-    TAnsiCharSet = set of AnsiChar;
+  // Char array types
+    AsciiArray      = Deltics.Unicode.AsciiArray;
+    AnsiCharArray   = Deltics.Unicode.AnsiCharArray;
+    CharArray       = Deltics.Unicode.CharArray;
+    Utf8Array       = Deltics.Unicode.Utf8Array;
+    Utf16Array      = Deltics.Unicode.Utf16Array;
+    Utf32Array      = Deltics.Unicode.Utf32Array;
+    WideCharArray   = Deltics.Unicode.WideCharArray;
+    CodepointArray  = Deltics.Unicode.CodepointArray;
+
+  // String array types
+    AnsiStringArray     = Deltics.Unicode.AnsiStringArray;
+    AsciiStringArray    = Deltics.Unicode.AsciiStringArray;
+    StringArray         = Deltics.Unicode.StringArray;
+    UnicodeStringArray  = Deltics.Unicode.UnicodeStringArray;
+    Utf8StringArray     = Deltics.Unicode.Utf8StringArray;
+    WideStringArray     = Deltics.Unicode.WideStringArray;
+
+
+    AnsiCharSet = set of AnsiChar;
 
     TStringProcessingFlag = (
                              rsFromStart,
@@ -64,20 +100,8 @@ interface
 
 
   type
-    TCharIndexArray   = array of Integer;
-    TAnsiStringArray  = array of AnsiString;
-    TUtf8StringArray  = array of Utf8String;
-    TWideStringArray  = array of UnicodeString;
+    CharIndexArray   = array of Integer;
 
-  {$ifdef UNICODE}
-    TStringArray = TWideStringArray;
-  {$else}
-    TStringArray = TAnsiStringArray;
-  {$endif}
-
-    TAnsiCharArray  = array of AnsiChar;
-    TUtf8CharArray  = array of Utf8Char;
-    TWideCharArray  = array of WideChar;
 
     TAlphaCase  = (
                    acNotAlpha,
@@ -153,17 +177,6 @@ interface
                                 doDeleteOptionalDelimiter,
                                 doExtractOptionalDelimiter
                                ];
-
-
-  type
-    TBOM        = Deltics.Strings.Types.BOM.TBOM;
-    Utf8Bom     = Deltics.Strings.Types.BOM.Utf8Bom;
-    Utf16Bom    = Deltics.Strings.Types.BOM.Utf16Bom;
-    Utf16LEBom  = Deltics.Strings.Types.BOM.Utf16LEBom;
-    Utf32Bom    = Deltics.Strings.Types.BOM.Utf32Bom;
-    Utf32LEBom  = Deltics.Strings.Types.BOM.Utf32LEBom;
-
-
 
 
 implementation

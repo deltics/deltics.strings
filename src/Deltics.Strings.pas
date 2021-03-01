@@ -1,7 +1,7 @@
 {
   * X11 (MIT) LICENSE *
 
-  Copyright © 2013 Jolyon Smith
+  Copyright Â© 2013 Jolyon Smith
 
   Permission is hereby granted, free of charge, to any person obtaining a copy of
    this software and associated documentation files (the "Software"), to deal in
@@ -82,26 +82,26 @@ interface
     Utf32Array        = Deltics.Strings.Types.Utf32Array;
     UnicodeString     = Deltics.Strings.Types.UnicodeString;
 
-    TCharIndexArray   = Deltics.Strings.Types.TCharIndexArray;
-    TUtf8StringArray  = Deltics.Strings.Types.TUtf8StringArray;
-
-    TAnsiCharSet      = Deltics.Strings.Types.TAnsiCharSet;
-    TAnsiStringArray  = Deltics.Strings.Types.TAnsiStringArray;
+    AnsiCharSet       = Deltics.Strings.Types.AnsiCharSet;
     TAnsiStringList   = Deltics.Strings.StringList.TAnsiStringList;
     TAnsiStrings      = Deltics.Strings.StringList.TAnsiStrings;
 
-    TWideStringArray  = Deltics.Strings.Types.TWideStringArray;
     TWideStringList   = Deltics.Strings.StringList.TWideStringList;
     TWideStrings      = Deltics.Strings.StringList.TWideStrings;
 
-    TUnicodeStringArray  = Deltics.Strings.Types.TWideStringArray;
+    CharIndexArray    = Deltics.Strings.Types.CharIndexArray;
+
+    AnsiStringArray     = Deltics.Strings.Types.AnsiStringArray;
+    StringArray         = Deltics.Strings.Types.StringArray;
+    UnicodeStringArray  = Deltics.Strings.Types.UnicodeStringArray;
+    Utf8StringArray     = Deltics.Strings.Types.Utf8StringArray;
+    WideStringArray     = Deltics.Strings.Types.WideStringArray;
 
     TCaseSensitivity        = Deltics.Strings.Types.TCaseSensitivity;
     TCompareResult          = Deltics.Strings.Types.TCompareResult;
     TContainNeeds           = Deltics.Strings.Types.TContainNeeds;
     TCopyDelimiterOption    = Deltics.Strings.Types.TCopyDelimiterOption;
     TExtractDelimiterOption = Deltics.Strings.Types.TExtractDelimiterOption;
-    TStringArray            = Deltics.Strings.Types.TStringArray;
     TStringProcessingFlag   = Deltics.Strings.Types.TStringProcessingFlag;
     TStringScope            = Deltics.Strings.Types.TStringScope;
 
@@ -253,16 +253,16 @@ interface
 
   {$ifdef TYPE_HELPERS}
   type
-    TAnsiStringHelper = record helper for AnsiString
+    AnsiStringHelper = record helper for AnsiString
     private
       function get_Length: Integer; inline;
     public
       function Split(aChar: AnsiChar; var aLeft, aRight: AnsiString): Boolean; overload;
-      function Split(aChar: AnsiChar; var aArray: TAnsiStringArray): Boolean; overload;
+      function Split(aChar: AnsiChar; var aArray: AnsiStringArray): Boolean; overload;
       property Length: Integer read get_Length;
     end;
 
-    TStringHelper = record helper for UnicodeString
+    UnicodeStringHelper = record helper for String
     private
       function get_Length: Integer; //inline;
     public
@@ -279,7 +279,7 @@ interface
       function IsNotEmptyOrWhitespace: Boolean; inline;
       function IsOneOfText(const aArray: array of String): Boolean;
       function Split(aChar: WideChar; var aLeft, aRight: UnicodeString): Boolean; overload;
-      function Split(aChar: WideChar; var aArray: TWideStringArray): Integer; overload;
+      function Split(aChar: WideChar; var aArray: WideStringArray): Integer; overload;
       function ToLower: String;
       function ToUpper: String;
       function Startcase: String;
@@ -287,7 +287,7 @@ interface
     end;
 
 
-    TStringArrayHelper = record helper for TUnicodeStringArray
+    StringArrayHelper = record helper for StringArray
     private
       function get_Count: Integer; inline;
       function get_IsEmpty: Boolean; inline;
@@ -295,7 +295,7 @@ interface
       function Add(const aString: String): Integer; inline;
       function Delete(const aIndex: Integer): Integer; inline;
       procedure Insert(const aIndex: Integer; const aValue: String); overload; inline;
-      procedure Insert(const aIndex: Integer; const aValues: TStringArray); overload; inline;
+      procedure Insert(const aIndex: Integer; const aValues: StringArray); overload; inline;
       property Count: Integer read get_Count;
       property IsEmpty: Boolean read get_IsEmpty;
     end;
@@ -303,8 +303,8 @@ interface
 
     TStringListHelper = class helper for TStringList
     public
-      procedure Add(const aArray: TStringArray); overload;
-      function AsArray: TStringArray;
+      procedure Add(const aArray: StringArray); overload;
+      function AsArray: StringArray;
     end;
 
   {$endif TYPE_HELPERS}
@@ -323,14 +323,16 @@ implementation
   {$ifdef FASTSTRINGS}
     FastStrings,
   {$endif}
-  { vcl: }
   {$ifdef DELPHIXE4__}
     AnsiStrings,
   {$endif}
   {$ifdef __DELPHIXE2}
     StrUtils,
   {$endif}
-    Windows;
+    Windows
+  {$ifdef InlineMethodsSupported}
+    ,Deltics.Unicode.Types
+  {$endif};
 
 
 
@@ -644,19 +646,19 @@ implementation
 
 { TAnsiStringHelper ------------------------------------------------------------------------------ }
 
-  function TAnsiStringHelper.get_Length: Integer;
+  function AnsiStringHelper.get_Length: Integer;
   begin
     result := System.Length(self);
   end;
 
 
-  function TAnsiStringHelper.Split(aChar: AnsiChar; var aLeft, aRight: AnsiString): Boolean;
+  function AnsiStringHelper.Split(aChar: AnsiChar; var aLeft, aRight: AnsiString): Boolean;
   begin
     result := Ansi.Split(self, aChar, aLeft, aRight);
   end;
 
 
-  function TAnsiStringHelper.Split(aChar: AnsiChar; var aArray: TAnsiStringArray): Boolean;
+  function AnsiStringHelper.Split(aChar: AnsiChar; var aArray: AnsiStringArray): Boolean;
   begin
     result := Ansi.Split(self, aChar, aArray);
   end;
@@ -666,74 +668,74 @@ implementation
 
 { TStringHelper ---------------------------------------------------------------------------------- }
 
-  function TStringHelper.get_Length: Integer;
+  function UnicodeStringHelper.get_Length: Integer;
   begin
     result := System.Length(self);
   end;
 
-  function TStringHelper.BeginsWith(const aString: String): Boolean;
+  function UnicodeStringHelper.BeginsWith(const aString: String): Boolean;
   begin
     result := Wide.BeginsWith(self, aString, csCaseSensitive);
   end;
 
-  function TStringHelper.BeginsWithText(const aString: String): Boolean;
+  function UnicodeStringHelper.BeginsWithText(const aString: String): Boolean;
   begin
     result := Wide.BeginsWith(self, aString, csIgnoreCase);
   end;
 
-  function TStringHelper.Contains(aChar: AnsiChar): Boolean;
+  function UnicodeStringHelper.Contains(aChar: AnsiChar): Boolean;
   var
     notUsed: Integer;
   begin
     result := Wide.Find(self, Wide.FromAnsi(aChar), notUsed);
   end;
 
-  function TStringHelper.Contains(aChar: WideChar): Boolean;
+  function UnicodeStringHelper.Contains(aChar: WideChar): Boolean;
   var
     notUsed: Integer;
   begin
     result := Wide.Find(self, aChar, notUsed);
   end;
 
-  function TStringHelper.Contains(const aString: String): Boolean;
+  function UnicodeStringHelper.Contains(const aString: String): Boolean;
   var
     notUsed: Integer;
   begin
     result := Wide.Find(self, aString, notUsed);
   end;
 
-  function TStringHelper.EndsWith(const aChar: WideChar): Boolean;
+  function UnicodeStringHelper.EndsWith(const aChar: WideChar): Boolean;
   begin
     result := Wide.EndsWith(self, aChar);
   end;
 
-  function TStringHelper.EndsWith(const aString: String): Boolean;
+  function UnicodeStringHelper.EndsWith(const aString: String): Boolean;
   begin
     result := Wide.EndsWith(self, aString);
   end;
 
-  function TStringHelper.EqualsText(const aString: String): Boolean;
+  function UnicodeStringHelper.EqualsText(const aString: String): Boolean;
   begin
     result := (Wide.Compare(self, aString, csIgnoreCase) = isEqual);
   end;
 
-  function TStringHelper.IsEmpty: Boolean;
+  function UnicodeStringHelper.IsEmpty: Boolean;
   begin
     result := self = '';
   end;
 
-  function TStringHelper.IsNotEmpty: Boolean;
+  function UnicodeStringHelper.IsNotEmpty: Boolean;
   begin
     result := self <> '';
   end;
 
-  function TStringHelper.IsNotEmptyOrWhitespace: Boolean;
+  function UnicodeStringHelper.IsNotEmptyOrWhitespace: Boolean;
   begin
     result := STR.Trim(self) <> '';
   end;
 
 
-  function TStringHelper.IsOneOfText(const aArray: array of String): Boolean;
+  function UnicodeStringHelper.IsOneOfText(const aArray: array of String): Boolean;
   var
     i: Integer;
   begin
@@ -748,28 +750,28 @@ implementation
   end;
 
 
-  function TStringHelper.Split(aChar: WideChar; var aLeft, aRight: String): Boolean;
+  function UnicodeStringHelper.Split(aChar: WideChar; var aLeft, aRight: String): Boolean;
   begin
     result := Wide.Split(self, aChar, aLeft, aRight);
   end;
 
-  function TStringHelper.Split(aChar: WideChar; var aArray: TWideStringArray): Integer;
+  function UnicodeStringHelper.Split(aChar: WideChar; var aArray: WideStringArray): Integer;
   begin
     result := Wide.Split(self, aChar, aArray);
   end;
 
-  function TStringHelper.Startcase: String;
+  function UnicodeStringHelper.Startcase: String;
   begin
     result := Wide.Startcase(self);
   end;
 
-  function TStringHelper.ToLower: String;
+  function UnicodeStringHelper.ToLower: String;
   begin
     result := Wide.Lowercase(self);
   end;
 
 
-  function TStringHelper.ToUpper: String;
+  function UnicodeStringHelper.ToUpper: String;
   begin
     result := Wide.Uppercase(self);
   end;
@@ -778,19 +780,19 @@ implementation
 
 
 
-  function TStringArrayHelper.get_Count: Integer;
+  function StringArrayHelper.get_Count: Integer;
   begin
     result := Length(self);
   end;
 
 
-  function TStringArrayHelper.get_IsEmpty: Boolean;
+  function StringArrayHelper.get_IsEmpty: Boolean;
   begin
     result := Length(self) = 0;
   end;
 
 
-  function TStringArrayHelper.Add(const aString: String): Integer;
+  function StringArrayHelper.Add(const aString: String): Integer;
   begin
     result := Length(self);
     SetLength(self, result + 1);
@@ -799,7 +801,7 @@ implementation
 
 
 
-  function TStringArrayHelper.Delete(const aIndex: Integer): Integer;
+  function StringArrayHelper.Delete(const aIndex: Integer): Integer;
   var
     i: Integer;
   begin
@@ -815,7 +817,7 @@ implementation
   end;
 
 
-  procedure TStringArrayHelper.Insert(const aIndex: Integer;
+  procedure StringArrayHelper.Insert(const aIndex: Integer;
                                       const aValue: String);
   var
     i: Integer;
@@ -830,8 +832,8 @@ implementation
   end;
 
 
-  procedure TStringArrayHelper.Insert(const aIndex: Integer;
-                                      const aValues: TStringArray);
+  procedure StringArrayHelper.Insert(const aIndex: Integer;
+                                      const aValues: StringArray);
   var
     i: Integer;
     wedge: Integer;
@@ -851,7 +853,7 @@ implementation
 
 
 
-  procedure TStringListHelper.Add(const aArray: TStringArray);
+  procedure TStringListHelper.Add(const aArray: StringArray);
   var
     i: Integer;
   begin
@@ -861,7 +863,7 @@ implementation
 
 
 
-  function TStringListHelper.AsArray: TStringArray;
+  function TStringListHelper.AsArray: StringArray;
   var
     i: Integer;
   begin

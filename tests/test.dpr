@@ -30,8 +30,6 @@ uses
   Deltics.Strings.StringList in '..\src\Deltics.Strings.StringList.pas',
   Deltics.Strings.Templates in '..\src\Deltics.Strings.Templates.pas',
   Deltics.Strings.Types in '..\src\Deltics.Strings.Types.pas',
-  Deltics.Strings.Types.BOM in '..\src\Deltics.Strings.Types.BOM.pas',
-  Deltics.Strings.Types.Core in '..\src\Deltics.Strings.Types.Core.pas',
   Deltics.Strings.Utils in '..\src\Deltics.Strings.Utils.pas',
   Test.Consts in 'Test.Consts.pas' {/  Test.Strings.STR in 'Test.Strings.STR.pas',},
   Test.Runtime in 'Test.Runtime.pas',

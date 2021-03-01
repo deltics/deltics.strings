@@ -42,8 +42,8 @@ interface
       class function AllocUtf8(const aSource: AnsiString): PUtf8Char;
       class procedure CopyToBuffer(const aString: AnsiString; aBuffer: Pointer); overload;
       class procedure CopyToBuffer(const aString: AnsiString; aBuffer: Pointer; aMaxChars: Integer); overload;
-      class procedure CopyToBufferOffset(const aString: AnsiString; aBuffer: Pointer; aByteOffset: Integer); overload;
-      class procedure CopyToBufferOffset(const aString: AnsiString; aBuffer: Pointer; aByteOffset: Integer; aMaxChars: Integer); overload;
+      class procedure CopyToBufferOffset(const aString: AnsiString; aBuffer: Pointer; aOffset: Integer); overload;
+      class procedure CopyToBufferOffset(const aString: AnsiString; aBuffer: Pointer; aOffset: Integer; aMaxChars: Integer); overload;
       class function FromBuffer(aBuffer: PAnsiChar; aLen: Integer = -1): AnsiString; overload;
       class function FromBuffer(aBuffer: PWideChar; aLen: Integer = -1): AnsiString; overload;
       class function Len(aBuffer: PAnsiChar): Integer;
@@ -60,9 +60,9 @@ interface
       class function Split(const aString: AnsiString; aChar: AnsiChar; var aLeft, aRight: AnsiString): Boolean; overload;
       class function Split(const aString: AnsiString; aChar: WideChar; var aLeft, aRight: AnsiString): Boolean; overload;
       class function Split(const aString, aDelim: AnsiString; var aLeft, aRight: AnsiString): Boolean; overload;
-      class function Split(const aString: AnsiString; aChar: AnsiChar; var aParts: TAnsiStringArray): Boolean; overload;
-      class function Split(const aString: AnsiString; aChar: WideChar; var aParts: TAnsiStringArray): Boolean; overload;
-      class function Split(const aString, aDelim: AnsiString; var aParts: TAnsiStringArray): Boolean; overload;
+      class function Split(const aString: AnsiString; aChar: AnsiChar; var aParts: AnsiStringArray): Boolean; overload;
+      class function Split(const aString: AnsiString; aChar: WideChar; var aParts: AnsiStringArray): Boolean; overload;
+      class function Split(const aString, aDelim: AnsiString; var aParts: AnsiStringArray): Boolean; overload;
 
       // Assembling a string
       class function Concat(const aArray: array of AnsiString): AnsiString; overload;
@@ -150,12 +150,12 @@ interface
       class function FindLastText(const aString: AnsiString; aChar: AnsiChar; var aPos: Integer): Boolean; overload;
       class function FindLastText(const aString: AnsiString; aChar: WideChar; var aPos: Integer): Boolean; overload;
       class function FindLastText(const aString, aSubstring: AnsiString; var aPos: Integer): Boolean; overload;
-      class function FindAll(const aString: AnsiString; aChar: AnsiChar; var aPos: TCharIndexArray; aCaseMode: TCaseSensitivity = csCaseSensitive): Integer; overload;
-      class function FindAll(const aString: AnsiString; aChar: WideChar; var aPos: TCharIndexArray; aCaseMode: TCaseSensitivity = csCaseSensitive): Integer; overload;
-      class function FindAll(const aString, aSubstring: AnsiString; var aPos: TCharIndexArray; aCaseMode: TCaseSensitivity = csCaseSensitive): Integer; overload;
-      class function FindAllText(const aString: AnsiString; aChar: AnsiChar; var aPos: TCharIndexArray): Integer; overload;
-      class function FindAllText(const aString: AnsiString; aChar: WideChar; var aPos: TCharIndexArray): Integer; overload;
-      class function FindAllText(const aString, aSubstring: AnsiString; var aPos: TCharIndexArray): Integer; overload;
+      class function FindAll(const aString: AnsiString; aChar: AnsiChar; var aPos: CharIndexArray; aCaseMode: TCaseSensitivity = csCaseSensitive): Integer; overload;
+      class function FindAll(const aString: AnsiString; aChar: WideChar; var aPos: CharIndexArray; aCaseMode: TCaseSensitivity = csCaseSensitive): Integer; overload;
+      class function FindAll(const aString, aSubstring: AnsiString; var aPos: CharIndexArray; aCaseMode: TCaseSensitivity = csCaseSensitive): Integer; overload;
+      class function FindAllText(const aString: AnsiString; aChar: AnsiChar; var aPos: CharIndexArray): Integer; overload;
+      class function FindAllText(const aString: AnsiString; aChar: WideChar; var aPos: CharIndexArray): Integer; overload;
+      class function FindAllText(const aString, aSubstring: AnsiString; var aPos: CharIndexArray): Integer; overload;
 
       // Adding to a string
       class function Append(const aString: AnsiString; aChar: AnsiChar): AnsiString; overload;
@@ -438,7 +438,7 @@ implementation
     Deltics.Contracts,
     Deltics.Exchange,
     Deltics.Math,
-    Deltics.Pointers,
+    Deltics.Memory,
     Deltics.ReverseBytes,
     Deltics.Strings,
     Deltics.Strings.Fns.Utf8,
@@ -580,7 +580,7 @@ implementation
     if (aMaxBytes < len) then
       len := aMaxBytes;
 
-    FastCopy(aString, Memory.ByteOffset(aBuffer, aOffset), len);
+    FastCopy(aString, Memory.Offset(aBuffer, aOffset), len);
   end;
 
 
@@ -738,10 +738,10 @@ implementation
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class function AnsiFn.Split(const aString: AnsiString;
                                     aChar: AnsiChar;
-                              var   aParts: TAnsiStringArray): Boolean;
+                              var   aParts: AnsiStringArray): Boolean;
   var
     i: Integer;
-    p: TCharIndexArray;
+    p: CharIndexArray;
     plen: Integer;
   begin
     result := FindAll(aString, aChar, p) > 0;
@@ -771,7 +771,7 @@ implementation
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class function AnsiFn.Split(const aString: AnsiString;
                                     aChar: WideChar;
-                              var   aParts: TAnsiStringArray): Boolean;
+                              var   aParts: AnsiStringArray): Boolean;
   begin
     result := Split(aString, Ansi(aChar), aParts);
   end;
@@ -780,10 +780,10 @@ implementation
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class function AnsiFn.Split(const aString: AnsiString;
                               const aDelim: AnsiString;
-                              var   aParts: TAnsiStringArray): Boolean;
+                              var   aParts: AnsiStringArray): Boolean;
   var
     i: Integer;
-    p: TCharIndexArray;
+    p: CharIndexArray;
     plen, delimLen: Integer;
   begin
     Require('aDelim', aDelim).IsNotEmpty.GetLength(delimLen);
@@ -936,19 +936,19 @@ implementation
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class procedure AnsiFn.CopyToBufferOffset(const aString: AnsiString;
                                                   aBuffer: Pointer;
-                                                  aByteOffset: Integer);
+                                                  aOffset: Integer);
   begin
-    CopyToBuffer(aString, Length(aString), aBuffer, aByteOffset);
+    CopyToBuffer(aString, Length(aString), aBuffer, aOffset);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class procedure AnsiFn.CopyToBufferOffset(const aString: AnsiString;
                                                   aBuffer: Pointer;
-                                                  aByteOffset: Integer;
+                                                  aOffset: Integer;
                                                   aMaxChars: Integer);
   begin
-    CopyToBuffer(aString, aMaxChars, aBuffer, aByteOffset);
+    CopyToBuffer(aString, aMaxChars, aBuffer, aOffset);
   end;
 
 
@@ -1762,7 +1762,7 @@ implementation
 
       csIgnoreCase    : result := HasLength(aString, strLen)
                               and (CompareStringA(LOCALE_USER_DEFAULT, CASEMODE_FLAG[aCaseMode],
-                                                  PAnsiChar(Memory.ByteOffset(Pointer(aString), strLen - 1)), 1,
+                                                  PAnsiChar(Memory.Offset(Pointer(aString), strLen - 1)), 1,
                                                   @aChar, 1) = CSTR_EQUAL);
     else
       result := FALSE;
@@ -1792,7 +1792,7 @@ implementation
     strLen := Length(aString);
     result := (subLen <= strLen)
           and (CompareStringA(LOCALE_USER_DEFAULT, CASEMODE_FLAG[aCaseMode],
-                              PAnsiChar(Memory.ByteOffset(Pointer(aString), strLen - subLen)), subLen,
+                              PAnsiChar(Memory.Offset(Pointer(aString), strLen - subLen)), subLen,
                               PAnsiChar(aSubstring), subLen) = CSTR_EQUAL);
   end;
 
@@ -1807,7 +1807,7 @@ implementation
 
     result := HasLength(aString, strLen)
           and (CompareStringA(LOCALE_USER_DEFAULT, NORM_IGNORECASE,
-                              PAnsiChar(Memory.ByteOffset(Pointer(aString), strLen - 1)), 1,
+                              PAnsiChar(Memory.Offset(Pointer(aString), strLen - 1)), 1,
                               @aChar, 1) = CSTR_EQUAL);
   end;
 
@@ -1832,7 +1832,7 @@ implementation
     strLen := Length(aString);
     result := (subLen <= strLen)
           and (CompareStringA(LOCALE_USER_DEFAULT, NORM_IGNORECASE,
-                              PAnsiChar(Memory.ByteOffset(Pointer(aString), strLen - subLen)), subLen,
+                              PAnsiChar(Memory.Offset(Pointer(aString), strLen - subLen)), subLen,
                               PAnsiChar(aSubstring), subLen) = CSTR_EQUAL);
   end;
 
@@ -1994,7 +1994,7 @@ implementation
         EXIT;
 
       first := Pointer(aString);
-      curr  := PAnsiChar(Memory.ByteOffset(first, pos));
+      curr  := PAnsiChar(Memory.Offset(first, pos));
       Dec(len, pos);
 
       if (aCaseMode = csCaseSensitive) or (NOT Ansi.IsAlpha(aChar)) then
@@ -2068,7 +2068,7 @@ implementation
         EXIT;
 
       first := PAnsiChar(aString);
-      curr  := PAnsiChar(Memory.ByteOffset(first, pos));
+      curr  := PAnsiChar(Memory.Offset(first, pos));
       Dec(strLen, pos + subLen - 1);
 
       for i := 1 to strLen do
@@ -2141,7 +2141,7 @@ implementation
 
       pos   := Min(aPos, len + 1);
       first := PAnsiChar(aString);
-      curr  := PAnsiChar(Memory.ByteOffset(first, pos - 2));
+      curr  := PAnsiChar(Memory.Offset(first, pos - 2));
       len   := pos - 1;
 
       if (aCaseMode = csCaseSensitive) or (NOT Ansi.IsAlpha(aChar)) then
@@ -2213,7 +2213,7 @@ implementation
 
       aPos  := Min(aPos - 1, strLen - subLen + 1);
       first := PAnsiChar(aString);
-      curr  := PAnsiChar(Memory.ByteOffset(first, aPos - 1));
+      curr  := PAnsiChar(Memory.Offset(first, aPos - 1));
 
       for i := 1 to aPos do
       begin
@@ -2266,7 +2266,7 @@ implementation
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class function AnsiFn.FindAll(const aString: AnsiString;
                                       aChar: AnsiChar;
-                                var   aPos: TCharIndexArray;
+                                var   aPos: CharIndexArray;
                                       aCaseMode: TCaseSensitivity): Integer;
   var
     i: Integer;
@@ -2326,7 +2326,7 @@ implementation
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class function AnsiFn.FindAll(const aString: AnsiString;
                                       aChar: WideChar;
-                                var   aPos: TCharIndexArray;
+                                var   aPos: CharIndexArray;
                                       aCaseMode: TCaseSensitivity): Integer;
   begin
     result := FindAll(aString, Ansi(aChar), aPos, aCaseMode);
@@ -2336,7 +2336,7 @@ implementation
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class function AnsiFn.FindAll(const aString: AnsiString;
                                 const aSubstring: AnsiString;
-                                var   aPos: TCharIndexArray;
+                                var   aPos: CharIndexArray;
                                       aCaseMode: TCaseSensitivity): Integer;
   var
     i: Integer;
@@ -2380,7 +2380,7 @@ implementation
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class function AnsiFn.FindAllText(const aString: AnsiString;
                                           aChar: AnsiChar;
-                                    var   aPos: TCharIndexArray): Integer;
+                                    var   aPos: CharIndexArray): Integer;
   begin
     result := FindAll(aString, aChar, aPos, csIgnoreCase);
   end;
@@ -2389,7 +2389,7 @@ implementation
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class function AnsiFn.FindAllText(const aString: AnsiString;
                                           aChar: WideChar;
-                                    var   aPos: TCharIndexArray): Integer;
+                                    var   aPos: CharIndexArray): Integer;
   begin
     result := FindAll(aString, Ansi(aChar), aPos, csIgnoreCase);
   end;
@@ -2398,7 +2398,7 @@ implementation
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class function AnsiFn.FindAllText(const aString: AnsiString;
                                     const aSubstring: AnsiString;
-                                    var   aPos: TCharIndexArray): Integer;
+                                    var   aPos: CharIndexArray): Integer;
   begin
     result := FindAll(aString, aSubstring, aPos, csIgnoreCase);
   end;
@@ -2499,7 +2499,7 @@ implementation
                                         aCaseMode: TCaseSensitivity): Integer;
   var
     i: Integer;
-    idx: TCharIndexArray;
+    idx: CharIndexArray;
     subLen: Integer;
   begin
     result := FindAll(aString, aSubstring, idx, aCaseMode);
@@ -2519,7 +2519,7 @@ implementation
                                       aCaseMode: TCaseSensitivity): Integer;
   var
     i: Integer;
-    idx: TCharIndexArray;
+    idx: CharIndexArray;
   begin
     result := FindAll(aString, aChar, idx, aCaseMode);
     if result > 0 then
@@ -4250,7 +4250,7 @@ implementation
                                          aCaseMode: TCaseSensitivity): Boolean;
   var
     i: Integer;
-    p: TCharIndexArray;
+    p: CharIndexArray;
   begin
     aResult := aString;
 
@@ -4280,7 +4280,7 @@ implementation
                                          aCaseMode: TCaseSensitivity): Boolean;
   var
     i, p: Integer;
-    pa: TCharIndexArray;
+    pa: CharIndexArray;
     strLen, replaceLen: Integer;
     occurs, nudge: Integer;
   begin
@@ -4337,7 +4337,7 @@ implementation
                                          aCaseMode: TCaseSensitivity): Boolean;
   var
     i, p: Integer;
-    pa: TCharIndexArray;
+    pa: CharIndexArray;
     strLen, subLen: Integer;
     occurs, nudge: Integer;
   begin
@@ -4392,7 +4392,7 @@ implementation
                                          aCaseMode: TCaseSensitivity): Boolean;
   var
     i, p: Integer;
-    pa: TCharIndexArray;
+    pa: CharIndexArray;
     strLen, subLen, replaceLen: Integer;
     occurs, nudge: Integer;
   begin

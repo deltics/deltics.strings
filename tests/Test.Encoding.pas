@@ -28,7 +28,7 @@ interface
 implementation
 
   uses
-    Deltics.Pointers,
+    Deltics.Memory,
     Deltics.ReverseBytes,
     Deltics.Strings;
 
@@ -37,12 +37,12 @@ implementation
 
   procedure EncodingTests.DetectsUtf16BEWithBom;
   var
-    bom: TBOM;
+    bom: TBom;
     buf: array[0..7] of Byte;
     enc: TEncoding;
   begin
     bom := Utf16Bom.AsBytes;
-    Memory.Copy(@bom[0], @buf[0], Length(bom));
+    Memory.Copy(@bom[0], Length(bom), @buf[0]);
     buf[2]  := 0;
     buf[3]  := 65;
     buf[4]  := 0;
@@ -103,13 +103,13 @@ implementation
 
   procedure EncodingTests.DetectsUtf16LEWithBom;
   var
-    bom: TBOM;
+    bom: TBom;
     buf: array[0..7] of Byte;
     enc: TEncoding;
     result: Boolean;
   begin
     bom := Utf16Bom.AsBytes;
-    Memory.Copy(@bom[0], @buf[0], Length(bom));
+    Memory.Copy(@bom[0], Length(bom), @buf[0]);
     buf[2]  := 0;
     buf[3]  := 65;
     buf[4]  := 0;
@@ -152,13 +152,13 @@ implementation
 
   procedure EncodingTests.DetectsUtf32BEWithBom;
   var
-    bom: TBOM;
+    bom: TBom;
     buf: array[0..7] of Byte;
     enc: TEncoding;
     result: Boolean;
   begin
     bom := Utf32Bom.AsBytes;
-    Memory.Copy(@bom[0], @buf[0], Length(bom));
+    Memory.Copy(@bom[0], Length(bom), @buf[0]);
     buf[4]  := 0;
     buf[5]  := 0;
     buf[6]  := 0;
@@ -175,13 +175,13 @@ implementation
 
   procedure EncodingTests.DetectsUtf32LEWithBom;
   var
-    bom: TBOM;
+    bom: TBom;
     buf: array[0..7] of Byte;
     enc: TEncoding;
     result: Boolean;
   begin
     bom := Utf32Bom.AsBytes;
-    Memory.Copy(@bom[0], @buf[0], Length(bom));
+    Memory.Copy(@bom[0], Length(bom), @buf[0]);
     buf[4]  := 0;
     buf[5]  := 0;
     buf[6]  := 0;
@@ -199,13 +199,13 @@ implementation
 
   procedure EncodingTests.DetectsUtf8WithBom;
   var
-    bom: TBOM;
+    bom: TBom;
     buf: array[0..5] of Byte;
     enc: TEncoding;
     result: Boolean;
   begin
     bom := Utf8Bom.AsBytes;
-    Memory.Copy(@bom[0], @buf[0], Length(bom));
+    Memory.Copy(@bom[0], Length(bom), @buf[0]);
     buf[3]  := 65;
     buf[4]  := 66;
     buf[5]  := 67;

@@ -61,9 +61,9 @@ interface
       class function Split(const aString: UnicodeString; const aChar: AnsiChar; var aLeft, aRight: UnicodeString): Boolean; overload;
       class function Split(const aString: UnicodeString; const aChar: WideChar; var aLeft, aRight: UnicodeString): Boolean; overload;
       class function Split(const aString, aDelim: UnicodeString; var aLeft, aRight: UnicodeString): Boolean; overload;
-      class function Split(const aString: UnicodeString; const aChar: AnsiChar; var aParts: TWideStringArray): Integer; overload;
-      class function Split(const aString: UnicodeString; const aChar: WideChar; var aParts: TWideStringArray): Integer; overload;
-      class function Split(const aString, aDelim: UnicodeString; var aParts: TWideStringArray): Integer; overload;
+      class function Split(const aString: UnicodeString; const aChar: AnsiChar; var aParts: WideStringArray): Integer; overload;
+      class function Split(const aString: UnicodeString; const aChar: WideChar; var aParts: WideStringArray): Integer; overload;
+      class function Split(const aString, aDelim: UnicodeString; var aParts: WideStringArray): Integer; overload;
 
       // Assembling a string
       class function Concat(const aArray: array of UnicodeString): UnicodeString; overload;
@@ -154,12 +154,12 @@ interface
       class function FindLastText(const aString: UnicodeString; aChar: AnsiChar; var aPos: Integer): Boolean; overload;
       class function FindLastText(const aString: UnicodeString; aChar: WideChar; var aPos: Integer): Boolean; overload;
       class function FindLastText(const aString, aSubstring: UnicodeString; var aPos: Integer): Boolean; overload;
-      class function FindAll(const aString: UnicodeString; aChar: AnsiChar; var aPos: TCharIndexArray; aCaseMode: TCaseSensitivity = csCaseSensitive): Integer; overload;
-      class function FindAll(const aString: UnicodeString; aChar: WideChar; var aPos: TCharIndexArray; aCaseMode: TCaseSensitivity = csCaseSensitive): Integer; overload;
-      class function FindAll(const aString, aSubstring: UnicodeString; var aPos: TCharIndexArray; aCaseMode: TCaseSensitivity = csCaseSensitive): Integer; overload;
-      class function FindAllText(const aString: UnicodeString; aChar: AnsiChar; var aPos: TCharIndexArray): Integer; overload;
-      class function FindAllText(const aString: UnicodeString; aChar: WideChar; var aPos: TCharIndexArray): Integer; overload;
-      class function FindAllText(const aString, aSubstring: UnicodeString; var aPos: TCharIndexArray): Integer; overload;
+      class function FindAll(const aString: UnicodeString; aChar: AnsiChar; var aPos: CharIndexArray; aCaseMode: TCaseSensitivity = csCaseSensitive): Integer; overload;
+      class function FindAll(const aString: UnicodeString; aChar: WideChar; var aPos: CharIndexArray; aCaseMode: TCaseSensitivity = csCaseSensitive): Integer; overload;
+      class function FindAll(const aString, aSubstring: UnicodeString; var aPos: CharIndexArray; aCaseMode: TCaseSensitivity = csCaseSensitive): Integer; overload;
+      class function FindAllText(const aString: UnicodeString; aChar: AnsiChar; var aPos: CharIndexArray): Integer; overload;
+      class function FindAllText(const aString: UnicodeString; aChar: WideChar; var aPos: CharIndexArray): Integer; overload;
+      class function FindAllText(const aString, aSubstring: UnicodeString; var aPos: CharIndexArray): Integer; overload;
 
       // Adding to a string
       class function Append(const aString: UnicodeString; aChar: AnsiChar): UnicodeString; overload;
@@ -429,7 +429,7 @@ interface
       class function Snakecase(const aString: UnicodeString): UnicodeString;
       class function Startcase(const aString: UnicodeString): UnicodeString;
       class function Titlecase(const aString: UnicodeString): UnicodeString; overload;
-      class function Titlecase(const aString: UnicodeString; const aLower: TWideStringArray): UnicodeString; overload;
+      class function Titlecase(const aString: UnicodeString; const aLower: WideStringArray): UnicodeString; overload;
       class function Titlecase(const aString: UnicodeString; aLower: TWideStringList): UnicodeString; overload;
       class function Uppercase(aChar: WideChar): WideChar; overload;
       class function Uppercase(const aString: UnicodeString): UnicodeString; overload;
@@ -443,7 +443,7 @@ implementation
     Deltics.Contracts,
     Deltics.Exchange,
     Deltics.Math,
-    Deltics.Pointers,
+    Deltics.Memory,
     Deltics.ReverseBytes,
     Deltics.Strings,
     Deltics.Strings.Encoding,
@@ -656,7 +656,7 @@ implementation
     if (aMaxChars < len) then
       len := aMaxChars;
 
-    FastCopy(aString, Memory.ByteOffset(aBuffer, aByteOffset), len);
+    FastCopy(aString, Memory.Offset(aBuffer, aByteOffset), len);
   end;
 
 
@@ -682,7 +682,7 @@ implementation
                                       aCaseMode: TCaseSensitivity): UnicodeString;
   var
     i: Integer;
-    pa: TCharIndexArray;
+    pa: CharIndexArray;
     pr, ps, px: PWideChar;
     p, flen, xlen, rlen, clen: Integer;
   begin
@@ -1744,8 +1744,8 @@ implementation
   begin
     Require('aChar', aChar).IsNotNull;
 
-    curr   := NIL;
     first  := NIL;
+    curr   := NIL;
     result := FALSE;
     try
       if aPos < 0 then
@@ -1755,8 +1755,8 @@ implementation
        or (aPos >= len) then
         EXIT;
 
-      first := Pointer(aString);
-      curr  := PWideChar(Memory.ByteOffset(first, aPos * 2));
+      first := PWideChar(aString);
+      curr  := @aString[aPos - 1];
       Dec(len, aPos - 1);
 
       if (aCaseMode = csCaseSensitive) or (NOT Wide.IsAlpha(aChar)) then
@@ -1820,7 +1820,7 @@ implementation
         EXIT;
 
       first := PWideChar(aString);
-      curr  := PWideChar(Memory.ByteOffset(first, aPos * 2));
+      curr  := @aString[aPos];
       Dec(strLen, aPos + subLen - 1);
 
       for i := 1 to strLen do
@@ -1903,7 +1903,7 @@ implementation
 
       pos   := Min(aPos, len + 1);
       first := PWideChar(aString);
-      curr  := PWideChar(Memory.ByteOffset(first, 2 * (aPos - 2)));
+      curr  := @aString[aPos - 1];
       len   := pos - 1;
 
       if (aCaseMode = csCaseSensitive) or (NOT Wide.IsAlpha(aChar)) then
@@ -1965,7 +1965,7 @@ implementation
 
       aPos  := Min(aPos - 1, strLen - subLen + 1);
       first := PWideChar(aString);
-      curr  := PWideChar(Memory.ByteOffset(first, 2 * (aPos - 1)));
+      curr  := @aString[aPos - 1];
 
       for i := 1 to aPos do
       begin
@@ -2018,7 +2018,7 @@ implementation
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class function WideFn.FindAll(const aString: UnicodeString;
                                       aChar: AnsiChar;
-                                var   aPos: TCharIndexArray;
+                                var   aPos: CharIndexArray;
                                       aCaseMode: TCaseSensitivity): Integer;
   begin
     result := FindAll(aString, Wide(aChar), aPos, aCaseMode);
@@ -2028,7 +2028,7 @@ implementation
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class function WideFn.FindAll(const aString: UnicodeString;
                                       aChar: WideChar;
-                                var   aPos: TCharIndexArray;
+                                var   aPos: CharIndexArray;
                                       aCaseMode: TCaseSensitivity): Integer;
   var
     i: Integer;
@@ -2086,7 +2086,7 @@ implementation
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class function WideFn.FindAll(const aString: UnicodeString;
                                 const aSubstring: UnicodeString;
-                                var   aPos: TCharIndexArray;
+                                var   aPos: CharIndexArray;
                                       aCaseMode: TCaseSensitivity): Integer;
   var
     i: Integer;
@@ -2130,7 +2130,7 @@ implementation
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class function WideFn.FindAllText(const aString: UnicodeString;
                                           aChar: AnsiChar;
-                                    var   aPos: TCharIndexArray): Integer;
+                                    var   aPos: CharIndexArray): Integer;
   begin
     result := FindAll(aString, aChar, aPos, csIgnoreCase);
   end;
@@ -2139,7 +2139,7 @@ implementation
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class function WideFn.FindAllText(const aString: UnicodeString;
                                           aChar: WideChar;
-                                    var   aPos: TCharIndexArray): Integer;
+                                    var   aPos: CharIndexArray): Integer;
   begin
     result := FindAll(aString, aChar, aPos, csIgnoreCase);
   end;
@@ -2148,7 +2148,7 @@ implementation
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class function WideFn.FindAllText(const aString: UnicodeString;
                                     const aSubstring: UnicodeString;
-                                    var   aPos: TCharIndexArray): Integer;
+                                    var   aPos: CharIndexArray): Integer;
   begin
     result := FindAll(aString, aSubstring, aPos, csIgnoreCase);
   end;
@@ -3129,7 +3129,7 @@ implementation
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class function WideFn.Split(const aString: UnicodeString;
                               const aChar: AnsiChar;
-                              var   aParts: TWideStringArray): Integer;
+                              var   aParts: WideStringArray): Integer;
   begin
     result := Split(aString, Wide(aChar), aParts);
   end;
@@ -3138,10 +3138,10 @@ implementation
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class function WideFn.Split(const aString: UnicodeString;
                               const aChar: WideChar;
-                              var   aParts: TWideStringArray): Integer;
+                              var   aParts: WideStringArray): Integer;
   var
     i: Integer;
-    p: TCharIndexArray;
+    p: CharIndexArray;
     plen: Integer;
   begin
     Require('aChar', aChar).IsNotSurrogate;
@@ -3178,10 +3178,10 @@ implementation
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class function WideFn.Split(const aString: UnicodeString;
                               const aDelim: UnicodeString;
-                              var   aParts: TWideStringArray): Integer;
+                              var   aParts: WideStringArray): Integer;
   var
     i: Integer;
-    p: TCharIndexArray;
+    p: CharIndexArray;
     plen, delimLen: Integer;
   begin
     Require('aDelim', aDelim).IsNotEmpty.GetLength(delimLen);
@@ -3378,7 +3378,7 @@ implementation
                                         aCaseMode: TCaseSensitivity): Integer;
   var
     i: Integer;
-    idx: TCharIndexArray;
+    idx: CharIndexArray;
     subLen: Integer;
   begin
     result := FindAll(aString, aSubstring, idx, aCaseMode);
@@ -3398,7 +3398,7 @@ implementation
                                       aCaseMode: TCaseSensitivity): Integer;
   var
     i: Integer;
-    idx: TCharIndexArray;
+    idx: CharIndexArray;
   begin
     result := FindAll(aString, aChar, idx, aCaseMode);
     if result > 0 then
@@ -5122,7 +5122,7 @@ implementation
                                          aCaseMode: TCaseSensitivity): Boolean;
   var
     i: Integer;
-    p: TCharIndexArray;
+    p: CharIndexArray;
   begin
     aResult := aString;
 
@@ -5152,7 +5152,7 @@ implementation
                                          aCaseMode: TCaseSensitivity): Boolean;
   var
     i, p: Integer;
-    pa: TCharIndexArray;
+    pa: CharIndexArray;
     strLen, replaceLen: Integer;
     occurs, nudge: Integer;
   begin
@@ -5209,7 +5209,7 @@ implementation
                                          aCaseMode: TCaseSensitivity): Boolean;
   var
     i, p: Integer;
-    pa: TCharIndexArray;
+    pa: CharIndexArray;
     strLen, subLen: Integer;
     occurs, nudge: Integer;
   begin
@@ -5264,7 +5264,7 @@ implementation
                                          aCaseMode: TCaseSensitivity): Boolean;
   var
     i, p: Integer;
-    pa: TCharIndexArray;
+    pa: CharIndexArray;
     strLen, subLen, replaceLen: Integer;
     occurs, nudge: Integer;
   begin
@@ -6353,7 +6353,7 @@ implementation
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class function WideFn.Titlecase(const aString: UnicodeString;
-                                  const aLower: TWideStringArray): UnicodeString;
+                                  const aLower: WideStringArray): UnicodeString;
   begin
     // TODO:
   end;
@@ -6364,8 +6364,8 @@ implementation
                                         aLower: TWideStringList): UnicodeString;
   var
     i: Integer;
-    pieces: TWideStringArray;
-    p: TCharIndexArray;
+    pieces: WideStringArray;
+    p: CharIndexArray;
   begin
     result := Wide.Startcase(aString);
 
