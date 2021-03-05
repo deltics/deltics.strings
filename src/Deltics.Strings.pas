@@ -1,7 +1,7 @@
-﻿{
+{
   * X11 (MIT) LICENSE *
 
-  Copyright © 2013 Jolyon Smith
+  Copyright � 2013 Jolyon Smith
 
   Permission is hereby granted, free of charge, to any person obtaining a copy of
    this software and associated documentation files (the "Software"), to deal in
