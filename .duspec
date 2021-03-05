@@ -39,7 +39,7 @@
         "src\\deltics.strings.lists.inc",
         "src\\Deltics.Strings.Lists.pas",
         "src\\Deltics.Strings.Lists.Ansi.pas",
-        "src\\Deltics.Strings.Lists.String.pas",
+        "src\\Deltics.Strings.Lists.String_.pas",
         "src\\Deltics.Strings.Lists.Utf8.pas",
         "src\\Deltics.Strings.Lists.Wide.pas",
         "src\\deltics.strings.parsers.inc",
