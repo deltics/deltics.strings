@@ -380,11 +380,7 @@ implementation
 
   function TAnsiStrings.ExtractName(const aString: AnsiString): AnsiString;
   var
-  {$ifdef UNICODE}          // Cannot use AnsiString in this case since AnsiString == WIDEString
-    n, v: ANSIString;       //  and for the var params in the Split() method, the compiler
-  {$else}                   //  insists that we use the declared type.
-    n, v: UnicodeString;
-  {$endif}
+    n, v: AnsiString;       //  and for the var params in the Split() method, the compiler
   begin
     Ansi.Split(aString, AnsiChar('='), n, v);
     result := n;
@@ -597,10 +593,10 @@ implementation
     try
       Clear;
       while NOT aReader.EndOfList do
-      {$ifdef UNICODE}
-        Add(ANSI.FromWIDE(aReader.ReadString));
+      {$ifNdef UNICODE}
+        Add(aReader.ReadString);
       {$else}
-        Add(aReader.ReadWideString);
+        Add(Ansi.FromWide(aReader.ReadString));
       {$endif}
 
     finally
@@ -693,10 +689,10 @@ implementation
     aWriter.WriteListBegin;
 
     for i := 0 to Pred(Count) do
-    {$ifdef UNICODE}
-      aWriter.WriteString(WIDE.FromANSI(Get(i)));
+    {$ifNdef UNICODE}
+      aWriter.WriteString(Get(i));
     {$else}
-      aWriter.WriteWideString(Get(i));
+      aWriter.WriteString(Wide.FromAnsi(Get(i)));
     {$endif}
 
     aWriter.WriteListEnd;
@@ -711,7 +707,7 @@ implementation
 
   function TAnsiStrings.get_ValueFromIndex(aIndex: Integer): AnsiString;
   var
-    value: {$ifdef UNICODE}ANSIString{$else}UnicodeString{$endif};
+    value: AnsiString;
     p: Integer;
   begin
     if aIndex >= 0 then
