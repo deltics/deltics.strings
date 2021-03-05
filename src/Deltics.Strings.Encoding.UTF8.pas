@@ -1,6 +1,5 @@
 
-{$i deltics.strings.inc}
-
+{$i deltics.strings.encoding.inc}
 
   unit Deltics.Strings.Encoding.Utf8;
 
@@ -28,7 +27,7 @@ implementation
 
   uses
     Windows,
-    Deltics.Strings.Types;
+    Deltics.Unicode;
 
 
 { TUTF8Encoding }

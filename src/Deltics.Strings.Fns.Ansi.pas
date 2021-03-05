@@ -27,9 +27,10 @@ interface
       class procedure CopyToBuffer(const aString: AnsiString; aMaxBytes: Integer; aBuffer: Pointer; aOffset: Integer); overload;
 
     public
+      // Parser
       class function Parse: AnsiParserClass;
-
-      // Transcoding
+
+      // Transcoding
       class function Encode(const aString: String): AnsiString;
       class function FromAnsi(const aBuffer: PAnsiChar; aMaxLen: Integer = -1): AnsiString; overload;
       class function FromString(const aString: String): AnsiString;
@@ -452,14 +453,6 @@ implementation
 { AnsiFn ------------------------------------------------------------------------------------------ }
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function AnsiFn.Parse: AnsiParserClass;
-  begin
-    result := AnsiParser;
-  end;
-
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class function AnsiFn.AddressOfIndex(const aString: AnsiString;
                                              aIndex: Integer): PAnsiChar;
   begin
@@ -817,6 +810,11 @@ implementation
 
 
 
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
+  class function AnsiFn.Parse: AnsiParserClass;
+  begin
+    result := AnsiParser;
+  end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }

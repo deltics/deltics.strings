@@ -1,4 +1,4 @@
-{
+﻿{
   * X11 (MIT) LICENSE *
 
   Copyright © 2013 Jolyon Smith
@@ -52,51 +52,32 @@ interface
   uses
     Classes,
     SysUtils,
+    Deltics.StringTypes,
     Deltics.Strings.Encoding,
     Deltics.Strings.Fns.Ansi,
     Deltics.Strings.Fns.Utf8,
     Deltics.Strings.Fns.Utf32,
     Deltics.Strings.Fns.Wide,
-    Deltics.Strings.StringBuilder,
-    Deltics.Strings.StringList,
-    Deltics.Strings.Templates,
     Deltics.Strings.Types,
-    Deltics.Strings.Types.BOM,
     Deltics.Strings.Utils;
 
 
+  {$i deltics.stringtypes.aliases.inc}
+
   type
-    Encoding          = Deltics.Strings.Encoding.Encoding;
-    TEncoding         = Deltics.Strings.Encoding.TEncoding;
+    Encoding      = Deltics.Strings.Encoding.Encoding;
+    TEncoding     = Deltics.Strings.Encoding.TEncoding;
 
-    ASCIIString       = Deltics.Strings.Types.ASCIIString;
-    ASCIIChar         = Deltics.Strings.Types.ASCIIChar;
+  const
+    cpAscii    = Deltics.Strings.Encoding.cpAscii;
+    cpUtf8     = Deltics.Strings.Encoding.cpUtf8;
+    cpUtf16    = Deltics.Strings.Encoding.cpUtf16;
+    cpUtf16Le  = Deltics.Strings.Encoding.cpUtf16Le;
+    cpUtf32    = Deltics.Strings.Encoding.cpUtf32;
+    cpUtf32Le  = Deltics.Strings.Encoding.cpUtf32Le;
 
-    Utf8Char          = Deltics.Strings.Types.Utf8Char;
-    PUtf8Char         = Deltics.Strings.Types.PUtf8Char;
 
-    Utf32Char         = Deltics.Strings.Types.Utf32Char;
-    PUtf32Char        = Deltics.Strings.Types.PUtf32Char;
-
-    Utf8String        = Deltics.Strings.Types.Utf8String;
-    Utf32Array        = Deltics.Strings.Types.Utf32Array;
-    UnicodeString     = Deltics.Strings.Types.UnicodeString;
-
-    AnsiCharSet       = Deltics.Strings.Types.AnsiCharSet;
-    TAnsiStringList   = Deltics.Strings.StringList.TAnsiStringList;
-    TAnsiStrings      = Deltics.Strings.StringList.TAnsiStrings;
-
-    TWideStringList   = Deltics.Strings.StringList.TWideStringList;
-    TWideStrings      = Deltics.Strings.StringList.TWideStrings;
-
-    CharIndexArray    = Deltics.Strings.Types.CharIndexArray;
-
-    AnsiStringArray     = Deltics.Strings.Types.AnsiStringArray;
-    StringArray         = Deltics.Strings.Types.StringArray;
-    UnicodeStringArray  = Deltics.Strings.Types.UnicodeStringArray;
-    Utf8StringArray     = Deltics.Strings.Types.Utf8StringArray;
-    WideStringArray     = Deltics.Strings.Types.WideStringArray;
-
+  type
     TCaseSensitivity        = Deltics.Strings.Types.TCaseSensitivity;
     TCompareResult          = Deltics.Strings.Types.TCompareResult;
     TContainNeeds           = Deltics.Strings.Types.TContainNeeds;
@@ -105,39 +86,11 @@ interface
     TStringProcessingFlag   = Deltics.Strings.Types.TStringProcessingFlag;
     TStringScope            = Deltics.Strings.Types.TStringScope;
 
-    TStringBuilder            = Deltics.Strings.StringBuilder.TStringBuilder;
-    TStringList               = Deltics.Strings.StringList.TStringList;
-    IStringList               = Deltics.Strings.StringList.IStringList;
-    TComInterfacedStringList  = Deltics.Strings.StringList.TComInterfacedStringList;
-
-    TStringTemplate           = Deltics.Strings.Templates.TStringTemplate;
-
-    TUnicodeSurrogateStrategy = Deltics.Strings.Types.TUnicodeSurrogateStrategy;
-
-    EUnicode                  = Deltics.Strings.Types.EUnicode;
-    EUnicodeDataloss          = Deltics.Strings.Types.EUnicodeDataloss;
-    EUnicodeRequiresMultibyte = Deltics.Strings.Types.EUnicodeRequiresMultibyte;
-    EUnicodeOrphanSurrogate   = Deltics.Strings.Types.EUnicodeOrphanSurrogate;
+    SurrogateAction         = Deltics.Strings.Types.SurrogateAction;
 
     Utils = Deltics.Strings.Utils.Utils;
 
-    TBOM        = Deltics.Strings.Types.BOM.TBOM;
-
-    Utf8Bom     = Deltics.Strings.Types.BOM.Utf8Bom;
-    Utf16Bom    = Deltics.Strings.Types.BOM.Utf16Bom;
-    Utf16LEBom  = Deltics.Strings.Types.BOM.Utf16LEBom;
-    Utf32Bom    = Deltics.Strings.Types.BOM.Utf32Bom;
-    Utf32LEBom  = Deltics.Strings.Types.BOM.Utf32LEBom;
-
-
   const
-    cpUtf32LE  = Deltics.Strings.Encoding.cpUtf32LE;
-    cpUtf32    = Deltics.Strings.Encoding.cpUtf32;
-    cpUtf16LE  = Deltics.Strings.Encoding.cpUtf16LE;
-    cpUtf16    = Deltics.Strings.Encoding.cpUtf16;
-    cpASCII    = Deltics.Strings.Encoding.cpASCII;
-    cpUtf8     = Deltics.Strings.Encoding.cpUtf8;
-
     csCaseSensitive  = Deltics.Strings.Types.csCaseSensitive;
     csIgnoreCase     = Deltics.Strings.Types.csIgnoreCase;
 
@@ -168,10 +121,10 @@ interface
     ssFirst   = Deltics.Strings.Types.ssFirst;
     ssLast    = Deltics.Strings.Types.ssLast;
 
-    ssError   = Deltics.Strings.Types.ssError;   // An EUnicodeOrphanSurrogate exception is raised if a string operation results in an orphan surrogate
-    ssIgnore  = Deltics.Strings.Types.ssIgnore;  // String operations may result in orphan surrogates
+    saError   = Deltics.Strings.Types.saError;   // An EUnicodeOrphanSurrogate exception is raised if a string operation results in an orphan surrogate
+    saIgnore  = Deltics.Strings.Types.saIgnore;  // String operations may result in orphan surrogates
 
-    ssAvoid   = Deltics.Strings.Types.ssAvoid;   // String operations will ensure that surrogates are not orphaned
+    saDelete  = Deltics.Strings.Types.saDelete;  // String operations will ensure that surrogates are not orphaned
 
 
     dupAccept = Classes.dupAccept;
@@ -299,22 +252,17 @@ interface
       property Count: Integer read get_Count;
       property IsEmpty: Boolean read get_IsEmpty;
     end;
+  {$endif}
 
-
-    TStringListHelper = class helper for TStringList
-    public
-      procedure Add(const aArray: StringArray); overload;
-      function AsArray: StringArray;
-    end;
-
-  {$endif TYPE_HELPERS}
-
-  const
-    BytesPerChar  = {$ifdef UNICODE} 2 {$else} 1 {$endif};
 
   var
-    AllowUnicodeDataLoss      : Boolean = TRUE;
-    UnicodeSurrogateStrategy  : TUnicodeSurrogateStrategy;
+    AllowUnicodeDataLoss: Boolean = FALSE;
+
+  type
+    EUnicode                  = class(Exception);
+    EUnicodeRequiresMultibyte = class(EUnicode);
+    EUnicodeDataloss          = class(EUnicode);
+
 
 
 implementation
@@ -489,23 +437,21 @@ implementation
   var
     usedDefault: BOOL;
   begin
-    if aChar = #0 then
-    begin
-      result := #0;
-      EXIT;
+    case aChar of
+      #$0000..#$007f  : result := AnsiChar(aChar);
+    else
+      usedDefault := FALSE;
+
+      if (WideCharToMultiByte(CP_ACP, 0, @aChar, 0, NIL, 0, '?', @usedDefault) > 1) then
+//       or (usedDefault and NOT AllowUnicodeDataLoss) then
+        raise EUnicodeRequiresMultibyte.Create('Unicode character ''' + aChar + ''' does not map to a single-byte character in the default Ansi codepage');
+
+      if WideCharToMultiByte(CP_ACP, 0, @aChar, 1, @result, 1, '?', @usedDefault) = 0 then
+        raise EUnicode.Create('Unexpected error converting Unicode character ''' + aChar + ''' to the default Ansi codepage');
+
+      if usedDefault and NOT AllowUnicodeDataLoss then
+        raise EUnicodeDataloss.Create('Unicode character ''' + aChar + ''' is not supported in the current Ansi codepage');
     end;
-
-    usedDefault := FALSE;
-
-    if (WideCharToMultiByte(CP_ACP, 0, @aChar, 0, NIL, 0, '?', @usedDefault) > 1)
-     or (usedDefault and NOT AllowUnicodeDataLoss) then
-      raise EUnicodeRequiresMultibyte.Create('Unicode character ''' + aChar + ''' does not map to a single-byte character in the default Ansi codepage');
-
-    if WideCharToMultiByte(CP_ACP, 0, @aChar, 1, @result, 1, '?', @usedDefault) = 0 then
-      raise EUnicode.Create('Unexpected error converting Unicode character ''' + aChar + ''' to the default Ansi codepage');
-
-    if usedDefault and NOT AllowUnicodeDataLoss then
-      raise EUnicodeDataloss.Create('Unicode character ''' + aChar + ''' is not supported in the current Ansi codepage');
   end;
 
 
@@ -514,15 +460,21 @@ implementation
     len: Integer;
     usedDefault: BOOL;
   begin
-    len := WideCharToMultiByte(CP_ACP, 0, @aChar, 1, NIL, 0, '?', NIL);
+    case aChar of
+      #$0000..#$007f  : aMBCS := AnsiChar(aChar);
+    else
+      len := WideCharToMultiByte(CP_ACP, 0, @aChar, 1, NIL, 0, '?', NIL);
 
-    SetLength(aMBCS, len);
+      SetLength(aMBCS, len);
 
-    if WideCharToMultiByte(CP_ACP, 0, @aChar, 1, PAnsiChar(aMBCS), len, '?', @usedDefault) = 0 then
-      raise EUnicode.Create('Unexpected error converting Unicode character ''' + aChar + ''' to the default Ansi codepage');
+      usedDefault := FALSE;
 
-    if usedDefault and NOT AllowUnicodeDataLoss then
-      raise EUnicodeDataloss.Create('Unicode character ''' + aChar + ''' is not supported in the current Ansi codepage');
+      if WideCharToMultiByte(CP_ACP, 0, @aChar, 1, PAnsiChar(aMBCS), len, '?', @usedDefault) = 0 then
+        raise EUnicode.Create('Unexpected error converting Unicode character ''' + aChar + ''' to the default Ansi codepage');
+
+      if usedDefault and NOT AllowUnicodeDataLoss then
+        raise EUnicodeDataloss.Create('Unicode character ''' + aChar + ''' is not supported in the current Ansi codepage');
+    end;
   end;
 
 
@@ -848,35 +800,9 @@ implementation
     for i := 0 to Pred(wedge) do
       self[aIndex + i] := aValues[i];
   end;
+{$endif}
 
 
-
-
-
-  procedure TStringListHelper.Add(const aArray: StringArray);
-  var
-    i: Integer;
-  begin
-    for i := 0 to High(aArray) do
-      Add(aArray[i]);
-  end;
-
-
-
-  function TStringListHelper.AsArray: StringArray;
-  var
-    i: Integer;
-  begin
-    SetLength(result, Count);
-
-    for i := 0 to Pred(Count) do
-      result[i] := self[i];
-  end;
-
-
-
-
-{$endif TYPE_HELPERS}
 
 
 end.

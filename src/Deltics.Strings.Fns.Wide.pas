@@ -9,8 +9,8 @@ interface
 
   uses
     Windows,
+    Deltics.Strings.Lists.Wide,
     Deltics.Strings.Parsers.Wide,
-    Deltics.Strings.StringList,
     Deltics.Strings.Types;
 
   type
@@ -28,7 +28,8 @@ interface
 //      class function Replace(aScope: TStringScope; const aString, aFindStr, aReplaceStr: UnicodeString; var aCount: Integer; aCaseMode: TCaseSensitivity): UnicodeString; overload;
 
     public
-      class function Parse: WideParserClass; {$ifdef InlineMethods} inline; {$endif}
+      // Parser
+      class function Parse: WideParserClass;
 
       // Transcoding
       class function Encode(const aString: String): UnicodeString;
@@ -429,8 +430,7 @@ interface
       class function Snakecase(const aString: UnicodeString): UnicodeString;
       class function Startcase(const aString: UnicodeString): UnicodeString;
       class function Titlecase(const aString: UnicodeString): UnicodeString; overload;
-      class function Titlecase(const aString: UnicodeString; const aLower: WideStringArray): UnicodeString; overload;
-      class function Titlecase(const aString: UnicodeString; aLower: TWideStringList): UnicodeString; overload;
+      class function Titlecase(const aString: UnicodeString; const aLower: TWideStringList): UnicodeString; overload;
       class function Uppercase(aChar: WideChar): WideChar; overload;
       class function Uppercase(const aString: UnicodeString): UnicodeString; overload;
     end;
@@ -446,8 +446,8 @@ implementation
     Deltics.Memory,
     Deltics.ReverseBytes,
     Deltics.Strings,
-    Deltics.Strings.Encoding,
-    Deltics.Strings.Utils;
+    Deltics.Strings.Utils,
+    Deltics.Unicode;
 
 
   const
@@ -464,38 +464,38 @@ implementation
     LowercaseWordsForTitlecase: TWideStringList = NIL;
 
 
-  function LoSurrogateStrategy(aChar: WideChar): TUnicodeSurrogateStrategy; overload;
+  function WhenLoSurrogate(const aChar: WideChar; const aAction: SurrogateAction): SurrogateAction; overload;
   begin
-    result := UnicodeSurrogateStrategy;
-    if (result <> ssIgnore) and NOT Wide.IsLoSurrogate(aChar) then
-      result := ssIgnore;
+    result := aAction;
+    if (result <> saIgnore) and NOT Unicode.IsLoSurrogate(aChar) then
+      result := saIgnore;
   end;
 
-  function LoSurrogateStrategy(const aString: UnicodeString; aIndex: Integer): TUnicodeSurrogateStrategy; overload;
+  function WhenLoSurrogate(const aString: UnicodeString; const aIndex: Integer; const aAction: SurrogateAction): SurrogateAction; overload;
   var
     c: WideChar;
   begin
-    result := UnicodeSurrogateStrategy;
-    if (result <> ssIgnore) and (   NOT Wide.HasIndex(aString, aIndex, c)
-                                 or NOT Wide.IsLoSurrogate(c)) then
-      result := ssIgnore;
+    result := aAction;
+    if (result <> saIgnore) and (   NOT Wide.HasIndex(aString, aIndex, c)
+                                 or NOT Unicode.IsLoSurrogate(c)) then
+      result := saIgnore;
   end;
 
-  function HiSurrogateStrategy(aChar: WideChar): TUnicodeSurrogateStrategy; overload;
+  function WhenHiSurrogate(const aChar: WideChar; const aAction: SurrogateAction): SurrogateAction; overload;
   begin
-    result := UnicodeSurrogateStrategy;
-    if (result <> ssIgnore) and NOT Wide.IsHiSurrogate(aChar) then
-      result := ssIgnore;
+    result := aAction;
+    if (result <> saIgnore) and NOT Unicode.IsHiSurrogate(aChar) then
+      result := saIgnore;
   end;
 
-  function HiSurrogateStrategy(const aString: UnicodeString; aIndex: Integer): TUnicodeSurrogateStrategy; overload;
+  function WhenHiSurrogate(const aString: UnicodeString; const aIndex: Integer; const aAction: SurrogateAction): SurrogateAction; overload;
   var
     c: WideChar;
   begin
-    result := UnicodeSurrogateStrategy;
-    if (result <> ssIgnore) and (   NOT Wide.HasIndex(aString, aIndex, c)
-                                 or NOT Wide.IsHiSurrogate(c)) then
-      result := ssIgnore;
+    result := aAction;
+    if (result <> saIgnore) and (   NOT Wide.HasIndex(aString, aIndex, c)
+                                 or NOT Unicode.IsHiSurrogate(c)) then
+      result := saIgnore;
   end;
 
 
@@ -924,7 +924,11 @@ implementation
 
 
 
-
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
+  class function WideFn.Parse: WideParserClass;
+  begin
+    result := WideParser;
+  end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
@@ -1123,27 +1127,19 @@ implementation
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class function WideFn.FromBuffer(aBuffer: PWideChar;
                                    aLen: Integer): UnicodeString;
-  var
-    enc: TEncoding;
-    resultCharCount: Integer;
   begin
     Require('aLen', aLen).IsNotLessThan(-1);
 
     if aLen = -1 then
       aLen := Len(aBuffer);
 
-    SetLength(result, 0);
+    SetLength(result, aLen);
     if aLen = 0 then
       EXIT;
 
-    Encoding.Identify(aBuffer^, aLen, enc);
-    if NOT Assigned(enc) or NOT enc.IsUtf16 then
-      raise Exception.Create('Not a valid UTF16 encoded buffer');
-
-    resultCharCount := enc.GetCharCount(aBuffer^, aLen);
-    SetLength(result, resultCharCount);
-
-    enc.Decode(aBuffer, aLen, @result[1], resultCharCount);
+    Memory.Copy(aBuffer, aLen, Pointer(result));
+    while (result[aLen] = #$0000) do
+      SetLength(result, Length(result) - 1);
   end;
 
 
@@ -3065,13 +3061,6 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WideFn.Parse: WideParserClass;
-  begin
-    result := WideParser;
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class function WideFn.Split(const aString: UnicodeString;
                               const aChar: AnsiChar;
                               var   aLeft, aRight: UnicodeString): Boolean;
@@ -3232,13 +3221,13 @@ implementation
   begin
     Require('aIndex', aIndex).IsValidIndexForString(aString);
 
-    case LoSurrogateStrategy(aString, aIndex + 1) of
-      ssAvoid : System.Delete(aString, aIndex, 2);
-      ssError : raise EUnicodeOrphanSurrogate.CreateFmt(ERRFMT_ORPHAN_DELETIONLEAVES_N, [aIndex + 1]);
+    case WhenLoSurrogate(aString, aIndex + 1, saDelete) of
+      saDelete : System.Delete(aString, aIndex, 2);
+      saError : raise EUnicodeOrphanSurrogate.CreateFmt(ERRFMT_ORPHAN_DELETIONLEAVES_N, [aIndex + 1]);
     else
-      case HiSurrogateStrategy(aString, aIndex - 1) of
-        ssAvoid : System.Delete(aString, aIndex - 1, 2);
-        ssError : raise EUnicodeOrphanSurrogate.CreateFmt(ERRFMT_ORPHAN_DELETIONLEAVES_N, [aIndex - 1]);
+      case WhenHiSurrogate(aString, aIndex - 1, saDelete) of
+        saDelete : System.Delete(aString, aIndex - 1, 2);
+        saError : raise EUnicodeOrphanSurrogate.CreateFmt(ERRFMT_ORPHAN_DELETIONLEAVES_N, [aIndex - 1]);
       else
         System.Delete(aString, aIndex, 1);
       end;
@@ -3258,14 +3247,14 @@ implementation
       0 : { NO-OP };
       1 : Delete(aString, aIndex);
     else
-      case LoSurrogateStrategy(aString, aIndex) of
-        ssAvoid : Dec(aIndex);
-        ssError : raise EUnicodeOrphanSurrogate.CreateFmt(ERRFMT_ORPHAN_DELETIONLEAVES_N, [aIndex - 1]);
+      case WhenLoSurrogate(aString, aIndex, saDelete) of
+        saDelete : Dec(aIndex);
+        saError : raise EUnicodeOrphanSurrogate.CreateFmt(ERRFMT_ORPHAN_DELETIONLEAVES_N, [aIndex - 1]);
       end;
 
-      case HiSurrogateStrategy(aString, aIndex + aLength - 1) of
-        ssAvoid : Inc(aLength);
-        ssError : raise EUnicodeOrphanSurrogate.CreateFmt(ERRFMT_ORPHAN_DELETIONLEAVES_N, [aIndex + aLength]);
+      case WhenHiSurrogate(aString, aIndex + aLength - 1, saDelete) of
+        saDelete : Inc(aLength);
+        saError : raise EUnicodeOrphanSurrogate.CreateFmt(ERRFMT_ORPHAN_DELETIONLEAVES_N, [aIndex + aLength]);
       end;
 
       System.Delete(aString, aIndex, aLength);
@@ -3284,14 +3273,14 @@ implementation
     if aIndex > aEndIndex then
       Exchange(aIndex, aEndIndex);
 
-    case LoSurrogateStrategy(aString, aIndex) of
-      ssAvoid : Dec(aIndex);
-      ssError : raise EUnicodeOrphanSurrogate.CreateFmt(ERRFMT_ORPHAN_DELETIONLEAVES_N, [aIndex - 1]);
+    case WhenLoSurrogate(aString, aIndex, saDelete) of
+      saDelete : Dec(aIndex);
+      saError : raise EUnicodeOrphanSurrogate.CreateFmt(ERRFMT_ORPHAN_DELETIONLEAVES_N, [aIndex - 1]);
     end;
 
-    case HiSurrogateStrategy(aString, aEndIndex) of
-      ssAvoid : Inc(aEndIndex);
-      ssError : raise EUnicodeOrphanSurrogate.CreateFmt(ERRFMT_ORPHAN_DELETIONLEAVES_N, [aEndIndex + 1]);
+    case WhenHiSurrogate(aString, aEndIndex, saDelete) of
+      saDelete : Inc(aEndIndex);
+      saError : raise EUnicodeOrphanSurrogate.CreateFmt(ERRFMT_ORPHAN_DELETIONLEAVES_N, [aEndIndex + 1]);
     end;
 
     System.Delete(aString, aIndex, aEndIndex - aIndex + 1);
@@ -3527,10 +3516,10 @@ implementation
 
     if len > 0 then
     begin
-      case LoSurrogateStrategy(PWideChar(aString)[aCount]) of
-        ssIgnore  : System.Delete(aString, 1, aCount);
-        ssAvoid   : System.Delete(aString, 1, aCount + 1);
-        ssError   : raise EUnicodeOrphanSurrogate.CreateFmt(ERRFMT_ORPHAN_DELETIONLEAVES_N, [aCount + 1]);
+      case WhenLoSurrogate(PWideChar(aString)[aCount], saDelete) of
+        saIgnore  : System.Delete(aString, 1, aCount);
+        saDelete   : System.Delete(aString, 1, aCount + 1);
+        saError   : raise EUnicodeOrphanSurrogate.CreateFmt(ERRFMT_ORPHAN_DELETIONLEAVES_N, [aCount + 1]);
       end;
     end
     else
@@ -3568,9 +3557,9 @@ implementation
 
     SetLength(aString, len - aCount);
 
-    case HiSurrogateStrategy(aString, len) of
-      ssAvoid : SetLength(aString, len - 1);
-      ssError : raise EUnicodeOrphanSurrogate.CreateFmt(ERRFMT_ORPHAN_DELETIONLEAVES_N, [len - 1]);
+    case WhenHiSurrogate(aString, len, saDelete) of
+      saDelete : SetLength(aString, len - 1);
+      saError : raise EUnicodeOrphanSurrogate.CreateFmt(ERRFMT_ORPHAN_DELETIONLEAVES_N, [len - 1]);
     end;
   end;
 
@@ -6347,21 +6336,13 @@ implementation
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class function WideFn.Titlecase(const aString: UnicodeString): UnicodeString;
   begin
-    result := Titlecase(aString, LowercaseWordsForTitlecase)
+    result := Titlecase(aString, LowercaseWordsForTitlecase);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class function WideFn.Titlecase(const aString: UnicodeString;
-                                  const aLower: WideStringArray): UnicodeString;
-  begin
-    // TODO:
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WideFn.Titlecase(const aString: UnicodeString;
-                                        aLower: TWideStringList): UnicodeString;
+                                  const aLower: TWideStringList): UnicodeString;
   var
     i: Integer;
     pieces: WideStringArray;

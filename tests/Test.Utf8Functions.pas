@@ -24,7 +24,7 @@ implementation
   uses
     SysUtils,
     Deltics.Strings,
-    Test.Consts;
+    Consts;
 
 
   {-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - --}

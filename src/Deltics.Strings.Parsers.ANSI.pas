@@ -1,6 +1,5 @@
 
-{$i deltics.strings.inc}
-
+{$i deltics.strings.parsers.inc}
 
   unit Deltics.Strings.Parsers.Ansi;
 

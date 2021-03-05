@@ -76,7 +76,7 @@ implementation
   uses
     Deltics.Contracts,
     Deltics.Strings,
-    Test.Consts;
+    Consts;
 
 
 { TTranscodingTests ------------------------------------------------------------------------------ }

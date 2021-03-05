@@ -1,5 +1,5 @@
 
-{$i deltics.strings.inc}
+{$i deltics.strings.encoding.inc}
 
   unit Deltics.Strings.Encoding;
 
@@ -9,7 +9,7 @@ interface
   uses
     Classes,
     SysUtils,
-    Deltics.Strings.Types;
+    Deltics.Unicode;
 
 
   type
@@ -17,12 +17,12 @@ interface
 
 
   const
-    cpUtf32LE  = 12000;
-    cpUtf32    = 12001;
-    cpUtf16LE  = 1200;
-    cpUtf16    = 1201;
-    cpASCII    = 20217;
+    cpAscii    = 20217;
     cpUtf8     = 65001;
+    cpUtf16    = 1201;
+    cpUtf16Le  = 1200;
+    cpUtf32    = 12001;
+    cpUtf32Le  = 12000;
 
 
   type
@@ -41,15 +41,15 @@ interface
       class function Utf32: TEncoding;
       class function Utf32LE: TEncoding;
       class function ForCodepage(const aCodepage: TCodepage): TEncoding;
-      class function Identify(const aBOM: TBOM; var aEncoding: TEncoding): Boolean; overload;
+      class function Identify(const aBom: TBom; var aEncoding: TEncoding): Boolean; overload;
       class function Identify(const aStream: TStream; var aEncoding: TEncoding): Boolean; overload;
       class function Identify(const aBytes; const aNumBytes: Integer; var aEncoding: TEncoding): Boolean; overload;
 
     private
-      fBom: TBOM;
+      fBom: TBom;
       fCodepage: TCodepage;
     public
-      property Bom: TBOM read fBom;
+      property Bom: TBom read fBom;
       property Codepage: TCodepage read fCodepage;
     end;
 
@@ -64,7 +64,7 @@ interface
     protected
       constructor Create; overload; virtual; abstract;
       constructor Create(const aCodePage: Cardinal); overload;
-      constructor Create(const aCodePage: Cardinal; const aBom: TBOM); overload;
+      constructor Create(const aCodePage: Cardinal; const aBom: TBom); overload;
     public
       function GetByteCount(const aChars: PWIDEChar; const aNumChars: Integer): Integer; virtual; abstract;
       function GetCharCount(const aBytes; const aNumBytes: Integer): Integer; virtual; abstract;
@@ -230,19 +230,19 @@ implementation
   end;
 
 
-  class function Encoding.Identify(const aBom: TBOM;
+  class function Encoding.Identify(const aBom: TBom;
                                    var   aEncoding: TEncoding): Boolean;
 
     function HasBom(const aTestEncoding: TEncoding): Boolean;
     var
-      encBom: TBOM;
+      encBom: TBom;
     begin
       encBom := aTestEncoding.Bom;
 
-      if (Length(aBOM) < Length(encBOM)) then
+      if (Length(aBom) < Length(encBOM)) then
         result := FALSE
       else
-        result := CompareMem(@aBOM[0], @encBOM[0], Length(encBOM));
+        result := CompareMem(@aBom[0], @encBOM[0], Length(encBOM));
 
       if result then
         aEncoding := aTestEncoding;
@@ -256,7 +256,7 @@ implementation
     //  big enough then we know we will not be able to identify any
     //  encoding from it
 
-    if (Length(aBOM) < 2) then
+    if (Length(aBom) < 2) then
       EXIT;
 
     result := TRUE;
@@ -290,11 +290,11 @@ implementation
     //  encoding to be used.  If the caller needs certainty or wishes to ignore the
     //  heuristic encoding then they can choose to do so.
 
-    if (aBOM[0] <> 0) and (aBOM[1] = 0) then
+    if (aBom[0] <> 0) and (aBom[1] = 0) then
       aEncoding := Encoding.Utf16LE
-    else if (aBOM[0] = 0) and (aBOM[1] <> 0) then
+    else if (aBom[0] = 0) and (aBom[1] <> 0) then
       aEncoding := Encoding.Utf16
-    else if (aBOM[0] <> 0) and (aBOM[1] <> 0) then
+    else if (aBom[0] <> 0) and (aBom[1] <> 0) then
       aEncoding := Encoding.Utf8;
   end;
 
@@ -303,7 +303,7 @@ implementation
                                    var   aEncoding: TEncoding): Boolean;
   var
     restorePos: Int64;
-    bom: TBOM;
+    bom: TBom;
     bytesRead: Integer;
   begin
     restorePos := aStream.Position;
@@ -351,7 +351,7 @@ implementation
                                    const aNumBytes: Integer;
                                    var   aEncoding: TEncoding): Boolean;
   var
-    bom: TBOM;
+    bom: TBom;
   begin
     result := (aNumBytes >= 2);
     if NOT result then
@@ -383,7 +383,7 @@ implementation
 
 
 
-  constructor TEncoding.Create(const aCodePage: Cardinal; const aBom: TBOM);
+  constructor TEncoding.Create(const aCodePage: Cardinal; const aBom: TBom);
   begin
     Create(aCodepage);
 

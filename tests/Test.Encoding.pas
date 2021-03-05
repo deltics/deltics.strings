@@ -30,7 +30,8 @@ implementation
   uses
     Deltics.Memory,
     Deltics.ReverseBytes,
-    Deltics.Strings;
+    Deltics.Strings,
+    Deltics.Unicode;
 
 
 { Encoding }

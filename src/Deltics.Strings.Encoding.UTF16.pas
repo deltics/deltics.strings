@@ -1,6 +1,5 @@
 
-{$i deltics.strings.inc}
-
+{$i deltics.strings.encoding.inc}
 
   unit Deltics.Strings.Encoding.Utf16;
 
@@ -37,7 +36,7 @@ implementation
   uses
     Windows,
     Deltics.ReverseBytes,
-    Deltics.Strings.Types;
+    Deltics.Unicode;
 
 
 { TUTF16LEEncoding }

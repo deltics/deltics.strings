@@ -1,6 +1,5 @@
 
-{$i deltics.strings.inc}
-
+{$i deltics.strings.encoding.inc}
 
   unit Deltics.Strings.Encoding.Ascii;
 
