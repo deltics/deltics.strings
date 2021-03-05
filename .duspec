@@ -19,7 +19,8 @@
     "deltics.math:1.0.0",
     "deltics.memory:1.0.0-beta.14",
     "deltics.multicast:1.0.0",
-    "deltics.unicode:1.0.0-beta.27"
+    "deltics.stringtypes:1.0.0-beta.3",
+    "deltics.unicode:1.0.0-beta.29"
   ],
   "source":{
       "files":[
