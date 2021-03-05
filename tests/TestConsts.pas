@@ -1,5 +1,5 @@
 
-  unit Consts;
+  unit TestConsts;
 
 interface
 

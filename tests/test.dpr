@@ -35,7 +35,7 @@ uses
   Deltics.Strings.StringBuilder in '..\src\Deltics.Strings.StringBuilder.pas',
   Deltics.Strings.Types in '..\src\Deltics.Strings.Types.pas',
   Deltics.Strings.Utils in '..\src\Deltics.Strings.Utils.pas',
-  Consts in 'Consts.pas',
+  TestConsts in 'TestConsts.pas',
   Test.Runtime in 'Test.Runtime.pas',
   Test.AllocRoutines in 'Test.AllocRoutines.pas',
   Test.Transcoding in 'Test.Transcoding.pas',
