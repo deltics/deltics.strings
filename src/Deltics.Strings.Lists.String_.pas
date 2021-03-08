@@ -54,10 +54,9 @@ interface
   type
     TStrings    = Classes.TStrings;
     TStringList = class;
-    StringArray = Deltics.Strings.Types.StringArray;
 
 
-    IStringList = interface
+    IStringList = interface(IStringListBase)
     ['{7623F313-9BC7-4D9C-9F9F-0A8C8E650874}']
       function get_AsArray: StringArray;
       function get_Capacity: Integer;
@@ -75,9 +74,9 @@ interface
       procedure set_Value(const aName: String; const aValue: String);
 
       function Add(const aString: String): Integer; overload;
-      procedure Add(const aStrings: IStringList); overload;
+      procedure Add(const aList: IStringList); overload;
       procedure Add(const aStrings: TStrings); overload;
-      procedure Add(const aStrings: array of String); overload;
+      procedure Add(const aArray: StringArray); overload;
       procedure Clear;
       function Clone: IStringList;
       function Contains(const aString: String): Boolean;
@@ -106,7 +105,8 @@ interface
     end;
 
 
-    TStringlist = class(Classes.TStringList)
+
+    TStringList = class(Classes.TStringList)
     {$ifdef DELPHI7}
     private
       fOwnsObjects: Boolean;
@@ -117,7 +117,10 @@ interface
     private
       function get_Integer(const aIndex: Integer): Integer;
     public
+      class function CreateManaged: IStringList; overload;
       function Add(const aString: String): Integer; reintroduce; overload; override;
+      procedure Add(const aArray: StringArray); reintroduce; overload;
+      procedure Add(const aStrings: TStrings); reintroduce; overload;
       function Add(const aString: String; const aInteger: Integer): Integer; reintroduce; overload;
       function Contains(const aString: String): Boolean;
       function ContainsName(const aName: String): Boolean;
@@ -127,9 +130,7 @@ interface
 
 
     TComInterfacedStringList = class(TComInterfacedObject, IStringList)
-    private
-      fList: TStringList;
-      fUnique: Boolean;
+    protected // IStringList
       function get_AsArray: StringArray;
       function get_Capacity: Integer;
       function get_Count: Integer;
@@ -144,10 +145,11 @@ interface
       procedure set_Sorted(const aValue: Boolean);
       procedure set_Unique(const aValue: Boolean);
       procedure set_Value(const aName: String; const aValue: String);
+    public
       function Add(const aString: String): Integer; overload;
-      procedure Add(const aStrings: IStringList); overload;
+      procedure Add(const aList: IStringList); overload;
       procedure Add(const aStrings: TStrings); overload;
-      procedure Add(const aStrings: array of String); overload;
+      procedure Add(const aArray: StringArray); overload;
       procedure Clear;
       function Clone: IStringList;
       function Contains(const aString: String): Boolean;
@@ -163,11 +165,14 @@ interface
       procedure Insert(const aIndex: Integer; const aStrings: TStrings); overload;
       procedure LoadFromFile(const aFilename: String);
       procedure SaveToFile(const aFilename: String);
+
+    private
+      fList: TStringList;
+      fUnique: Boolean;
     public
       constructor Create;
       destructor Destroy; override;
     end;
-
 
 
 
@@ -182,14 +187,40 @@ implementation
 { TStringList ------------------------------------------------------------------------------------ }
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  function TStringlist.Add(const aString: String): Integer;
+  function TStringList.Add(const aString: String): Integer;
   begin
     result := inherited Add(aString);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  function TStringlist.Add(const aString: String;
+  procedure TStringList.Add(const aArray: StringArray);
+  var
+    i: Integer;
+  begin
+    if Capacity - Count < Length(aArray) then
+      Capacity := Count + Length(aArray);
+
+    for i := 0 to High(aArray) do
+      inherited Add(aArray[i]);
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
+  procedure TStringList.Add(const aStrings: TStrings);
+  var
+    i: Integer;
+  begin
+    if Capacity - Count < aStrings.Count then
+      Capacity := Count + aStrings.Count;
+
+    for i := 0 to Pred(aStrings.Count) do
+      inherited Add(aStrings[i]);
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
+  function TStringList.Add(const aString: String;
                            const aInteger: Integer): Integer;
   begin
     result := AddObject(aString, TObject(aInteger));
@@ -197,14 +228,14 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  function TStringlist.Contains(const aString: String): Boolean;
+  function TStringList.Contains(const aString: String): Boolean;
   begin
     result := (IndexOf(aString) <> -1);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  function TStringlist.ContainsName(const aName: String): Boolean;
+  function TStringList.ContainsName(const aName: String): Boolean;
   begin
     result := IndexOfName(aName) <> -1;
   end;
@@ -212,6 +243,13 @@ implementation
 
 
 
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
+  class function TStringlist.CreateManaged: IStringList;
+  begin
+    result := TComInterfacedStringList.Create;
+  end;
 
 
 {$ifdef DELPHI7}
@@ -255,7 +293,7 @@ implementation
 
 
 
-{ TComInterfacedStringList ----------------------------------------------------------------------------- }
+{ TComInterfacedStringList ----------------------------------------------------------------------- }
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
   constructor TComInterfacedStringList.Create;
@@ -280,9 +318,9 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
-  procedure TComInterfacedStringList.Add(const aStrings: IStringList);
+  procedure TComInterfacedStringList.Add(const aList: IStringList);
   begin
-    Add(aStrings.List);
+    Add(aList.List);
   end;
 
 
@@ -300,18 +338,15 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
-  procedure TComInterfacedStringList.Add(const aStrings: array of String);
+  procedure TComInterfacedStringList.Add(const aArray: StringArray);
   var
     i: Integer;
-    strings: IStringList;
   begin
-    strings := TComInterfacedStringList.Create;
-    strings.Capacity := Length(aStrings);
+    if fList.Capacity - fList.Count < Length(aArray) then
+      fList.Capacity := fList.Count + Length(aArray);
 
-    for i := 0 to High(aStrings) do
-      strings.Add(aStrings[i]);
-
-    Add(strings);
+    for i := 0 to High(aArray) do
+      fList.Add(aArray[i]);
   end;
 
 

@@ -1,7 +1,7 @@
 {
   * X11 (MIT) LICENSE *
 
-  Copyright © 2014 Jolyon Smith
+  Copyright © 2020 Jolyon Smith
 
   Permission is hereby granted, free of charge, to any person obtaining a copy of
    this software and associated documentation files (the "Software"), to deal in
@@ -51,242 +51,138 @@ interface
 
 
   type
-    TALTStrings = class;
-    TALTStringList = class;
-
-  {$ifdef UNICODE}
-    TWIDEStrings    = Classes.TStrings;
-    TWIDEStringList = Classes.TStringList;
-
-    TANSIStrings    = TALTStrings;
-    TANSIStringList = TALTStringList;
-  {$else}
-    TANSIStrings    = Classes.TStrings;
-    TANSIStringList = Classes.TStringList;
-
-    TWIDEStrings    = TALTStrings;
-    TWIDEStringList = TALTStringList;
-  {$endif}
-
-    TStringList = class;
-    StringArray = Deltics.Strings.Types.StringArray;
+    TWideStrings            = class;
+    TWideStringList         = class;
+    TWideStringsEnumerator  = class;
 
 
-    IStringList = interface
-    ['{7623F313-9BC7-4D9C-9F9F-0A8C8E650874}']
-      function get_AsArray: StringArray;
+    TWideStringListSortCompareFn = function(List: TWideStrings; Index1, Index2: Integer): Integer;
+
+    PWideStringItem = ^TWideStringItem;
+    TWideStringItem = record
+      fString: WideString;
+      fObject: TObject;
+    end;
+
+    PWideStringItemList = ^TWideStringItemList;
+    TWideStringItemList = array of TWideStringItem;
+
+
+    IWideStringList = interface(IStringListBase)
+    ['{EB808363-A5DC-4C34-9F44-0F8AE16B4F15}']
+      function get_AsArray: WideStringArray;
       function get_Capacity: Integer;
       function get_Count: Integer;
-      function get_Item(const aIndex: Integer): String;
-      function get_List: TStringList;
-      function get_Name(const aIndex: Integer): String;
+      function get_Item(const aIndex: Integer): WideString;
+      function get_List: TWideStringList;
+      function get_Name(const aIndex: Integer): WideString;
       function get_Sorted: Boolean;
       function get_Unique: Boolean;
-      function get_Value(const aName: String): String;
+      function get_Value(const aName: WideString): WideString;
       procedure set_Capacity(const aValue: Integer);
-      procedure set_Item(const aIndex: Integer; const aValue: String);
+      procedure set_Item(const aIndex: Integer; const aValue: WideString);
       procedure set_Sorted(const aValue: Boolean);
       procedure set_Unique(const aValue: Boolean);
-      procedure set_Value(const aName: String; const aValue: String);
+      procedure set_Value(const aName: WideString; const aValue: WideString);
 
-      function Add(const aString: String): Integer; overload;
-      procedure Add(const aStrings: IStringList); overload;
-      procedure Add(const aStrings: TStrings); overload;
-      procedure Add(const aStrings: array of String); overload;
+      function Add(const aString: WideString): Integer; overload;
+      procedure Add(const aList: IWideStringList); overload;
+      procedure Add(const aStrings: TWideStrings); overload;
+      procedure Add(const aArray: WideStringArray); overload;
       procedure Clear;
-      function Clone: IStringList;
-      function Contains(const aString: String): Boolean;
-      function ContainsName(const aName: String): Boolean;
+      function Clone: IWideStringList;
+      function Contains(const aString: WideString): Boolean;
+      function ContainsName(const aName: WideString): Boolean;
       procedure Delete(const aIndex: Integer); overload;
-      procedure Delete(const aString: String); overload;
+      procedure Delete(const aString: WideString); overload;
     {$ifdef ForInEnumerators}
-      function GetEnumerator: TStringsEnumerator;
+      function GetEnumerator: TWideStringsEnumerator;
     {$endif}
-      function IndexOf(const aString: String): Integer;
-      function IndexOfName(const aName: String): Integer;
-      procedure Insert(const aIndex: Integer; const aString: String); overload;
-      procedure Insert(const aIndex: Integer; const aStrings: TStrings); overload;
+      function IndexOf(const aString: WideString): Integer;
+      function IndexOfName(const aName: WideString): Integer;
+      procedure Insert(const aIndex: Integer; const aString: WideString); overload;
+      procedure Insert(const aIndex: Integer; const aStrings: TWideStrings); overload;
       procedure LoadFromFile(const aFilename: String);
       procedure SaveToFile(const aFilename: String);
 
-      property AsArray: StringArray read get_AsArray;
+      property AsArray: WideStringArray read get_AsArray;
       property Capacity: Integer read get_Capacity write set_Capacity;
       property Count: Integer read get_Count;
-      property Items[const aIndex: Integer]: String read get_Item write set_Item; default;
-      property List: TStringList read get_List;
-      property Names[const aIndex: Integer]: String read get_Name;
+      property Items[const aIndex: Integer]: WideString read get_Item write set_Item; default;
+      property List: TWideStringList read get_List;
+      property Names[const aIndex: Integer]: WideString read get_Name;
       property Sorted: Boolean read get_Sorted write set_Sorted;
       property Unique: Boolean read get_Unique write set_Unique;
-      property Values[const aName: String]: String read get_Value write set_Value;
+      property Values[const aName: WideString]: WideString read get_Value write set_Value;
     end;
 
 
-    TStringlist = class(Classes.TStringList)
-    {$ifdef DELPHI7}
-    private
-      fOwnsObjects: Boolean;
-    public
-      destructor Destroy; override;
-      property OwnsObjects: Boolean read fOwnsObjects write fOwnsObjects;
-    {$endif}
-    private
-      function get_Integer(const aIndex: Integer): Integer;
-    public
-      function Add(const aString: String): Integer; reintroduce; overload; override;
-      function Add(const aString: String; const aInteger: Integer): Integer; reintroduce; overload;
-      function Contains(const aString: String): Boolean;
-      function ContainsName(const aName: String): Boolean;
-      procedure Remove(const aString: String);
-      property Integers[const aIndex: Integer]: Integer read get_Integer;
-    end;
 
-
-    TComInterfacedStringList = class(TComInterfacedObject, IStringList)
-    private
-      fList: TStringList;
-      fUnique: Boolean;
-      function get_AsArray: StringArray;
-      function get_Capacity: Integer;
-      function get_Count: Integer;
-      function get_Item(const aIndex: Integer): String;
-      function get_List: TStringList;
-      function get_Name(const aIndex: Integer): String;
-      function get_Sorted: Boolean;
-      function get_Unique: Boolean;
-      function get_Value(const aName: String): String;
-      procedure set_Capacity(const aValue: Integer);
-      procedure set_Item(const aIndex: Integer; const aValue: String);
-      procedure set_Sorted(const aValue: Boolean);
-      procedure set_Unique(const aValue: Boolean);
-      procedure set_Value(const aName: String; const aValue: String);
-      function Add(const aString: String): Integer; overload;
-      procedure Add(const aStrings: IStringList); overload;
-      procedure Add(const aStrings: TStrings); overload;
-      procedure Add(const aStrings: array of String); overload;
-      procedure Clear;
-      function Clone: IStringList;
-      function Contains(const aString: String): Boolean;
-      function ContainsName(const aName: String): Boolean;
-      procedure Delete(const aIndex: Integer); overload;
-      procedure Delete(const aString: String); overload;
-    {$ifdef ForInEnumerators}
-      function GetEnumerator: TStringsEnumerator;
-    {$endif}
-      function IndexOf(const aString: String): Integer;
-      function IndexOfName(const aName: String): Integer;
-      procedure Insert(const aIndex: Integer; const aString: String); overload;
-      procedure Insert(const aIndex: Integer; const aStrings: TStrings); overload;
-      procedure LoadFromFile(const aFilename: String);
-      procedure SaveToFile(const aFilename: String);
-    public
-      constructor Create;
-      destructor Destroy; override;
-    end;
-
-
-  {$ifdef UNICODE}
-    ALTChar   = ANSIChar;
-    ALTString = ANSIString;
-
-    PANSIStringItem = ^TANSIStringItem;
-    TANSIStringItem = record
-      fString: ANSIString;
-      fObject: TObject;
-    end;
-
-    PANSIStringItemList = ^TANSIStringItemList;
-    TANSIStringItemList = array of TANSIStringItem;
-
-    PALTStringItem = PANSIStringItem;
-    TALTStringItem = TANSIStringItem;
-    PALTStringItemList = PANSIStringItemList;
-    TALTStringItemList = TANSIStringItemList;
-  {$else}
-    ALTChar   = WIDEChar;
-    ALTString = WIDEString;
-
-    PWIDEStringItem = ^TWIDEStringItem;
-    TWIDEStringItem = record
-      fString: WIDEString;
-      fObject: TObject;
-    end;
-
-    PWIDEStringItemList = ^TWIDEStringItemList;
-    TWIDEStringItemList = array of TWIDEStringItem;
-
-    PALTStringItem = PWIDEStringItem;
-    TALTStringItem = TWIDEStringItem;
-    PALTStringItemList = PWIDEStringItemList;
-    TALTStringItemList = TWIDEStringItemList;
-  {$endif}
-
-    TALTStringListSortCompare = function(List: TALTStringList; Index1, Index2: Integer): Integer;
-
-    TALTStrings = class(TPersistent)
+    TWideStrings = class(TPersistent)
     private
       fUpdateCount: Integer;
-      function get_CommaText: ALTString;
-      function get_Name(aIndex: Integer): ALTString;
-      function get_Value(const aName: ALTString): ALTString;
-      procedure set_CommaText(const aValue: ALTString);
-      procedure set_Value(const aName, aValue: ALTString);
+      function get_CommaText: WideString;
+      function get_Name(aIndex: Integer): WideString;
+      function get_Value(const aName: WideString): WideString;
+      procedure set_CommaText(const aValue: WideString);
+      procedure set_Value(const aName, aValue: WideString);
       procedure ReadData(aReader: TReader);
       procedure WriteData(aWriter: TWriter);
-      function get_ValueFromIndex(aIndex: Integer): ALTString;
-      procedure set_ValueFromIndex(aIndex: Integer; const aValue: ALTString);
+      function get_ValueFromIndex(aIndex: Integer): WideString;
+      procedure set_ValueFromIndex(aIndex: Integer; const aValue: WideString);
     protected
       function get_Capacity: Integer; virtual;
       function get_Count: Integer; virtual; abstract;
       function get_Object(aIndex: Integer): TObject; virtual;
-      function get_Text: ALTString; virtual;
+      function get_Text: WideString; virtual;
       procedure set_Capacity(aNewCapacity: Integer); virtual;
       procedure set_Object(aIndex: Integer; aObject: TObject); virtual;
-      procedure set_Text(const aValue: ALTString); virtual;
+      procedure set_Text(const aValue: WideString); virtual;
       procedure DefineProperties(aFiler: TFiler); override;
       procedure Error(const aMsg: String; aData: Integer); overload;
       procedure Error(aMsg: PResStringRec; aData: Integer); overload;
-      function ExtractName(const aString: ALTString): ALTString;
-      function Get(Index: Integer): ALTString; virtual; abstract;
-      procedure Put(aIndex: Integer; const aString: ALTString); virtual;
+      function ExtractName(const aString: WideString): WideString;
+      function Get(Index: Integer): WideString; virtual; abstract;
+      procedure Put(aIndex: Integer; const aString: WideString); virtual;
       procedure SetUpdateState(Updating: Boolean); virtual;
       property UpdateCount: Integer read FUpdateCount;
-      function CompareStrings(const S1, S2: ALTString): Integer; virtual;
+      function CompareStrings(const S1, S2: WideString): Integer; virtual;
     public
-      function Add(const aString: ALTString): Integer; virtual;
-      function AddObject(const aString: ALTString; AObject: TObject): Integer; virtual;
-      procedure AddStrings(aStrings: TALTStrings); overload; virtual;
+      function Add(const aString: WideString): Integer; virtual;
+      function AddObject(const aString: WideString; AObject: TObject): Integer; virtual;
+      procedure AddStrings(aStrings: TWideStrings); overload; virtual;
       procedure Assign(aSource: TPersistent); override;
       procedure BeginUpdate;
       procedure Clear; virtual; abstract;
       procedure Delete(aIndex: Integer); virtual; abstract;
       procedure EndUpdate;
-      function Equals(aStrings: TALTStrings): Boolean; reintroduce;
+      function Equals(aStrings: TWideStrings): Boolean; reintroduce;
       procedure Exchange(aIndex1, aIndex2: Integer); virtual;
-      function IndexOf(const aString: ALTString): Integer; virtual;
-      function IndexOfName(const aName: ALTString): Integer; virtual;
+      function IndexOf(const aString: WideString): Integer; virtual;
+      function IndexOfName(const aName: WideString): Integer; virtual;
       function IndexOfObject(aObject: TObject): Integer; virtual;
-      procedure Insert(aIndex: Integer; const aString: ALTString); virtual; abstract;
-      procedure InsertObject(aIndex: Integer; const aString: ALTString; aObject: TObject); virtual;
+      procedure Insert(aIndex: Integer; const aString: WideString); virtual; abstract;
+      procedure InsertObject(aIndex: Integer; const aString: WideString; aObject: TObject); virtual;
       procedure LoadFromFile(const aFileName: string); overload; virtual;
       procedure LoadFromStream(Stream: TStream); overload; virtual;
       procedure Move(aCurIndex, aNewIndex: Integer); virtual;
       procedure SaveToFile(const aFileName: String); overload; virtual;
       procedure SaveToStream(Stream: TStream); overload; virtual;
       property Capacity: Integer read get_Capacity write set_Capacity;
-      property CommaText: ALTString read get_CommaText write set_CommaText;
+      property CommaText: WideString read get_CommaText write set_CommaText;
       property Count: Integer read get_Count;
-      property Names[aIndex: Integer]: ALTString read get_Name;
+      property Names[aIndex: Integer]: WideString read get_Name;
       property Objects[aIndex: Integer]: TObject read get_Object write set_Object;
-      property Values[const aName: ALTString]: ALTString read get_Value write set_Value;
-      property ValueFromIndex[aIndex: Integer]: ALTString read get_ValueFromIndex write set_ValueFromIndex;
-      property Strings[aIndex: Integer]: ALTString read Get write Put; default;
-      property Text: ALTString read get_Text write set_Text;
+      property Values[const aName: WideString]: WideString read get_Value write set_Value;
+      property ValueFromIndex[aIndex: Integer]: WideString read get_ValueFromIndex write set_ValueFromIndex;
+      property Strings[aIndex: Integer]: WideString read Get write Put; default;
+      property Text: WideString read get_Text write set_Text;
     end;
 
 
-    TALTStringList = class(TALTStrings)
+    TWideStringList = class(TWideStrings)
     private
-      fList: TALTStringItemList;
+      fList: TWideStringItemList;
       fCount: Integer;
       fCapacity: Integer;
       fSorted: Boolean;
@@ -298,7 +194,7 @@ interface
       fOwnedObjects: array of TObject;
       procedure ExchangeItems(aIndex1, aIndex2: Integer);
       procedure Grow;
-      procedure QuickSort(L, R: Integer; aCompareFn: TALTStringListSortCompare);
+      procedure QuickSort(L, R: Integer; aCompareFn: TWideStringListSortCompareFn);
       procedure set_Sorted(aValue: Boolean);
       procedure set_CaseSensitive(const aValue: Boolean);
       procedure FreeOwnedObjects;
@@ -311,29 +207,30 @@ interface
       procedure set_Object(aIndex: Integer; aObject: TObject); override;
       procedure Changed; virtual;
       procedure Changing; virtual;
-      function Get(aIndex: Integer): ALTString; override;
+      function Get(aIndex: Integer): WideString; override;
       function GetObject(aIndex: Integer): TObject;
-      procedure Put(aIndex: Integer; const aString: ALTString); override;
+      procedure Put(aIndex: Integer; const aString: WideString); override;
       procedure PutObject(aIndex: Integer; aObject: TObject);
       procedure SetUpdateState(aUpdating: Boolean); override;
-      function CompareStrings(const aS1, aS2: ALTString): Integer; override;
-      procedure InsertItem(aIndex: Integer; const aString: ALTString; aObject: TObject); virtual;
+      function CompareStrings(const aS1, aS2: WideString): Integer; override;
+      procedure InsertItem(aIndex: Integer; const aString: WideString; aObject: TObject); virtual;
     public
       constructor Create; overload;
       constructor Create(aOwnsObjects: Boolean); overload;
       destructor Destroy; override;
-      function Add(const aString: ALTString): Integer; override;
-      function AddObject(const aString: ALTString; aObject: TObject): Integer; override;
+      function Add(const aString: WideString): Integer; override;
+      function AddObject(const aString: WideString; aObject: TObject): Integer; override;
       procedure Assign(aSource: TPersistent); override;
       procedure Clear; override;
+      function ContainsName(const aName: WideString): Boolean;
       procedure Delete(aIndex: Integer); override;
       procedure Exchange(aIndex1, aIndex2: Integer); override;
-      function Find(const aString: ALTString; var aIndex: Integer): Boolean; virtual;
-      function IndexOf(const aString: ALTString): Integer; override;
-      procedure Insert(aIndex: Integer; const aString: ALTString); override;
-      procedure InsertObject(aIndex: Integer; const aString: ALTString; aObject: TObject); override;
+      function Find(const aString: WideString; var aIndex: Integer): Boolean; virtual;
+      function IndexOf(const aString: WideString): Integer; override;
+      procedure Insert(aIndex: Integer; const aString: WideString); override;
+      procedure InsertObject(aIndex: Integer; const aString: WideString; aObject: TObject); override;
       procedure Sort; virtual;
-      procedure CustomSort(aCompareFn: TALTStringListSortCompare); virtual;
+      procedure CustomSort(aCompareFn: TWideStringListSortCompareFn); virtual;
       property Duplicates: TDuplicates read fDuplicates write fDuplicates;
       property Sorted: Boolean read fSorted write set_Sorted;
       property CaseSensitive: Boolean read fCaseSensitive write set_CaseSensitive;
@@ -341,6 +238,64 @@ interface
       property OnChanging: TNotifyEvent read fOnChanging write fOnChanging;
       property OwnsObjects: Boolean read fOwnsObjects write fOwnsObjects;
     end;
+
+
+    TComInterfacedWideStringList = class(TComInterfacedObject, IWideStringList)
+      function get_AsArray: WideStringArray;
+      function get_Capacity: Integer;
+      function get_Count: Integer;
+      function get_Item(const aIndex: Integer): WideString;
+      function get_List: TWideStringList;
+      function get_Name(const aIndex: Integer): WideString;
+      function get_Sorted: Boolean;
+      function get_Unique: Boolean;
+      function get_Value(const aName: WideString): WideString;
+      procedure set_Capacity(const aValue: Integer);
+      procedure set_Item(const aIndex: Integer; const aValue: WideString);
+      procedure set_Sorted(const aValue: Boolean);
+      procedure set_Unique(const aValue: Boolean);
+      procedure set_Value(const aName: WideString; const aValue: WideString);
+    public
+      function Add(const aString: WideString): Integer; overload;
+      procedure Add(const aList: IWideStringList); overload;
+      procedure Add(const aStrings: TWideStrings); overload;
+      procedure Add(const aArray: WideStringArray); overload;
+      procedure Clear;
+      function Clone: IWideStringList;
+      function Contains(const aString: WideString): Boolean;
+      function ContainsName(const aName: WideString): Boolean;
+      procedure Delete(const aIndex: Integer); overload;
+      procedure Delete(const aString: WideString); overload;
+    {$ifdef ForInEnumerators}
+      function GetEnumerator: TWideStringsEnumerator;
+    {$endif}
+      function IndexOf(const aString: WideString): Integer;
+      function IndexOfName(const aName: WideString): Integer;
+      procedure Insert(const aIndex: Integer; const aString: WideString); overload;
+      procedure Insert(const aIndex: Integer; const aStrings: TWideStrings); overload;
+      procedure LoadFromFile(const aFilename: String);
+      procedure SaveToFile(const aFilename: String);
+
+    private
+      fList: TWideStringList;
+      fUnique: Boolean;
+    public
+      constructor Create;
+      destructor Destroy; override;
+    end;
+
+
+    TWideStringsEnumerator = class
+    private
+      fIndex: Integer;
+      fStrings: IWideStringList;
+    public
+      constructor Create(aStrings: IWideStringList);
+      function GetCurrent: WideString; {$ifdef InlineMethods} inline; {$endif}
+      function MoveNext: Boolean;
+      property Current: WideString read GetCurrent;
+    end;
+
 
 
 implementation
@@ -351,411 +306,28 @@ implementation
 
 
 
-{ TStringList ------------------------------------------------------------------------------------ }
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  function TStringlist.Add(const aString: String): Integer;
-  begin
-    result := inherited Add(aString);
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  function TStringlist.Add(const aString: String;
-                           const aInteger: Integer): Integer;
-  begin
-    result := AddObject(aString, TObject(aInteger));
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  function TStringlist.Contains(const aString: String): Boolean;
-  begin
-    result := (IndexOf(aString) <> -1);
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  function TStringlist.ContainsName(const aName: String): Boolean;
-  begin
-    result := IndexOfName(aName) <> -1;
-  end;
-
-
-
-
-
-
-{$ifdef DELPHI7}
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  destructor TStringList.Destroy;
-  var
-    i: Integer;
-  begin
-    if fOwnsObjects then
-      for i := Pred(Count) downto 0 do
-        Objects[i].Free;
-
-    inherited Destroy;
-  end;
-{$endif}
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  function TStringlist.get_Integer(const aIndex: Integer): Integer;
-  begin
-    result := Integer(Objects[aIndex]);
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  procedure TStringlist.Remove(const aString: String);
-  var
-    idx: Integer;
-  begin
-    idx := IndexOf(aString);
-    if idx <> -1 then
-      Delete(idx);
-  end;
-
-
-
-
-
-
-
-
-
-
-{ TComInterfacedStringList ----------------------------------------------------------------------------- }
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
-  constructor TComInterfacedStringList.Create;
-  begin
-    inherited;
-
-    fList := TStringList.Create;
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
-  function TComInterfacedStringList.Add(const aString: String): Integer;
-  begin
-    result := -1;
-
-    if fUnique then
-      result := fList.IndexOf(aString);
-
-    if (NOT fUnique) or (result = -1) then
-      result := fList.Add(aString);
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
-  procedure TComInterfacedStringList.Add(const aStrings: IStringList);
-  begin
-    Add(aStrings.List);
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
-  procedure TComInterfacedStringList.Add(const aStrings: TStrings);
-  var
-    i: Integer;
-  begin
-    if fList.Sorted then
-      fList.AddStrings(aStrings)
-    else
-      for i := 0 to Pred(aStrings.Count) do
-        Add(aStrings[i]);
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
-  procedure TComInterfacedStringList.Add(const aStrings: array of String);
-  var
-    i: Integer;
-    strings: IStringList;
-  begin
-    strings := TComInterfacedStringList.Create;
-    strings.Capacity := Length(aStrings);
-
-    for i := 0 to High(aStrings) do
-      strings.Add(aStrings[i]);
-
-    Add(strings);
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
-  procedure TComInterfacedStringList.Clear;
-  begin
-    fList.Clear;
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
-  function TComInterfacedStringList.Clone: IStringList;
-  begin
-    result := TComInterfacedStringList.Create;
-    result.Unique := self.get_Unique;
-    result.Sorted := self.get_Sorted;
-    result.Add(self);
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
-  function TComInterfacedStringList.Contains(const aString: String): Boolean;
-  begin
-    result := (fList.IndexOf(aString) <> -1);
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
-  function TComInterfacedStringList.ContainsName(const aName: String): Boolean;
-  begin
-    result := fList.ContainsName(aName);
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
-  procedure TComInterfacedStringList.Delete(const aIndex: Integer);
-  begin
-    fList.Delete(aIndex);
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
-  procedure TComInterfacedStringList.Delete(const aString: String);
-  var
-    idx: Integer;
-  begin
-    idx := IndexOf(aString);
-    if idx <> -1 then
-      Delete(idx);
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
-  destructor TComInterfacedStringList.Destroy;
-  begin
-    fList.Free;
-
-    inherited;
-  end;
-
-
-{$ifdef ForInEnumerators}
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
-  function TComInterfacedStringList.GetEnumerator: TStringsEnumerator;
-  begin
-    result := TStringsEnumerator.Create(fList);
-  end;
-{$endif}
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
-  function TComInterfacedStringList.get_AsArray: StringArray;
-  var
-    i: Integer;
-  begin
-    SetLength(result, get_Count);
-
-    for i := 0 to Pred(get_Count) do
-      result[i] := fList[i];
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
-  function TComInterfacedStringList.get_Capacity: Integer;
-  begin
-    result:= fList.Capacity;
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
-  function TComInterfacedStringList.get_Count: Integer;
-  begin
-    result := fList.Count;
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
-  function TComInterfacedStringList.get_Item(const aIndex: Integer): String;
-  begin
-    result := fList[aIndex];
-  end;
-
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
-  function TComInterfacedStringList.get_List: TStringList;
-  begin
-    result := fList;
-  end;
-
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
-  function TComInterfacedStringList.get_Name(const aIndex: Integer): String;
-  begin
-    result := fList.Names[aIndex];
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
-  function TComInterfacedStringList.get_Sorted: Boolean;
-  begin
-    result := fList.Sorted;
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
-  function TComInterfacedStringList.get_Unique: Boolean;
-  begin
-    result := fUnique;
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
-  function TComInterfacedStringList.get_Value(const aName: String): String;
-  begin
-    result := fList.Values[aName];
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
-  function TComInterfacedStringList.IndexOf(const aString: String): Integer;
-  begin
-    result := fList.IndexOf(aString);
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
-  function TComInterfacedStringList.IndexOfName(const aName: String): Integer;
-  begin
-    result := fList.IndexOfName(aName);
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
-  procedure TComInterfacedStringList.Insert(const aIndex: Integer;
-                                            const aStrings: TStrings);
-  var
-    i: Integer;
-  begin
-    for i := 0 to Pred(aStrings.Count) do
-      fList.Insert(aIndex + i, aStrings[i]);
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
-  procedure TComInterfacedStringList.LoadFromFile(const aFilename: String);
-  begin
-    fList.LoadFromFile(aFilename);
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
-  procedure TComInterfacedStringList.SaveToFile(const aFilename: String);
-  begin
-    fList.SaveToFile(aFilename);
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
-  procedure TComInterfacedStringList.Insert(const aIndex: Integer;
-                                            const aString: String);
-  begin
-    fList.Insert(aIndex, aString);
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
-  procedure TComInterfacedStringList.set_Capacity(const aValue: Integer);
-  begin
-    fList.Capacity := aValue;
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
-  procedure TComInterfacedStringList.set_Item(const aIndex: Integer;
-                                              const aValue: String);
-  begin
-    fList[aIndex] := aValue;
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
-  procedure TComInterfacedStringList.set_Sorted(const aValue: Boolean);
-  begin
-    fList.Sorted := aValue;
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
-  procedure TComInterfacedStringList.set_Unique(const aValue: Boolean);
-  begin
-    fUnique := aValue;
-
-    if fUnique then
-      fList.Duplicates := dupIgnore
-    else
-      fList.Duplicates := dupAccept;
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
-  procedure TComInterfacedStringList.set_Value(const aName: String;
-                                               const aValue: String);
-  begin
-    fList.Values[aName] := aValue;
-  end;
-
-
-
-
-
-{$ifdef UNICODE}
-
-  function ALT: ANSIClass; overload;
-  begin
-    result := ANSIFn;
-  end;
-
-{$else}
-
-  function ALT: WIDEClass; overload;
-  begin
-    result := WIDEFn;
-  end;
-
-{$endif}
-
-
   const
-    LineBreak         : ALTString = #13#10;
-    NameValueSeparator: ALTChar   = '=';
+    LineBreak         : WideString = #13#10;
+    NameValueSeparator: WideChar   = '=';
 
 
-  function StringListCompareStrings(List: TALTStringList; Index1, Index2: Integer): Integer;
+  function StringListCompareStrings(List: TWideStrings; Index1, Index2: Integer): Integer;
   begin
-    Result := List.CompareStrings(List.FList[Index1].FString,
-                                  List.FList[Index2].FString);
+    Result := List.CompareStrings(List[Index1], List[Index2]);
   end;
 
 
 
 
 
-  function TALTStrings.Add(const aString: ALTString): Integer;
+  function TWideStrings.Add(const aString: WideString): Integer;
   begin
     result := Count;
     Insert(result, aString);
   end;
 
 
-  function TALTStrings.AddObject(const aString: ALTString;
+  function TWideStrings.AddObject(const aString: WideString;
                                         aObject: TObject): Integer;
   begin
     result := Add(aString);
@@ -763,7 +335,7 @@ implementation
   end;
 
 
-  procedure TALTStrings.AddStrings(aStrings: TALTStrings);
+  procedure TWideStrings.AddStrings(aStrings: TWideStrings);
   var
     i: Integer;
   begin
@@ -778,9 +350,9 @@ implementation
   end;
 
 
-  procedure TALTStrings.Assign(aSource: TPersistent);
+  procedure TWideStrings.Assign(aSource: TPersistent);
   var
-    src: TALTStrings absolute aSource;
+    src: TWideStrings absolute aSource;
   begin
     if aSource is TStrings then
     begin
@@ -800,7 +372,7 @@ implementation
   end;
 
 
-  procedure TALTStrings.BeginUpdate;
+  procedure TWideStrings.BeginUpdate;
   begin
     if fUpdateCount = 0 then
       SetUpdateState(TRUE);
@@ -809,15 +381,15 @@ implementation
   end;
 
 
-  procedure TALTStrings.DefineProperties(aFiler: TFiler);
+  procedure TWideStrings.DefineProperties(aFiler: TFiler);
 
     function DoWrite: Boolean;
     begin
       if aFiler.Ancestor <> nil then
       begin
         Result := True;
-        if (aFiler.Ancestor is TALTStrings) then
-          result := NOT Equals(TALTStrings(aFiler.Ancestor))
+        if (aFiler.Ancestor is TWideStrings) then
+          result := NOT Equals(TWideStrings(aFiler.Ancestor))
       end
       else
         result := Count > 0;
@@ -828,7 +400,7 @@ implementation
   end;
 
 
-  procedure TALTStrings.EndUpdate;
+  procedure TWideStrings.EndUpdate;
   begin
     Dec(fUpdateCount);
     if fUpdateCount = 0 then
@@ -836,7 +408,7 @@ implementation
   end;
 
 
-  function TALTStrings.Equals(aStrings: TALTStrings): Boolean;
+  function TWideStrings.Equals(aStrings: TWideStrings): Boolean;
   var
     i: Integer;
   begin
@@ -860,7 +432,7 @@ implementation
     {$DEFINE OPTIMIZATIONSON}
     {$O-}
   {$ENDIF O+}
-  procedure TALTStrings.Error(const aMsg: String; aData: Integer);
+  procedure TWideStrings.Error(const aMsg: String; aData: Integer);
   {$ifdef __DELPHI2007}
     function ReturnAddr: Pointer;
     asm
@@ -876,7 +448,7 @@ implementation
     {$endif}
   end;
 
-  procedure TALTStrings.Error(aMsg: PResStringRec; aData: Integer);
+  procedure TWideStrings.Error(aMsg: PResStringRec; aData: Integer);
   {$ifdef __DELPHI2007}
     function ReturnAddr: Pointer;
     asm
@@ -897,10 +469,10 @@ implementation
   {$ENDIF OPTIMIZATIONSON}
 
 
-  procedure TALTStrings.Exchange(aIndex1, aIndex2: Integer);
+  procedure TWideStrings.Exchange(aIndex1, aIndex2: Integer);
   var
     TempObject: TObject;
-    TempString: ALTString;
+    TempString: WideString;
   begin
     BeginUpdate;
     try
@@ -917,33 +489,29 @@ implementation
   end;
 
 
-  function TALTStrings.ExtractName(const aString: ALTString): ALTString;
+  function TWideStrings.ExtractName(const aString: WideString): WideString;
   var
-  {$ifdef UNICODE}          // Cannot use ALTString in this case since ALTString == WIDEString
-    n, v: ANSIString;       //  and for the var params in the Split() method, the compiler
-  {$else}                   //  insists that we use the declared type.
     n, v: UnicodeString;
-  {$endif}
   begin
-    ALT.Split(aString, ALTChar('='), n, v);
+    Wide.Split(aString, WideChar('='), n, v);
     result := n;
   end;
 
 
-  function TALTStrings.get_Capacity: Integer;
+  function TWideStrings.get_Capacity: Integer;
   begin  // descendents may optionally override/replace this default implementation
     Result := Count;
   end;
 
 
-  function TALTStrings.get_CommaText: ALTString;
+  function TWideStrings.get_CommaText: WideString;
   begin
     // result := GetDelimitedText;
   end;
 
 
 (*
-  function TALTStrings.GetDelimitedText: ALTString;
+  function TWideStrings.GetDelimitedText: WideString;
   var
     S: string;
     P: PChar;
@@ -965,7 +533,7 @@ implementation
         P := PChar(S);
         while not (P^ in LDelimiters) do
           P := NextChar(P);
-        if (P^ <> #0) then S := AnsiQuotedStr(S, QuoteChar);
+        if (P^ <> #0) then S := WideQuotedStr(S, QuoteChar);
         Result := Result + S + Delimiter;
       end;
       System.Delete(Result, Length(Result), 1);
@@ -973,23 +541,23 @@ implementation
   end;
 *)
 
-  function TALTStrings.get_Name(aIndex: Integer): ALTString;
+  function TWideStrings.get_Name(aIndex: Integer): WideString;
   begin
     Result := ExtractName(Get(aIndex));
   end;
 
 
-  function TALTStrings.get_Object(aIndex: Integer): TObject;
+  function TWideStrings.get_Object(aIndex: Integer): TObject;
   begin
     result := NIL;
   end;
 
 
-  function TALTStrings.get_Text: ALTString;
+  function TWideStrings.get_Text: WideString;
   var
     I, L, Size, Count: Integer;
     P: PChar;
-    S, LB: ALTString;
+    S, LB: WideString;
   begin
     Count := get_Count;
     Size := 0;
@@ -1016,7 +584,7 @@ implementation
   end;
 
 
-  function TALTStrings.get_Value(const aName: ALTString): ALTString;
+  function TWideStrings.get_Value(const aName: WideString): WideString;
   var
     i: Integer;
   begin
@@ -1028,7 +596,7 @@ implementation
   end;
 
 
-  function TALTStrings.IndexOf(const aString: ALTString): Integer;
+  function TWideStrings.IndexOf(const aString: WideString): Integer;
   begin
     for result := 0 to Pred(Count) do
       if CompareStrings(Get(result), aString) = 0 then
@@ -1038,17 +606,17 @@ implementation
   end;
 
 
-  function TALTStrings.IndexOfName(const aName: ALTString): Integer;
+  function TWideStrings.IndexOfName(const aName: WideString): Integer;
   begin
     for result := 0 to Pred(Count) do
-      if ALT.BeginsWith(Get(result), aName) then
+      if Wide.BeginsWith(Get(result), aName) then
         EXIT;
 
     result := -1;
   end;
 
 
-  function TALTStrings.IndexOfObject(aObject: TObject): Integer;
+  function TWideStrings.IndexOfObject(aObject: TObject): Integer;
   begin
     for result := 0 to Pred(Count) do
       if get_Object(result) = aObject then
@@ -1058,14 +626,14 @@ implementation
   end;
 
 
-  procedure TALTStrings.InsertObject(aIndex: Integer; const aString: ALTString; aObject: TObject);
+  procedure TWideStrings.InsertObject(aIndex: Integer; const aString: WideString; aObject: TObject);
   begin
     Insert(aIndex, aString);
     set_Object(aIndex, aObject);
   end;
 
 
-  procedure TALTStrings.LoadFromFile(const aFileName: String);
+  procedure TWideStrings.LoadFromFile(const aFileName: String);
 //  var
 //    Stream: TStream;
   begin
@@ -1082,16 +650,16 @@ implementation
   end;
 
 
-  procedure TALTStrings.LoadFromStream(Stream: TStream);
+  procedure TWideStrings.LoadFromStream(Stream: TStream);
   begin
     // TODO
   end;
 
 
-  procedure TALTStrings.Move(aCurIndex, aNewIndex: Integer);
+  procedure TWideStrings.Move(aCurIndex, aNewIndex: Integer);
   var
     TempObject: TObject;
-    TempString: ALTString;
+    TempString: WideString;
   begin
     if aCurIndex <> aNewIndex then
     begin
@@ -1112,7 +680,7 @@ implementation
   end;
 
 
-  procedure TALTStrings.Put(aIndex: Integer; const aString: ALTString);
+  procedure TWideStrings.Put(aIndex: Integer; const aString: WideString);
   var
     TempObject: TObject;
   begin
@@ -1122,13 +690,13 @@ implementation
   end;
 
 
-  procedure TALTStrings.set_Object(aIndex: Integer; aObject: TObject);
+  procedure TWideStrings.set_Object(aIndex: Integer; aObject: TObject);
   begin
     // NO-OP - override in descendants
   end;
 
 
-  procedure TALTStrings.ReadData(aReader: TReader);
+  procedure TWideStrings.ReadData(aReader: TReader);
   begin
     aReader.ReadListBegin;
 
@@ -1136,10 +704,10 @@ implementation
     try
       Clear;
       while NOT aReader.EndOfList do
-      {$ifdef UNICODE}
-        Add(ANSI.FromWIDE(aReader.ReadString));
-      {$else}
+      {$ifNdef UNICODE}
         Add(aReader.ReadWideString);
+      {$else}
+        Add(aReader.ReadString);
       {$endif}
 
     finally
@@ -1150,41 +718,41 @@ implementation
   end;
 
 
-  procedure TALTStrings.SaveToFile(const aFileName: String);
+  procedure TWideStrings.SaveToFile(const aFileName: String);
   begin
     // TODO:
   end;
 
 
-  procedure TALTStrings.SaveToStream(Stream: TStream);
+  procedure TWideStrings.SaveToStream(Stream: TStream);
   begin
     // TODO:
   end;
 
 
-  procedure TALTStrings.set_Capacity(aNewCapacity: Integer);
+  procedure TWideStrings.set_Capacity(aNewCapacity: Integer);
   begin
     // do nothing - descendents may optionally implement this method
   end;
 
 
-  procedure TALTStrings.set_CommaText(const aValue: ALTString);
+  procedure TWideStrings.set_CommaText(const aValue: WideString);
   begin
     // TODO:
   end;
 
 
-  procedure TALTStrings.set_Text(const aValue: ALTString);
+  procedure TWideStrings.set_Text(const aValue: WideString);
   var
     P, Start: PWIDEChar;
-    S: ALTString;
+    S: WideString;
   begin
     BeginUpdate;
     try
       Clear;
       P := Pointer(aValue);
       if P <> NIL then
-        // This is a lot faster than using StrPos/AnsiStrPos when
+        // This is a lot faster than using StrPos/WideStrPos when
         // LineBreak is the default (#13#10)
         while P^ <> #0 do
         begin
@@ -1203,12 +771,12 @@ implementation
     end;
   end;
 
-  procedure TALTStrings.SetUpdateState(Updating: Boolean);
+  procedure TWideStrings.SetUpdateState(Updating: Boolean);
   begin
   end;
 
 
-  procedure TALTStrings.set_Value(const aName, aValue: ALTString);
+  procedure TWideStrings.set_Value(const aName, aValue: WideString);
   var
     I: Integer;
   begin
@@ -1225,40 +793,40 @@ implementation
   end;
 
 
-  procedure TALTStrings.WriteData(aWriter: TWriter);
+  procedure TWideStrings.WriteData(aWriter: TWriter);
   var
     i: Integer;
   begin
     aWriter.WriteListBegin;
 
     for i := 0 to Pred(Count) do
-    {$ifdef UNICODE}
-      aWriter.WriteString(WIDE.FromANSI(Get(i)));
-    {$else}
+    {$ifNdef UNICODE}
       aWriter.WriteWideString(Get(i));
+    {$else}
+      aWriter.WriteString(Get(i));
     {$endif}
 
     aWriter.WriteListEnd;
   end;
 
 
-  function TALTStrings.CompareStrings(const S1, S2: ALTString): Integer;
+  function TWideStrings.CompareStrings(const S1, S2: WideString): Integer;
   begin
-    result := ALT.Compare(S1, S2);
+    result := Wide.Compare(S1, S2);
   end;
 
 
-  function TALTStrings.get_ValueFromIndex(aIndex: Integer): ALTString;
+  function TWideStrings.get_ValueFromIndex(aIndex: Integer): WideString;
   var
-    value: {$ifdef UNICODE}ANSIString{$else}UnicodeString{$endif};
+    value: UnicodeString;
     p: Integer;
   begin
     if aIndex >= 0 then
     begin
       value := Get(aIndex);
 
-      if ALT.Find(value, NameValueSeparator, p) then
-        ALT.DeleteLeft(value, p)
+      if Wide.Find(value, NameValueSeparator, p) then
+        Wide.DeleteLeft(value, p)
       else
         result := '';
     end
@@ -1267,8 +835,8 @@ implementation
   end;
 
 
-  procedure TALTStrings.set_ValueFromIndex(      aIndex: Integer;
-                                            const aValue: ALTString);
+  procedure TWideStrings.set_ValueFromIndex(      aIndex: Integer;
+                                            const aValue: WideString);
   begin
     if aValue <> '' then
     begin
@@ -1288,20 +856,20 @@ implementation
 
 
 
-  constructor TALTStringList.Create;
+  constructor TWideStringList.Create;
   begin
     inherited Create;
   end;
 
 
-  constructor TALTStringList.Create(aOwnsObjects: Boolean);
+  constructor TWideStringList.Create(aOwnsObjects: Boolean);
   begin
     inherited Create;
     fOwnsObjects := aOwnsObjects;
   end;
 
 
-  destructor TALTStringList.Destroy;
+  destructor TWideStringList.Destroy;
   begin
     fOnChange   := NIL;
     fOnChanging := NIL;
@@ -1322,13 +890,13 @@ implementation
   end;
 
 
-  function TALTStringList.Add(const aString: ALTString): Integer;
+  function TWideStringList.Add(const aString: WideString): Integer;
   begin
     result := AddObject(aString, NIL);
   end;
 
 
-  function TALTStringList.AddObject(const aString: ALTString;
+  function TWideStringList.AddObject(const aString: WideString;
                                           aObject: TObject): Integer;
   begin
     if NOT Sorted then
@@ -1344,13 +912,13 @@ implementation
   end;
 
 
-  procedure TALTStringList.Assign(aSource: TPersistent);
+  procedure TWideStringList.Assign(aSource: TPersistent);
   var
-    src: TALTStringList absolute aSource;
+    src: TWideStringList absolute aSource;
   begin
     inherited Assign(aSource);
 
-    if aSource is TALTStringList then
+    if aSource is TWideStringList then
     begin
       fCaseSensitive  := src.fCaseSensitive;
       fDuplicates     := src.fDuplicates;
@@ -1359,21 +927,21 @@ implementation
   end;
 
 
-  procedure TALTStringList.Changed;
+  procedure TWideStringList.Changed;
   begin
     if (UpdateCount = 0) and Assigned(fOnChange) then
       fOnChange(self);
   end;
 
 
-  procedure TALTStringList.Changing;
+  procedure TWideStringList.Changing;
   begin
     if (UpdateCount = 0) and Assigned(fOnChanging) then
       fOnChanging(self);
   end;
 
 
-  procedure TALTStringList.Clear;
+  procedure TWideStringList.Clear;
   begin
     if fCount <> 0 then
     begin
@@ -1394,7 +962,7 @@ implementation
     end;
   end;
 
-  procedure TALTStringList.Delete(aIndex: Integer);
+  procedure TWideStringList.Delete(aIndex: Integer);
   var
     Obj: TObject;
   begin
@@ -1418,7 +986,7 @@ implementation
 
     if aIndex < FCount then
     begin
-      System.Move(fList[aIndex + 1], fList[aIndex], (fCount - aIndex) * sizeof(TALTStringItem));
+      System.Move(fList[aIndex + 1], fList[aIndex], (fCount - aIndex) * sizeof(TWideStringItem));
 
       // Make sure there is no danglng pointer in the last (now unused) element
 
@@ -1433,7 +1001,7 @@ implementation
   end;
 
 
-  procedure TALTStringList.Exchange(aIndex1, aIndex2: Integer);
+  procedure TWideStringList.Exchange(aIndex1, aIndex2: Integer);
   begin
     if (aIndex1 < 0) or (aIndex1 >= fCount) then Error(Pointer(@SListIndexError), aIndex1);
     if (aIndex2 < 0) or (aIndex2 >= fCount) then Error(Pointer(@SListIndexError), aIndex2);
@@ -1446,10 +1014,10 @@ implementation
   end;
 
 
-  procedure TALTStringList.ExchangeItems(aIndex1, aIndex2: Integer);
+  procedure TWideStringList.ExchangeItems(aIndex1, aIndex2: Integer);
   var
     Temp: Pointer;
-    Item1, Item2: PALTStringItem;
+    Item1, Item2: PWideStringItem;
   begin
     Item1 := @fList[aIndex1];
     Item2 := @fList[aIndex2];
@@ -1464,7 +1032,7 @@ implementation
   end;
 
 
-  function TALTStringList.Find(const aString: ALTString;
+  function TWideStringList.Find(const aString: WideString;
                                 var aIndex: Integer): Boolean;
   var
     L, H, I, C: Integer;
@@ -1496,7 +1064,7 @@ implementation
   end;
 
 
-  procedure TALTStringList.FreeOwnedObjects;
+  procedure TWideStringList.FreeOwnedObjects;
   var
     i: Integer;
   begin
@@ -1506,7 +1074,7 @@ implementation
   end;
 
 
-  procedure TALTStringList.GatherOwnedObjects;
+  procedure TWideStringList.GatherOwnedObjects;
   var
     i, j: Integer;
   begin
@@ -1524,7 +1092,7 @@ implementation
   end;
 
 
-  function TALTStringList.Get(aIndex: Integer): ALTString;
+  function TWideStringList.Get(aIndex: Integer): WideString;
   begin
     if Cardinal(aIndex) >= Cardinal(fCount) then
       Error(Pointer(@SListIndexError), aIndex);
@@ -1533,31 +1101,31 @@ implementation
   end;
 
 
-  function TALTStringList.get_Capacity: Integer;
+  function TWideStringList.get_Capacity: Integer;
   begin
     result := fCapacity;
   end;
 
 
-  function TALTStringList.get_Count: Integer;
+  function TWideStringList.get_Count: Integer;
   begin
     result := fCount;
   end;
 
 
-  function TALTStringList.get_Object(aIndex: Integer): TObject;
+  function TWideStringList.get_Object(aIndex: Integer): TObject;
   begin
     result := GetObject(aIndex);
   end;
 
 
-  procedure TALTStringList.set_Object(aIndex: Integer; aObject: TObject);
+  procedure TWideStringList.set_Object(aIndex: Integer; aObject: TObject);
   begin
     PutObject(aIndex, aObject);
   end;
 
 
-  function TALTStringList.GetObject(aIndex: Integer): TObject;
+  function TWideStringList.GetObject(aIndex: Integer): TObject;
   begin
     if Cardinal(aIndex) >= Cardinal(fCount) then
       Error(Pointer(@SListIndexError), aIndex);
@@ -1566,7 +1134,7 @@ implementation
   end;
 
 
-  procedure TALTStringList.Grow;
+  procedure TWideStringList.Grow;
   var
     delta: Integer;
   begin
@@ -1581,7 +1149,7 @@ implementation
   end;
 
 
-  function TALTStringList.IndexOf(const aString: ALTString): Integer;
+  function TWideStringList.IndexOf(const aString: WideString): Integer;
   begin
     if NOT Sorted then
       result := inherited IndexOf(aString)
@@ -1590,14 +1158,14 @@ implementation
   end;
 
 
-  procedure TALTStringList.Insert(aIndex: Integer; const aString: ALTString);
+  procedure TWideStringList.Insert(aIndex: Integer; const aString: WideString);
   begin
     InsertObject(aIndex, aString, NIL);
   end;
 
 
-  procedure TALTStringList.InsertObject(      aIndex: Integer;
-                                         const aString: ALTString;
+  procedure TWideStringList.InsertObject(      aIndex: Integer;
+                                         const aString: WideString;
                                                aObject: TObject);
   begin
     if Sorted then
@@ -1610,8 +1178,8 @@ implementation
   end;
 
 
-  procedure TALTStringList.InsertItem(       aIndex: Integer;
-                                        const aString: ALTString;
+  procedure TWideStringList.InsertItem(       aIndex: Integer;
+                                        const aString: WideString;
                                               aObject: TObject);
   begin
     Changing;
@@ -1620,7 +1188,7 @@ implementation
       Grow;
 
     if aIndex < fCount then
-      System.Move(fList[aIndex], fList[aIndex + 1], (fCount - aIndex) * sizeof(TALTStringItem));
+      System.Move(fList[aIndex], fList[aIndex + 1], (fCount - aIndex) * sizeof(TWideStringItem));
 
     Pointer(fList[aIndex].fString) := NIL;
     Pointer(fList[aIndex].fObject) := NIL;
@@ -1633,8 +1201,8 @@ implementation
   end;
 
 
-  procedure TALTStringList.Put(      aIndex: Integer;
-                                const aString: ALTString);
+  procedure TWideStringList.Put(      aIndex: Integer;
+                                const aString: WideString);
   begin
     if Sorted then
       Error(Pointer(@SSortedListError), 0);
@@ -1650,7 +1218,7 @@ implementation
   end;
 
 
-  procedure TALTStringList.PutObject(aIndex: Integer; aObject: TObject);
+  procedure TWideStringList.PutObject(aIndex: Integer; aObject: TObject);
   begin
     if Cardinal(aIndex) >= Cardinal(fCount) then
       Error(Pointer(@SListIndexError), aIndex);
@@ -1663,8 +1231,8 @@ implementation
   end;
 
 
-  procedure TALTStringList.QuickSort(L, R: Integer;
-                                      aCompareFn: TALTStringListSortCompare);
+  procedure TWideStringList.QuickSort(L, R: Integer;
+                                      aCompareFn: TWideStringListSortCompareFn);
   var
     I, J, P: Integer;
   begin
@@ -1698,7 +1266,7 @@ implementation
   end;
 
 
-  procedure TALTStringList.set_Capacity(aNewCapacity: Integer);
+  procedure TWideStringList.set_Capacity(aNewCapacity: Integer);
   begin
     if (aNewCapacity < fCount) then
       Error(Pointer(@SListCapacityError), aNewCapacity);
@@ -1711,7 +1279,7 @@ implementation
   end;
 
 
-  procedure TALTStringList.set_Sorted(aValue: Boolean);
+  procedure TWideStringList.set_Sorted(aValue: Boolean);
   begin
     if fSorted <> aValue then
     begin
@@ -1721,7 +1289,7 @@ implementation
   end;
 
 
-  procedure TALTStringList.SetUpdateState(aUpdating: Boolean);
+  procedure TWideStringList.SetUpdateState(aUpdating: Boolean);
   begin
     if (aUpdating) then
       Changing
@@ -1730,13 +1298,13 @@ implementation
   end;
 
 
-  procedure TALTStringList.Sort;
+  procedure TWideStringList.Sort;
   begin
     CustomSort(StringListCompareStrings);
   end;
 
 
-  procedure TALTStringList.CustomSort(aCompareFn: TALTStringListSortCompare);
+  procedure TWideStringList.CustomSort(aCompareFn: TWideStringListSortCompareFn);
   begin
     if NOT Sorted and (fCount > 1) then
     begin
@@ -1747,15 +1315,21 @@ implementation
   end;
 
 
-  function TALTStringList.CompareStrings(const aS1, aS2: ALTString): Integer;
+  function TWideStringList.CompareStrings(const aS1, aS2: WideString): Integer;
   const
     CASEMODE: array[FALSE..TRUE] of TCaseSensitivity = (csIgnoreCase, csCaseSensitive);
   begin
-    result := ALT.Compare(aS1, aS2, CASEMODE[CaseSensitive]);
+    result := Wide.Compare(aS1, aS2, CASEMODE[CaseSensitive]);
   end;
 
 
-  procedure TALTStringList.set_CaseSensitive(const aValue: Boolean);
+  function TWideStringList.ContainsName(const aName: WideString): Boolean;
+  begin
+    result := IndexOfName(aName) <> -1;
+  end;
+
+
+  procedure TWideStringList.set_CaseSensitive(const aValue: Boolean);
   begin
     if aValue <> fCaseSensitive then
     begin
@@ -1772,6 +1346,318 @@ implementation
   end;
 
 
+
+
+
+{ TComInterfacedWideStringList ------------------------------------------------------------------- }
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  constructor TComInterfacedWideStringList.Create;
+  begin
+    inherited;
+
+    fList := TWideStringList.Create;
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  function TComInterfacedWideStringList.Add(const aString: WideString): Integer;
+  begin
+    result := -1;
+
+    if fUnique then
+      result := fList.IndexOf(aString);
+
+    if (NOT fUnique) or (result = -1) then
+      result := fList.Add(aString);
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  procedure TComInterfacedWideStringList.Add(const aList: IWideStringList);
+  begin
+    Add(aList.List);
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  procedure TComInterfacedWideStringList.Add(const aStrings: TWideStrings);
+  var
+    i: Integer;
+  begin
+    if fList.Sorted then
+      fList.AddStrings(aStrings)
+    else
+      for i := 0 to Pred(aStrings.Count) do
+        Add(aStrings[i]);
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  procedure TComInterfacedWideStringList.Add(const aArray: WideStringArray);
+  var
+    i: Integer;
+  begin
+    if fList.Capacity - fList.Count < Length(aArray) then
+      fList.Capacity := fList.Count + Length(aArray);
+
+    for i := 0 to High(aArray) do
+      fList.Add(aArray[i]);
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  procedure TComInterfacedWideStringList.Clear;
+  begin
+    fList.Clear;
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  function TComInterfacedWideStringList.Clone: IWideStringList;
+  begin
+    result := TComInterfacedWideStringList.Create;
+    result.Unique := self.get_Unique;
+    result.Sorted := self.get_Sorted;
+    result.Add(self);
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  function TComInterfacedWideStringList.Contains(const aString: WideString): Boolean;
+  begin
+    result := (fList.IndexOf(aString) <> -1);
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  function TComInterfacedWideStringList.ContainsName(const aName: WideString): Boolean;
+  begin
+    result := fList.ContainsName(aName);
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  procedure TComInterfacedWideStringList.Delete(const aIndex: Integer);
+  begin
+    fList.Delete(aIndex);
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  procedure TComInterfacedWideStringList.Delete(const aString: WideString);
+  var
+    idx: Integer;
+  begin
+    idx := IndexOf(aString);
+    if idx <> -1 then
+      Delete(idx);
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  destructor TComInterfacedWideStringList.Destroy;
+  begin
+    fList.Free;
+
+    inherited;
+  end;
+
+
+{$ifdef ForInEnumerators}
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  function TComInterfacedWideStringList.GetEnumerator: TWideStringsEnumerator;
+  begin
+    result := TWideStringsEnumerator.Create(self);
+  end;
+{$endif}
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  function TComInterfacedWideStringList.get_AsArray: WideStringArray;
+  var
+    i: Integer;
+  begin
+    SetLength(result, get_Count);
+
+    for i := 0 to Pred(get_Count) do
+      result[i] := fList[i];
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  function TComInterfacedWideStringList.get_Capacity: Integer;
+  begin
+    result:= fList.Capacity;
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  function TComInterfacedWideStringList.get_Count: Integer;
+  begin
+    result := fList.Count;
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  function TComInterfacedWideStringList.get_Item(const aIndex: Integer): WideString;
+  begin
+    result := fList[aIndex];
+  end;
+
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  function TComInterfacedWideStringList.get_List: TWideStringList;
+  begin
+    result := fList;
+  end;
+
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  function TComInterfacedWideStringList.get_Name(const aIndex: Integer): WideString;
+  begin
+    result := fList.Names[aIndex];
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  function TComInterfacedWideStringList.get_Sorted: Boolean;
+  begin
+    result := fList.Sorted;
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  function TComInterfacedWideStringList.get_Unique: Boolean;
+  begin
+    result := fUnique;
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  function TComInterfacedWideStringList.get_Value(const aName: WideString): WideString;
+  begin
+    result := fList.Values[aName];
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  function TComInterfacedWideStringList.IndexOf(const aString: WideString): Integer;
+  begin
+    result := fList.IndexOf(aString);
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  function TComInterfacedWideStringList.IndexOfName(const aName: WideString): Integer;
+  begin
+    result := fList.IndexOfName(aName);
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  procedure TComInterfacedWideStringList.Insert(const aIndex: Integer;
+                                            const aStrings: TWideStrings);
+  var
+    i: Integer;
+  begin
+    for i := 0 to Pred(aStrings.Count) do
+      fList.Insert(aIndex + i, aStrings[i]);
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  procedure TComInterfacedWideStringList.LoadFromFile(const aFilename: String);
+  begin
+    fList.LoadFromFile(aFilename);
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  procedure TComInterfacedWideStringList.SaveToFile(const aFilename: String);
+  begin
+    fList.SaveToFile(aFilename);
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  procedure TComInterfacedWideStringList.Insert(const aIndex: Integer;
+                                            const aString: WideString);
+  begin
+    fList.Insert(aIndex, aString);
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  procedure TComInterfacedWideStringList.set_Capacity(const aValue: Integer);
+  begin
+    fList.Capacity := aValue;
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  procedure TComInterfacedWideStringList.set_Item(const aIndex: Integer;
+                                              const aValue: WideString);
+  begin
+    fList[aIndex] := aValue;
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  procedure TComInterfacedWideStringList.set_Sorted(const aValue: Boolean);
+  begin
+    fList.Sorted := aValue;
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  procedure TComInterfacedWideStringList.set_Unique(const aValue: Boolean);
+  begin
+    fUnique := aValue;
+
+    if fUnique then
+      fList.Duplicates := dupIgnore
+    else
+      fList.Duplicates := dupAccept;
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  procedure TComInterfacedWideStringList.set_Value(const aName: WideString;
+                                               const aValue: WideString);
+  begin
+    fList.Values[aName] := aValue;
+  end;
+
+
+
+
+{ TWideStringsEnumerator }
+
+  constructor TWideStringsEnumerator.Create(aStrings: IWideStringList);
+  begin
+    inherited Create;
+
+    fIndex    := -1;
+    fStrings  := aStrings;
+
+  end;
+
+
+  function TWideStringsEnumerator.GetCurrent: WideString;
+  begin
+    result := fStrings[fIndex];
+  end;
+
+
+  function TWideStringsEnumerator.MoveNext: Boolean;
+  begin
+    result := fIndex < fStrings.Count - 1;
+    if result then
+      Inc(fIndex);
+  end;
 
 
 

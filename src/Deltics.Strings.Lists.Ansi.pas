@@ -51,8 +51,10 @@ interface
 
 
   type
-    TAnsiStrings    = class;
-    TAnsiStringList = class;
+    TAnsiStrings            = class;
+    TAnsiStringList         = class;
+    TAnsiStringsEnumerator  = class;
+
 
     TAnsiStringListSortCompareFn = function(List: TAnsiStrings; Index1, Index2: Integer): Integer;
 
@@ -64,6 +66,56 @@ interface
 
     PAnsiStringItemList = ^TAnsiStringItemList;
     TAnsiStringItemList = array of TAnsiStringItem;
+
+
+    IAnsiStringList = interface(IStringListBase)
+    ['{EB808363-A5DC-4C34-9F44-0F8AE16B4F15}']
+      function get_AsArray: AnsiStringArray;
+      function get_Capacity: Integer;
+      function get_Count: Integer;
+      function get_Item(const aIndex: Integer): AnsiString;
+      function get_List: TAnsiStringList;
+      function get_Name(const aIndex: Integer): AnsiString;
+      function get_Sorted: Boolean;
+      function get_Unique: Boolean;
+      function get_Value(const aName: AnsiString): AnsiString;
+      procedure set_Capacity(const aValue: Integer);
+      procedure set_Item(const aIndex: Integer; const aValue: AnsiString);
+      procedure set_Sorted(const aValue: Boolean);
+      procedure set_Unique(const aValue: Boolean);
+      procedure set_Value(const aName: AnsiString; const aValue: AnsiString);
+
+      function Add(const aString: AnsiString): Integer; overload;
+      procedure Add(const aList: IAnsiStringList); overload;
+      procedure Add(const aStrings: TAnsiStrings); overload;
+      procedure Add(const aArray: AnsiStringArray); overload;
+      procedure Clear;
+      function Clone: IAnsiStringList;
+      function Contains(const aString: AnsiString): Boolean;
+      function ContainsName(const aName: AnsiString): Boolean;
+      procedure Delete(const aIndex: Integer); overload;
+      procedure Delete(const aString: AnsiString); overload;
+    {$ifdef ForInEnumerators}
+      function GetEnumerator: TAnsiStringsEnumerator;
+    {$endif}
+      function IndexOf(const aString: AnsiString): Integer;
+      function IndexOfName(const aName: AnsiString): Integer;
+      procedure Insert(const aIndex: Integer; const aString: AnsiString); overload;
+      procedure Insert(const aIndex: Integer; const aStrings: TAnsiStrings); overload;
+      procedure LoadFromFile(const aFilename: String);
+      procedure SaveToFile(const aFilename: String);
+
+      property AsArray: AnsiStringArray read get_AsArray;
+      property Capacity: Integer read get_Capacity write set_Capacity;
+      property Count: Integer read get_Count;
+      property Items[const aIndex: Integer]: AnsiString read get_Item write set_Item; default;
+      property List: TAnsiStringList read get_List;
+      property Names[const aIndex: Integer]: AnsiString read get_Name;
+      property Sorted: Boolean read get_Sorted write set_Sorted;
+      property Unique: Boolean read get_Unique write set_Unique;
+      property Values[const aName: AnsiString]: AnsiString read get_Value write set_Value;
+    end;
+
 
 
     TAnsiStrings = class(TPersistent)
@@ -170,6 +222,7 @@ interface
       function AddObject(const aString: AnsiString; aObject: TObject): Integer; override;
       procedure Assign(aSource: TPersistent); override;
       procedure Clear; override;
+      function ContainsName(const aName: AnsiString): Boolean;
       procedure Delete(aIndex: Integer); override;
       procedure Exchange(aIndex1, aIndex2: Integer); override;
       function Find(const aString: AnsiString; var aIndex: Integer): Boolean; virtual;
@@ -185,6 +238,64 @@ interface
       property OnChanging: TNotifyEvent read fOnChanging write fOnChanging;
       property OwnsObjects: Boolean read fOwnsObjects write fOwnsObjects;
     end;
+
+
+    TComInterfacedAnsiStringList = class(TComInterfacedObject, IAnsiStringList)
+      function get_AsArray: AnsiStringArray;
+      function get_Capacity: Integer;
+      function get_Count: Integer;
+      function get_Item(const aIndex: Integer): AnsiString;
+      function get_List: TAnsiStringList;
+      function get_Name(const aIndex: Integer): AnsiString;
+      function get_Sorted: Boolean;
+      function get_Unique: Boolean;
+      function get_Value(const aName: AnsiString): AnsiString;
+      procedure set_Capacity(const aValue: Integer);
+      procedure set_Item(const aIndex: Integer; const aValue: AnsiString);
+      procedure set_Sorted(const aValue: Boolean);
+      procedure set_Unique(const aValue: Boolean);
+      procedure set_Value(const aName: AnsiString; const aValue: AnsiString);
+    public
+      function Add(const aString: AnsiString): Integer; overload;
+      procedure Add(const aList: IAnsiStringList); overload;
+      procedure Add(const aStrings: TAnsiStrings); overload;
+      procedure Add(const aArray: AnsiStringArray); overload;
+      procedure Clear;
+      function Clone: IAnsiStringList;
+      function Contains(const aString: AnsiString): Boolean;
+      function ContainsName(const aName: AnsiString): Boolean;
+      procedure Delete(const aIndex: Integer); overload;
+      procedure Delete(const aString: AnsiString); overload;
+    {$ifdef ForInEnumerators}
+      function GetEnumerator: TAnsiStringsEnumerator;
+    {$endif}
+      function IndexOf(const aString: AnsiString): Integer;
+      function IndexOfName(const aName: AnsiString): Integer;
+      procedure Insert(const aIndex: Integer; const aString: AnsiString); overload;
+      procedure Insert(const aIndex: Integer; const aStrings: TAnsiStrings); overload;
+      procedure LoadFromFile(const aFilename: String);
+      procedure SaveToFile(const aFilename: String);
+
+    private
+      fList: TAnsiStringList;
+      fUnique: Boolean;
+    public
+      constructor Create;
+      destructor Destroy; override;
+    end;
+
+
+    TAnsiStringsEnumerator = class
+    private
+      fIndex: Integer;
+      fStrings: IAnsiStringList;
+    public
+      constructor Create(aStrings: IAnsiStringList);
+      function GetCurrent: AnsiString; {$ifdef InlineMethods} inline; {$endif}
+      function MoveNext: Boolean;
+      property Current: AnsiString read GetCurrent;
+    end;
+
 
 
 implementation
@@ -1212,6 +1323,12 @@ implementation
   end;
 
 
+  function TAnsiStringList.ContainsName(const aName: AnsiString): Boolean;
+  begin
+    result := IndexOfName(aName) <> -1;
+  end;
+
+
   procedure TAnsiStringList.set_CaseSensitive(const aValue: Boolean);
   begin
     if aValue <> fCaseSensitive then
@@ -1231,6 +1348,315 @@ implementation
 
 
 
+
+{ TComInterfacedAnsiStringList ------------------------------------------------------------------- }
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  constructor TComInterfacedAnsiStringList.Create;
+  begin
+    inherited;
+
+    fList := TAnsiStringList.Create;
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  function TComInterfacedAnsiStringList.Add(const aString: AnsiString): Integer;
+  begin
+    result := -1;
+
+    if fUnique then
+      result := fList.IndexOf(aString);
+
+    if (NOT fUnique) or (result = -1) then
+      result := fList.Add(aString);
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  procedure TComInterfacedAnsiStringList.Add(const aList: IAnsiStringList);
+  begin
+    Add(aList.List);
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  procedure TComInterfacedAnsiStringList.Add(const aStrings: TAnsiStrings);
+  var
+    i: Integer;
+  begin
+    if fList.Sorted then
+      fList.AddStrings(aStrings)
+    else
+      for i := 0 to Pred(aStrings.Count) do
+        Add(aStrings[i]);
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  procedure TComInterfacedAnsiStringList.Add(const aArray: AnsiStringArray);
+  var
+    i: Integer;
+  begin
+    if fList.Capacity - fList.Count < Length(aArray) then
+      fList.Capacity := fList.Count + Length(aArray);
+
+    for i := 0 to High(aArray) do
+      fList.Add(aArray[i]);
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  procedure TComInterfacedAnsiStringList.Clear;
+  begin
+    fList.Clear;
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  function TComInterfacedAnsiStringList.Clone: IAnsiStringList;
+  begin
+    result := TComInterfacedAnsiStringList.Create;
+    result.Unique := self.get_Unique;
+    result.Sorted := self.get_Sorted;
+    result.Add(self);
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  function TComInterfacedAnsiStringList.Contains(const aString: AnsiString): Boolean;
+  begin
+    result := (fList.IndexOf(aString) <> -1);
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  function TComInterfacedAnsiStringList.ContainsName(const aName: AnsiString): Boolean;
+  begin
+    result := fList.ContainsName(aName);
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  procedure TComInterfacedAnsiStringList.Delete(const aIndex: Integer);
+  begin
+    fList.Delete(aIndex);
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  procedure TComInterfacedAnsiStringList.Delete(const aString: AnsiString);
+  var
+    idx: Integer;
+  begin
+    idx := IndexOf(aString);
+    if idx <> -1 then
+      Delete(idx);
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  destructor TComInterfacedAnsiStringList.Destroy;
+  begin
+    fList.Free;
+
+    inherited;
+  end;
+
+
+{$ifdef ForInEnumerators}
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  function TComInterfacedAnsiStringList.GetEnumerator: TAnsiStringsEnumerator;
+  begin
+    result := TAnsiStringsEnumerator.Create(self);
+  end;
+{$endif}
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  function TComInterfacedAnsiStringList.get_AsArray: AnsiStringArray;
+  var
+    i: Integer;
+  begin
+    SetLength(result, get_Count);
+
+    for i := 0 to Pred(get_Count) do
+      result[i] := fList[i];
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  function TComInterfacedAnsiStringList.get_Capacity: Integer;
+  begin
+    result:= fList.Capacity;
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  function TComInterfacedAnsiStringList.get_Count: Integer;
+  begin
+    result := fList.Count;
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  function TComInterfacedAnsiStringList.get_Item(const aIndex: Integer): AnsiString;
+  begin
+    result := fList[aIndex];
+  end;
+
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  function TComInterfacedAnsiStringList.get_List: TAnsiStringList;
+  begin
+    result := fList;
+  end;
+
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  function TComInterfacedAnsiStringList.get_Name(const aIndex: Integer): AnsiString;
+  begin
+    result := fList.Names[aIndex];
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  function TComInterfacedAnsiStringList.get_Sorted: Boolean;
+  begin
+    result := fList.Sorted;
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  function TComInterfacedAnsiStringList.get_Unique: Boolean;
+  begin
+    result := fUnique;
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  function TComInterfacedAnsiStringList.get_Value(const aName: AnsiString): AnsiString;
+  begin
+    result := fList.Values[aName];
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  function TComInterfacedAnsiStringList.IndexOf(const aString: AnsiString): Integer;
+  begin
+    result := fList.IndexOf(aString);
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  function TComInterfacedAnsiStringList.IndexOfName(const aName: AnsiString): Integer;
+  begin
+    result := fList.IndexOfName(aName);
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  procedure TComInterfacedAnsiStringList.Insert(const aIndex: Integer;
+                                            const aStrings: TAnsiStrings);
+  var
+    i: Integer;
+  begin
+    for i := 0 to Pred(aStrings.Count) do
+      fList.Insert(aIndex + i, aStrings[i]);
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  procedure TComInterfacedAnsiStringList.LoadFromFile(const aFilename: String);
+  begin
+    fList.LoadFromFile(aFilename);
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  procedure TComInterfacedAnsiStringList.SaveToFile(const aFilename: String);
+  begin
+    fList.SaveToFile(aFilename);
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  procedure TComInterfacedAnsiStringList.Insert(const aIndex: Integer;
+                                            const aString: AnsiString);
+  begin
+    fList.Insert(aIndex, aString);
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  procedure TComInterfacedAnsiStringList.set_Capacity(const aValue: Integer);
+  begin
+    fList.Capacity := aValue;
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  procedure TComInterfacedAnsiStringList.set_Item(const aIndex: Integer;
+                                              const aValue: AnsiString);
+  begin
+    fList[aIndex] := aValue;
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  procedure TComInterfacedAnsiStringList.set_Sorted(const aValue: Boolean);
+  begin
+    fList.Sorted := aValue;
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  procedure TComInterfacedAnsiStringList.set_Unique(const aValue: Boolean);
+  begin
+    fUnique := aValue;
+
+    if fUnique then
+      fList.Duplicates := dupIgnore
+    else
+      fList.Duplicates := dupAccept;
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  procedure TComInterfacedAnsiStringList.set_Value(const aName: AnsiString;
+                                               const aValue: AnsiString);
+  begin
+    fList.Values[aName] := aValue;
+  end;
+
+
+
+
+{ TAnsiStringsEnumerator }
+
+  constructor TAnsiStringsEnumerator.Create(aStrings: IAnsiStringList);
+  begin
+    inherited Create;
+
+    fIndex    := -1;
+    fStrings  := aStrings;
+  end;
+
+
+  function TAnsiStringsEnumerator.GetCurrent: AnsiString;
+  begin
+    result := fStrings[fIndex];
+  end;
+
+
+  function TAnsiStringsEnumerator.MoveNext: Boolean;
+  begin
+    result := fIndex < fStrings.Count - 1;
+    if result then
+      Inc(fIndex);
+  end;
 
 end.
 

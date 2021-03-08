@@ -23,6 +23,7 @@ interface
       class procedure CheckContainsResult(const aNeed: TContainNeeds; var aResult: Boolean; var aFoundOne: Boolean);
       class procedure CopyChars(var aString: AnsiString; aFromIndex: Integer; aToIndex: Integer; aNumChars: Integer); overload;
       class procedure CopyChars(var aString: UnicodeString; aFromIndex: Integer; aToIndex: Integer; aNumChars: Integer); overload;
+      class procedure CopyUtf8Chars(var aString: Utf8String; aFromIndex: Integer; aToIndex: Integer; aNumChars: Integer); overload;
       class function HasContainsResult(const aNeed: TContainNeeds; var aResult: Boolean; var aFoundOne: Boolean): Boolean;
     end;
 
@@ -56,9 +57,9 @@ implementation
     src: PAnsiChar;
     dest: PAnsiChar;
   begin
-    Require('aString', aString).IsNotEmpty;
-    Require('aFromIndex', aFromIndex).IsValidIndexForString(aString);
-    Require('aFromIndex + aNumChars - 1', aFromIndex + aNumChars - 1).IsValidIndexForString(aString);
+    Contract.Requires('aString', aString).IsNotEmpty;
+    Contract.Requires('aFromIndex', aFromIndex).IsValidIndexFor(aString);
+    Contract.Requires('aFromIndex + aNumChars - 1', aFromIndex + aNumChars - 1).IsValidIndexFor(aString);
 
     src   := @aString[aFromIndex];
     dest  := @aString[aToIndex];
@@ -76,14 +77,34 @@ implementation
     src: PWideChar;
     dest: PWideChar;
   begin
-    Require('aString', aString).IsNotEmpty;
-    Require('aFromIndex', aFromIndex).IsValidIndexForString(aString);
-    Require('aToIndex + aNumChars - 1', aToIndex + aNumChars - 1).IsValidIndexForString(aString);
+    Contract.Requires('aString', aString).IsNotEmpty;
+    Contract.Requires('aFromIndex', aFromIndex).IsValidIndexFor(aString);
+    Contract.Requires('aToIndex + aNumChars - 1', aToIndex + aNumChars - 1).IsValidIndexFor(aString);
 
     src   := @aString[aFromIndex];
     dest  := @aString[aToIndex];
 
     CopyMemory(dest, src, aNumChars * 2);
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
+  class procedure Utils.CopyUtf8Chars(var aString: Utf8String;
+                                          aFromIndex: Integer;
+                                          aToIndex: Integer;
+                                          aNumChars: Integer);
+  var
+    src: PUtf8Char;
+    dest: PUtf8Char;
+  begin
+    Contract.Requires('aString', aString).IsNotEmpty;
+    Contract.Requires('aFromIndex', aFromIndex).IsValidIndexFor(aString);
+    Contract.Requires('aFromIndex + aNumChars - 1', aFromIndex + aNumChars - 1).IsValidIndexFor(aString);
+
+    src   := PUtf8Char(@aString[aFromIndex]);
+    dest  := PUtf8Char(@aString[aToIndex]);
+
+    CopyMemory(dest, src, aNumChars);
   end;
 
 

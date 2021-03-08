@@ -53,25 +53,33 @@ interface
 
 
   type
-  {$ifdef UNICODE}
+    IAnsiStringList     = Deltics.Strings.Lists.Ansi.IAnsiStringList;
+    IStringList         = Deltics.Strings.Lists.String_.IStringList;
+    IUtf8StringList     = Deltics.Strings.Lists.Utf8.IUtf8StringList;
+    IWideStringList     = Deltics.Strings.Lists.Wide.IWideStringList;
+
     TAnsiStringList     = Deltics.Strings.Lists.Ansi.TAnsiStringList;
     TAnsiStrings        = Deltics.Strings.Lists.Ansi.TAnsiStrings;
+    TStrings            = Deltics.Strings.Lists.String_.TStrings;
+    TStringList         = Deltics.Strings.Lists.String_.TStringList;
+    TUtf8Strings        = Deltics.Strings.Lists.Utf8.TUtf8Strings;
+    TUtf8StringList     = Deltics.Strings.Lists.Utf8.TUtf8StringList;
+    TWideStrings        = Deltics.Strings.Lists.Wide.TWideStrings;
+    TWideStringList     = Deltics.Strings.Lists.Wide.TWideStringList;
+
+  {$ifdef UNICODE}
+    IUnicodeStringList  = Deltics.Strings.Lists.String_.IStringList;
 
     TUnicodeStringList  = Deltics.Strings.Lists.String_.TStringList;
     TUnicodeStrings     = Deltics.Strings.Lists.String_.TStrings;
   {$else}
-    TAnsiStringList     = Deltics.Strings.Lists.String_.TStringList;
-    TAnsiStrings        = Deltics.Strings.Lists.String_.TStrings;
+    IUnicodeStringList  = Deltics.Strings.Lists.Wide.IWideStringList;
 
     TUnicodeStringList  = Deltics.Strings.Lists.Wide.TWideStringList;
     TUnicodeStrings     = Deltics.Strings.Lists.Wide.TWideStrings;
   {$endif}
 
-    TWideStringList     = Deltics.Strings.Lists.Wide.TWideStringList;
-    TWideStrings        = Deltics.Strings.Lists.Wide.TWideStrings;
 
-    TStringList         = Deltics.Strings.Lists.String_.TStringList;
-    IStringList         = Deltics.Strings.Lists.String_.IStringList;
 
 
   {$ifdef TYPE_HELPERS}

@@ -1,7 +1,7 @@
 {
   * X11 (MIT) LICENSE *
 
-  Copyright © 2014 Jolyon Smith
+  Copyright © 2020 Jolyon Smith
 
   Permission is hereby granted, free of charge, to any person obtaining a copy of
    this software and associated documentation files (the "Software"), to deal in
@@ -51,242 +51,136 @@ interface
 
 
   type
-    TALTStrings = class;
-    TALTStringList = class;
+    TUtf8Strings           = class;
+    TUtf8StringList        = class;
+    TUtf8StringsEnumerator = class;
 
-  {$ifdef UNICODE}
-    TWIDEStrings    = Classes.TStrings;
-    TWIDEStringList = Classes.TStringList;
+    TUtf8StringListSortCompareFn = function(List: TUtf8Strings; Index1, Index2: Integer): Integer;
 
-    TANSIStrings    = TALTStrings;
-    TANSIStringList = TALTStringList;
-  {$else}
-    TANSIStrings    = Classes.TStrings;
-    TANSIStringList = Classes.TStringList;
+    PUtf8StringItem = ^TUtf8StringItem;
+    TUtf8StringItem = record
+      fString: Utf8String;
+      fObject: TObject;
+    end;
 
-    TWIDEStrings    = TALTStrings;
-    TWIDEStringList = TALTStringList;
-  {$endif}
-
-    TStringList = class;
-    StringArray = Deltics.Strings.Types.StringArray;
+    PUtf8StringItemList = ^TUtf8StringItemList;
+    TUtf8StringItemList = array of TUtf8StringItem;
 
 
-    IStringList = interface
-    ['{7623F313-9BC7-4D9C-9F9F-0A8C8E650874}']
-      function get_AsArray: StringArray;
+    IUtf8StringList = interface(IStringListBase)
+    ['{0DB2A26C-7E8C-444E-AAE5-11B84D0C8658}']
+      function get_AsArray: Utf8StringArray;
       function get_Capacity: Integer;
       function get_Count: Integer;
-      function get_Item(const aIndex: Integer): String;
-      function get_List: TStringList;
-      function get_Name(const aIndex: Integer): String;
+      function get_Item(const aIndex: Integer): Utf8String;
+      function get_List: TUtf8StringList;
+      function get_Name(const aIndex: Integer): Utf8String;
       function get_Sorted: Boolean;
       function get_Unique: Boolean;
-      function get_Value(const aName: String): String;
+      function get_Value(const aName: Utf8String): Utf8String;
       procedure set_Capacity(const aValue: Integer);
-      procedure set_Item(const aIndex: Integer; const aValue: String);
+      procedure set_Item(const aIndex: Integer; const aValue: Utf8String);
       procedure set_Sorted(const aValue: Boolean);
       procedure set_Unique(const aValue: Boolean);
-      procedure set_Value(const aName: String; const aValue: String);
+      procedure set_Value(const aName: Utf8String; const aValue: Utf8String);
 
-      function Add(const aString: String): Integer; overload;
-      procedure Add(const aStrings: IStringList); overload;
-      procedure Add(const aStrings: TStrings); overload;
-      procedure Add(const aStrings: array of String); overload;
+      function Add(const aString: Utf8String): Integer; overload;
+      procedure Add(const aList: IUtf8StringList); overload;
+      procedure Add(const aStrings: TUtf8Strings); overload;
+      procedure Add(const aArray: Utf8StringArray); overload;
       procedure Clear;
-      function Clone: IStringList;
-      function Contains(const aString: String): Boolean;
-      function ContainsName(const aName: String): Boolean;
+      function Clone: IUtf8StringList;
+      function Contains(const aString: Utf8String): Boolean;
+      function ContainsName(const aName: Utf8String): Boolean;
       procedure Delete(const aIndex: Integer); overload;
-      procedure Delete(const aString: String); overload;
+      procedure Delete(const aString: Utf8String); overload;
     {$ifdef ForInEnumerators}
-      function GetEnumerator: TStringsEnumerator;
+      function GetEnumerator: TUtf8StringsEnumerator;
     {$endif}
-      function IndexOf(const aString: String): Integer;
-      function IndexOfName(const aName: String): Integer;
-      procedure Insert(const aIndex: Integer; const aString: String); overload;
-      procedure Insert(const aIndex: Integer; const aStrings: TStrings); overload;
+      function IndexOf(const aString: Utf8String): Integer;
+      function IndexOfName(const aName: Utf8String): Integer;
+      procedure Insert(const aIndex: Integer; const aString: Utf8String); overload;
+      procedure Insert(const aIndex: Integer; const aStrings: TUtf8Strings); overload;
       procedure LoadFromFile(const aFilename: String);
       procedure SaveToFile(const aFilename: String);
 
-      property AsArray: StringArray read get_AsArray;
+      property AsArray: Utf8StringArray read get_AsArray;
       property Capacity: Integer read get_Capacity write set_Capacity;
       property Count: Integer read get_Count;
-      property Items[const aIndex: Integer]: String read get_Item write set_Item; default;
-      property List: TStringList read get_List;
-      property Names[const aIndex: Integer]: String read get_Name;
+      property Items[const aIndex: Integer]: Utf8String read get_Item write set_Item; default;
+      property List: TUtf8StringList read get_List;
+      property Names[const aIndex: Integer]: Utf8String read get_Name;
       property Sorted: Boolean read get_Sorted write set_Sorted;
       property Unique: Boolean read get_Unique write set_Unique;
-      property Values[const aName: String]: String read get_Value write set_Value;
+      property Values[const aName: Utf8String]: Utf8String read get_Value write set_Value;
     end;
 
 
-    TStringlist = class(Classes.TStringList)
-    {$ifdef DELPHI7}
-    private
-      fOwnsObjects: Boolean;
-    public
-      destructor Destroy; override;
-      property OwnsObjects: Boolean read fOwnsObjects write fOwnsObjects;
-    {$endif}
-    private
-      function get_Integer(const aIndex: Integer): Integer;
-    public
-      function Add(const aString: String): Integer; reintroduce; overload; override;
-      function Add(const aString: String; const aInteger: Integer): Integer; reintroduce; overload;
-      function Contains(const aString: String): Boolean;
-      function ContainsName(const aName: String): Boolean;
-      procedure Remove(const aString: String);
-      property Integers[const aIndex: Integer]: Integer read get_Integer;
-    end;
-
-
-    TComInterfacedStringList = class(TComInterfacedObject, IStringList)
-    private
-      fList: TStringList;
-      fUnique: Boolean;
-      function get_AsArray: StringArray;
-      function get_Capacity: Integer;
-      function get_Count: Integer;
-      function get_Item(const aIndex: Integer): String;
-      function get_List: TStringList;
-      function get_Name(const aIndex: Integer): String;
-      function get_Sorted: Boolean;
-      function get_Unique: Boolean;
-      function get_Value(const aName: String): String;
-      procedure set_Capacity(const aValue: Integer);
-      procedure set_Item(const aIndex: Integer; const aValue: String);
-      procedure set_Sorted(const aValue: Boolean);
-      procedure set_Unique(const aValue: Boolean);
-      procedure set_Value(const aName: String; const aValue: String);
-      function Add(const aString: String): Integer; overload;
-      procedure Add(const aStrings: IStringList); overload;
-      procedure Add(const aStrings: TStrings); overload;
-      procedure Add(const aStrings: array of String); overload;
-      procedure Clear;
-      function Clone: IStringList;
-      function Contains(const aString: String): Boolean;
-      function ContainsName(const aName: String): Boolean;
-      procedure Delete(const aIndex: Integer); overload;
-      procedure Delete(const aString: String); overload;
-    {$ifdef ForInEnumerators}
-      function GetEnumerator: TStringsEnumerator;
-    {$endif}
-      function IndexOf(const aString: String): Integer;
-      function IndexOfName(const aName: String): Integer;
-      procedure Insert(const aIndex: Integer; const aString: String); overload;
-      procedure Insert(const aIndex: Integer; const aStrings: TStrings); overload;
-      procedure LoadFromFile(const aFilename: String);
-      procedure SaveToFile(const aFilename: String);
-    public
-      constructor Create;
-      destructor Destroy; override;
-    end;
-
-
-  {$ifdef UNICODE}
-    ALTChar   = ANSIChar;
-    ALTString = ANSIString;
-
-    PANSIStringItem = ^TANSIStringItem;
-    TANSIStringItem = record
-      fString: ANSIString;
-      fObject: TObject;
-    end;
-
-    PANSIStringItemList = ^TANSIStringItemList;
-    TANSIStringItemList = array of TANSIStringItem;
-
-    PALTStringItem = PANSIStringItem;
-    TALTStringItem = TANSIStringItem;
-    PALTStringItemList = PANSIStringItemList;
-    TALTStringItemList = TANSIStringItemList;
-  {$else}
-    ALTChar   = WIDEChar;
-    ALTString = WIDEString;
-
-    PWIDEStringItem = ^TWIDEStringItem;
-    TWIDEStringItem = record
-      fString: WIDEString;
-      fObject: TObject;
-    end;
-
-    PWIDEStringItemList = ^TWIDEStringItemList;
-    TWIDEStringItemList = array of TWIDEStringItem;
-
-    PALTStringItem = PWIDEStringItem;
-    TALTStringItem = TWIDEStringItem;
-    PALTStringItemList = PWIDEStringItemList;
-    TALTStringItemList = TWIDEStringItemList;
-  {$endif}
-
-    TALTStringListSortCompare = function(List: TALTStringList; Index1, Index2: Integer): Integer;
-
-    TALTStrings = class(TPersistent)
+    TUtf8Strings = class(TPersistent)
     private
       fUpdateCount: Integer;
-      function get_CommaText: ALTString;
-      function get_Name(aIndex: Integer): ALTString;
-      function get_Value(const aName: ALTString): ALTString;
-      procedure set_CommaText(const aValue: ALTString);
-      procedure set_Value(const aName, aValue: ALTString);
+      function get_CommaText: Utf8String;
+      function get_Name(const aIndex: Integer): Utf8String;
+      function get_Value(const aName: Utf8String): Utf8String;
+      procedure set_CommaText(const aValue: Utf8String);
+      procedure set_Value(const aName, aValue: Utf8String);
       procedure ReadData(aReader: TReader);
       procedure WriteData(aWriter: TWriter);
-      function get_ValueFromIndex(aIndex: Integer): ALTString;
-      procedure set_ValueFromIndex(aIndex: Integer; const aValue: ALTString);
+      function get_ValueFromIndex(aIndex: Integer): Utf8String;
+      procedure set_ValueFromIndex(aIndex: Integer; const aValue: Utf8String);
     protected
       function get_Capacity: Integer; virtual;
       function get_Count: Integer; virtual; abstract;
       function get_Object(aIndex: Integer): TObject; virtual;
-      function get_Text: ALTString; virtual;
+      function get_Text: Utf8String; virtual;
       procedure set_Capacity(aNewCapacity: Integer); virtual;
       procedure set_Object(aIndex: Integer; aObject: TObject); virtual;
-      procedure set_Text(const aValue: ALTString); virtual;
+      procedure set_Text(const aValue: Utf8String); virtual;
       procedure DefineProperties(aFiler: TFiler); override;
       procedure Error(const aMsg: String; aData: Integer); overload;
       procedure Error(aMsg: PResStringRec; aData: Integer); overload;
-      function ExtractName(const aString: ALTString): ALTString;
-      function Get(Index: Integer): ALTString; virtual; abstract;
-      procedure Put(aIndex: Integer; const aString: ALTString); virtual;
+      function ExtractName(const aString: Utf8String): Utf8String;
+      function Get(Index: Integer): Utf8String; virtual; abstract;
+      procedure Put(aIndex: Integer; const aString: Utf8String); virtual;
       procedure SetUpdateState(Updating: Boolean); virtual;
       property UpdateCount: Integer read FUpdateCount;
-      function CompareStrings(const S1, S2: ALTString): Integer; virtual;
+      function CompareStrings(const S1, S2: Utf8String): Integer; virtual;
     public
-      function Add(const aString: ALTString): Integer; virtual;
-      function AddObject(const aString: ALTString; AObject: TObject): Integer; virtual;
-      procedure AddStrings(aStrings: TALTStrings); overload; virtual;
+      function Add(const aString: Utf8String): Integer; virtual;
+      function AddObject(const aString: Utf8String; AObject: TObject): Integer; virtual;
+      procedure AddStrings(aStrings: TUtf8Strings); overload; virtual;
       procedure Assign(aSource: TPersistent); override;
       procedure BeginUpdate;
       procedure Clear; virtual; abstract;
       procedure Delete(aIndex: Integer); virtual; abstract;
       procedure EndUpdate;
-      function Equals(aStrings: TALTStrings): Boolean; reintroduce;
+      function Equals(aStrings: TUtf8Strings): Boolean; reintroduce;
       procedure Exchange(aIndex1, aIndex2: Integer); virtual;
-      function IndexOf(const aString: ALTString): Integer; virtual;
-      function IndexOfName(const aName: ALTString): Integer; virtual;
+      function IndexOf(const aString: Utf8String): Integer; virtual;
+      function IndexOfName(const aName: Utf8String): Integer; virtual;
       function IndexOfObject(aObject: TObject): Integer; virtual;
-      procedure Insert(aIndex: Integer; const aString: ALTString); virtual; abstract;
-      procedure InsertObject(aIndex: Integer; const aString: ALTString; aObject: TObject); virtual;
+      procedure Insert(aIndex: Integer; const aString: Utf8String); virtual; abstract;
+      procedure InsertObject(aIndex: Integer; const aString: Utf8String; aObject: TObject); virtual;
       procedure LoadFromFile(const aFileName: string); overload; virtual;
       procedure LoadFromStream(Stream: TStream); overload; virtual;
       procedure Move(aCurIndex, aNewIndex: Integer); virtual;
       procedure SaveToFile(const aFileName: String); overload; virtual;
       procedure SaveToStream(Stream: TStream); overload; virtual;
       property Capacity: Integer read get_Capacity write set_Capacity;
-      property CommaText: ALTString read get_CommaText write set_CommaText;
+      property CommaText: Utf8String read get_CommaText write set_CommaText;
       property Count: Integer read get_Count;
-      property Names[aIndex: Integer]: ALTString read get_Name;
+      property Names[const aIndex: Integer]: Utf8String read get_Name;
       property Objects[aIndex: Integer]: TObject read get_Object write set_Object;
-      property Values[const aName: ALTString]: ALTString read get_Value write set_Value;
-      property ValueFromIndex[aIndex: Integer]: ALTString read get_ValueFromIndex write set_ValueFromIndex;
-      property Strings[aIndex: Integer]: ALTString read Get write Put; default;
-      property Text: ALTString read get_Text write set_Text;
+      property Values[const aName: Utf8String]: Utf8String read get_Value write set_Value;
+      property ValueFromIndex[aIndex: Integer]: Utf8String read get_ValueFromIndex write set_ValueFromIndex;
+      property Strings[aIndex: Integer]: Utf8String read Get write Put; default;
+      property Text: Utf8String read get_Text write set_Text;
     end;
 
 
-    TALTStringList = class(TALTStrings)
+    TUtf8StringList = class(TUtf8Strings)
     private
-      fList: TALTStringItemList;
+      fList: TUtf8StringItemList;
       fCount: Integer;
       fCapacity: Integer;
       fSorted: Boolean;
@@ -298,7 +192,7 @@ interface
       fOwnedObjects: array of TObject;
       procedure ExchangeItems(aIndex1, aIndex2: Integer);
       procedure Grow;
-      procedure QuickSort(L, R: Integer; aCompareFn: TALTStringListSortCompare);
+      procedure QuickSort(L, R: Integer; aCompareFn: TUtf8StringListSortCompareFn);
       procedure set_Sorted(aValue: Boolean);
       procedure set_CaseSensitive(const aValue: Boolean);
       procedure FreeOwnedObjects;
@@ -311,35 +205,93 @@ interface
       procedure set_Object(aIndex: Integer; aObject: TObject); override;
       procedure Changed; virtual;
       procedure Changing; virtual;
-      function Get(aIndex: Integer): ALTString; override;
+      function Get(aIndex: Integer): Utf8String; override;
       function GetObject(aIndex: Integer): TObject;
-      procedure Put(aIndex: Integer; const aString: ALTString); override;
+      procedure Put(aIndex: Integer; const aString: Utf8String); override;
       procedure PutObject(aIndex: Integer; aObject: TObject);
       procedure SetUpdateState(aUpdating: Boolean); override;
-      function CompareStrings(const aS1, aS2: ALTString): Integer; override;
-      procedure InsertItem(aIndex: Integer; const aString: ALTString; aObject: TObject); virtual;
+      function CompareStrings(const aS1, aS2: Utf8String): Integer; override;
+      procedure InsertItem(aIndex: Integer; const aString: Utf8String; aObject: TObject); virtual;
     public
       constructor Create; overload;
       constructor Create(aOwnsObjects: Boolean); overload;
       destructor Destroy; override;
-      function Add(const aString: ALTString): Integer; override;
-      function AddObject(const aString: ALTString; aObject: TObject): Integer; override;
+      function Add(const aString: Utf8String): Integer; override;
+      function AddObject(const aString: Utf8String; aObject: TObject): Integer; override;
       procedure Assign(aSource: TPersistent); override;
       procedure Clear; override;
+      function ContainsName(const aName: Utf8String): Boolean;
       procedure Delete(aIndex: Integer); override;
       procedure Exchange(aIndex1, aIndex2: Integer); override;
-      function Find(const aString: ALTString; var aIndex: Integer): Boolean; virtual;
-      function IndexOf(const aString: ALTString): Integer; override;
-      procedure Insert(aIndex: Integer; const aString: ALTString); override;
-      procedure InsertObject(aIndex: Integer; const aString: ALTString; aObject: TObject); override;
+      function Find(const aString: Utf8String; var aIndex: Integer): Boolean; virtual;
+      function IndexOf(const aString: Utf8String): Integer; override;
+      procedure Insert(aIndex: Integer; const aString: Utf8String); override;
+      procedure InsertObject(aIndex: Integer; const aString: Utf8String; aObject: TObject); override;
       procedure Sort; virtual;
-      procedure CustomSort(aCompareFn: TALTStringListSortCompare); virtual;
+      procedure CustomSort(aCompareFn: TUtf8StringListSortCompareFn); virtual;
       property Duplicates: TDuplicates read fDuplicates write fDuplicates;
       property Sorted: Boolean read fSorted write set_Sorted;
       property CaseSensitive: Boolean read fCaseSensitive write set_CaseSensitive;
       property OnChange: TNotifyEvent read fOnChange write fOnChange;
       property OnChanging: TNotifyEvent read fOnChanging write fOnChanging;
       property OwnsObjects: Boolean read fOwnsObjects write fOwnsObjects;
+    end;
+
+
+    TComInterfacedUtf8StringList = class(TComInterfacedObject, IUtf8StringList)
+      function get_AsArray: Utf8StringArray;
+      function get_Capacity: Integer;
+      function get_Count: Integer;
+      function get_Item(const aIndex: Integer): Utf8String;
+      function get_List: TUtf8StringList;
+      function get_Name(const aIndex: Integer): Utf8String;
+      function get_Sorted: Boolean;
+      function get_Unique: Boolean;
+      function get_Value(const aName: Utf8String): Utf8String;
+      procedure set_Capacity(const aValue: Integer);
+      procedure set_Item(const aIndex: Integer; const aValue: Utf8String);
+      procedure set_Sorted(const aValue: Boolean);
+      procedure set_Unique(const aValue: Boolean);
+      procedure set_Value(const aName: Utf8String; const aValue: Utf8String);
+    public
+      function Add(const aString: Utf8String): Integer; overload;
+      procedure Add(const aList: IUtf8StringList); overload;
+      procedure Add(const aStrings: TUtf8Strings); overload;
+      procedure Add(const aArray: Utf8StringArray); overload;
+      procedure Clear;
+      function Clone: IUtf8StringList;
+      function Contains(const aString: Utf8String): Boolean;
+      function ContainsName(const aName: Utf8String): Boolean;
+      procedure Delete(const aIndex: Integer); overload;
+      procedure Delete(const aString: Utf8String); overload;
+    {$ifdef ForInEnumerators}
+      function GetEnumerator: TUtf8StringsEnumerator;
+    {$endif}
+      function IndexOf(const aString: Utf8String): Integer;
+      function IndexOfName(const aName: Utf8String): Integer;
+      procedure Insert(const aIndex: Integer; const aString: Utf8String); overload;
+      procedure Insert(const aIndex: Integer; const aStrings: TUtf8Strings); overload;
+      procedure LoadFromFile(const aFilename: String);
+      procedure SaveToFile(const aFilename: String);
+
+    private
+      fList: TUtf8StringList;
+      fUnique: Boolean;
+    public
+      constructor Create;
+      destructor Destroy; override;
+    end;
+
+
+    TUtf8StringsEnumerator = class
+    private
+      fIndex: Integer;
+      fStrings: IUtf8StringList;
+    public
+      constructor Create(aStrings: IUtf8StringList);
+      function GetCurrent: Utf8String; {$ifdef InlineMethods} inline; {$endif}
+      function MoveNext: Boolean;
+      property Current: Utf8String read GetCurrent;
     end;
 
 
@@ -351,411 +303,28 @@ implementation
 
 
 
-{ TStringList ------------------------------------------------------------------------------------ }
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  function TStringlist.Add(const aString: String): Integer;
-  begin
-    result := inherited Add(aString);
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  function TStringlist.Add(const aString: String;
-                           const aInteger: Integer): Integer;
-  begin
-    result := AddObject(aString, TObject(aInteger));
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  function TStringlist.Contains(const aString: String): Boolean;
-  begin
-    result := (IndexOf(aString) <> -1);
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  function TStringlist.ContainsName(const aName: String): Boolean;
-  begin
-    result := IndexOfName(aName) <> -1;
-  end;
-
-
-
-
-
-
-{$ifdef DELPHI7}
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  destructor TStringList.Destroy;
-  var
-    i: Integer;
-  begin
-    if fOwnsObjects then
-      for i := Pred(Count) downto 0 do
-        Objects[i].Free;
-
-    inherited Destroy;
-  end;
-{$endif}
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  function TStringlist.get_Integer(const aIndex: Integer): Integer;
-  begin
-    result := Integer(Objects[aIndex]);
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  procedure TStringlist.Remove(const aString: String);
-  var
-    idx: Integer;
-  begin
-    idx := IndexOf(aString);
-    if idx <> -1 then
-      Delete(idx);
-  end;
-
-
-
-
-
-
-
-
-
-
-{ TComInterfacedStringList ----------------------------------------------------------------------------- }
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
-  constructor TComInterfacedStringList.Create;
-  begin
-    inherited;
-
-    fList := TStringList.Create;
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
-  function TComInterfacedStringList.Add(const aString: String): Integer;
-  begin
-    result := -1;
-
-    if fUnique then
-      result := fList.IndexOf(aString);
-
-    if (NOT fUnique) or (result = -1) then
-      result := fList.Add(aString);
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
-  procedure TComInterfacedStringList.Add(const aStrings: IStringList);
-  begin
-    Add(aStrings.List);
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
-  procedure TComInterfacedStringList.Add(const aStrings: TStrings);
-  var
-    i: Integer;
-  begin
-    if fList.Sorted then
-      fList.AddStrings(aStrings)
-    else
-      for i := 0 to Pred(aStrings.Count) do
-        Add(aStrings[i]);
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
-  procedure TComInterfacedStringList.Add(const aStrings: array of String);
-  var
-    i: Integer;
-    strings: IStringList;
-  begin
-    strings := TComInterfacedStringList.Create;
-    strings.Capacity := Length(aStrings);
-
-    for i := 0 to High(aStrings) do
-      strings.Add(aStrings[i]);
-
-    Add(strings);
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
-  procedure TComInterfacedStringList.Clear;
-  begin
-    fList.Clear;
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
-  function TComInterfacedStringList.Clone: IStringList;
-  begin
-    result := TComInterfacedStringList.Create;
-    result.Unique := self.get_Unique;
-    result.Sorted := self.get_Sorted;
-    result.Add(self);
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
-  function TComInterfacedStringList.Contains(const aString: String): Boolean;
-  begin
-    result := (fList.IndexOf(aString) <> -1);
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
-  function TComInterfacedStringList.ContainsName(const aName: String): Boolean;
-  begin
-    result := fList.ContainsName(aName);
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
-  procedure TComInterfacedStringList.Delete(const aIndex: Integer);
-  begin
-    fList.Delete(aIndex);
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
-  procedure TComInterfacedStringList.Delete(const aString: String);
-  var
-    idx: Integer;
-  begin
-    idx := IndexOf(aString);
-    if idx <> -1 then
-      Delete(idx);
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
-  destructor TComInterfacedStringList.Destroy;
-  begin
-    fList.Free;
-
-    inherited;
-  end;
-
-
-{$ifdef ForInEnumerators}
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
-  function TComInterfacedStringList.GetEnumerator: TStringsEnumerator;
-  begin
-    result := TStringsEnumerator.Create(fList);
-  end;
-{$endif}
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
-  function TComInterfacedStringList.get_AsArray: StringArray;
-  var
-    i: Integer;
-  begin
-    SetLength(result, get_Count);
-
-    for i := 0 to Pred(get_Count) do
-      result[i] := fList[i];
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
-  function TComInterfacedStringList.get_Capacity: Integer;
-  begin
-    result:= fList.Capacity;
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
-  function TComInterfacedStringList.get_Count: Integer;
-  begin
-    result := fList.Count;
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
-  function TComInterfacedStringList.get_Item(const aIndex: Integer): String;
-  begin
-    result := fList[aIndex];
-  end;
-
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
-  function TComInterfacedStringList.get_List: TStringList;
-  begin
-    result := fList;
-  end;
-
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
-  function TComInterfacedStringList.get_Name(const aIndex: Integer): String;
-  begin
-    result := fList.Names[aIndex];
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
-  function TComInterfacedStringList.get_Sorted: Boolean;
-  begin
-    result := fList.Sorted;
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
-  function TComInterfacedStringList.get_Unique: Boolean;
-  begin
-    result := fUnique;
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
-  function TComInterfacedStringList.get_Value(const aName: String): String;
-  begin
-    result := fList.Values[aName];
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
-  function TComInterfacedStringList.IndexOf(const aString: String): Integer;
-  begin
-    result := fList.IndexOf(aString);
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
-  function TComInterfacedStringList.IndexOfName(const aName: String): Integer;
-  begin
-    result := fList.IndexOfName(aName);
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
-  procedure TComInterfacedStringList.Insert(const aIndex: Integer;
-                                            const aStrings: TStrings);
-  var
-    i: Integer;
-  begin
-    for i := 0 to Pred(aStrings.Count) do
-      fList.Insert(aIndex + i, aStrings[i]);
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
-  procedure TComInterfacedStringList.LoadFromFile(const aFilename: String);
-  begin
-    fList.LoadFromFile(aFilename);
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
-  procedure TComInterfacedStringList.SaveToFile(const aFilename: String);
-  begin
-    fList.SaveToFile(aFilename);
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
-  procedure TComInterfacedStringList.Insert(const aIndex: Integer;
-                                            const aString: String);
-  begin
-    fList.Insert(aIndex, aString);
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
-  procedure TComInterfacedStringList.set_Capacity(const aValue: Integer);
-  begin
-    fList.Capacity := aValue;
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
-  procedure TComInterfacedStringList.set_Item(const aIndex: Integer;
-                                              const aValue: String);
-  begin
-    fList[aIndex] := aValue;
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
-  procedure TComInterfacedStringList.set_Sorted(const aValue: Boolean);
-  begin
-    fList.Sorted := aValue;
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
-  procedure TComInterfacedStringList.set_Unique(const aValue: Boolean);
-  begin
-    fUnique := aValue;
-
-    if fUnique then
-      fList.Duplicates := dupIgnore
-    else
-      fList.Duplicates := dupAccept;
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
-  procedure TComInterfacedStringList.set_Value(const aName: String;
-                                               const aValue: String);
-  begin
-    fList.Values[aName] := aValue;
-  end;
-
-
-
-
-
-{$ifdef UNICODE}
-
-  function ALT: ANSIClass; overload;
-  begin
-    result := ANSIFn;
-  end;
-
-{$else}
-
-  function ALT: WIDEClass; overload;
-  begin
-    result := WIDEFn;
-  end;
-
-{$endif}
-
-
   const
-    LineBreak         : ALTString = #13#10;
-    NameValueSeparator: ALTChar   = '=';
+    LineBreak         : Utf8String = #13#10;
+    NameValueSeparator: Utf8Char   = '=';
 
 
-  function StringListCompareStrings(List: TALTStringList; Index1, Index2: Integer): Integer;
+  function StringListCompareStrings(List: TUtf8Strings; Index1, Index2: Integer): Integer;
   begin
-    Result := List.CompareStrings(List.FList[Index1].FString,
-                                  List.FList[Index2].FString);
+    Result := List.CompareStrings(List[Index1], List[Index2]);
   end;
 
 
 
 
 
-  function TALTStrings.Add(const aString: ALTString): Integer;
+  function TUtf8Strings.Add(const aString: Utf8String): Integer;
   begin
     result := Count;
     Insert(result, aString);
   end;
 
 
-  function TALTStrings.AddObject(const aString: ALTString;
+  function TUtf8Strings.AddObject(const aString: Utf8String;
                                         aObject: TObject): Integer;
   begin
     result := Add(aString);
@@ -763,7 +332,7 @@ implementation
   end;
 
 
-  procedure TALTStrings.AddStrings(aStrings: TALTStrings);
+  procedure TUtf8Strings.AddStrings(aStrings: TUtf8Strings);
   var
     i: Integer;
   begin
@@ -778,9 +347,9 @@ implementation
   end;
 
 
-  procedure TALTStrings.Assign(aSource: TPersistent);
+  procedure TUtf8Strings.Assign(aSource: TPersistent);
   var
-    src: TALTStrings absolute aSource;
+    src: TUtf8Strings absolute aSource;
   begin
     if aSource is TStrings then
     begin
@@ -800,7 +369,7 @@ implementation
   end;
 
 
-  procedure TALTStrings.BeginUpdate;
+  procedure TUtf8Strings.BeginUpdate;
   begin
     if fUpdateCount = 0 then
       SetUpdateState(TRUE);
@@ -809,15 +378,15 @@ implementation
   end;
 
 
-  procedure TALTStrings.DefineProperties(aFiler: TFiler);
+  procedure TUtf8Strings.DefineProperties(aFiler: TFiler);
 
     function DoWrite: Boolean;
     begin
       if aFiler.Ancestor <> nil then
       begin
         Result := True;
-        if (aFiler.Ancestor is TALTStrings) then
-          result := NOT Equals(TALTStrings(aFiler.Ancestor))
+        if (aFiler.Ancestor is TUtf8Strings) then
+          result := NOT Equals(TUtf8Strings(aFiler.Ancestor))
       end
       else
         result := Count > 0;
@@ -828,7 +397,7 @@ implementation
   end;
 
 
-  procedure TALTStrings.EndUpdate;
+  procedure TUtf8Strings.EndUpdate;
   begin
     Dec(fUpdateCount);
     if fUpdateCount = 0 then
@@ -836,7 +405,7 @@ implementation
   end;
 
 
-  function TALTStrings.Equals(aStrings: TALTStrings): Boolean;
+  function TUtf8Strings.Equals(aStrings: TUtf8Strings): Boolean;
   var
     i: Integer;
   begin
@@ -860,7 +429,7 @@ implementation
     {$DEFINE OPTIMIZATIONSON}
     {$O-}
   {$ENDIF O+}
-  procedure TALTStrings.Error(const aMsg: String; aData: Integer);
+  procedure TUtf8Strings.Error(const aMsg: String; aData: Integer);
   {$ifdef __DELPHI2007}
     function ReturnAddr: Pointer;
     asm
@@ -876,7 +445,7 @@ implementation
     {$endif}
   end;
 
-  procedure TALTStrings.Error(aMsg: PResStringRec; aData: Integer);
+  procedure TUtf8Strings.Error(aMsg: PResStringRec; aData: Integer);
   {$ifdef __DELPHI2007}
     function ReturnAddr: Pointer;
     asm
@@ -897,10 +466,10 @@ implementation
   {$ENDIF OPTIMIZATIONSON}
 
 
-  procedure TALTStrings.Exchange(aIndex1, aIndex2: Integer);
+  procedure TUtf8Strings.Exchange(aIndex1, aIndex2: Integer);
   var
     TempObject: TObject;
-    TempString: ALTString;
+    TempString: Utf8String;
   begin
     BeginUpdate;
     try
@@ -917,33 +486,29 @@ implementation
   end;
 
 
-  function TALTStrings.ExtractName(const aString: ALTString): ALTString;
+  function TUtf8Strings.ExtractName(const aString: Utf8String): Utf8String;
   var
-  {$ifdef UNICODE}          // Cannot use ALTString in this case since ALTString == WIDEString
-    n, v: ANSIString;       //  and for the var params in the Split() method, the compiler
-  {$else}                   //  insists that we use the declared type.
-    n, v: UnicodeString;
-  {$endif}
+    n, v: Utf8String;
   begin
-    ALT.Split(aString, ALTChar('='), n, v);
+    Utf8.Split(aString, Utf8Char('='), n, v);
     result := n;
   end;
 
 
-  function TALTStrings.get_Capacity: Integer;
+  function TUtf8Strings.get_Capacity: Integer;
   begin  // descendents may optionally override/replace this default implementation
     Result := Count;
   end;
 
 
-  function TALTStrings.get_CommaText: ALTString;
+  function TUtf8Strings.get_CommaText: Utf8String;
   begin
     // result := GetDelimitedText;
   end;
 
 
 (*
-  function TALTStrings.GetDelimitedText: ALTString;
+  function TUtf8Strings.GetDelimitedText: Utf8String;
   var
     S: string;
     P: PChar;
@@ -973,23 +538,23 @@ implementation
   end;
 *)
 
-  function TALTStrings.get_Name(aIndex: Integer): ALTString;
+  function TUtf8Strings.get_Name(const aIndex: Integer): Utf8String;
   begin
     Result := ExtractName(Get(aIndex));
   end;
 
 
-  function TALTStrings.get_Object(aIndex: Integer): TObject;
+  function TUtf8Strings.get_Object(aIndex: Integer): TObject;
   begin
     result := NIL;
   end;
 
 
-  function TALTStrings.get_Text: ALTString;
+  function TUtf8Strings.get_Text: Utf8String;
   var
     I, L, Size, Count: Integer;
     P: PChar;
-    S, LB: ALTString;
+    S, LB: Utf8String;
   begin
     Count := get_Count;
     Size := 0;
@@ -1016,7 +581,7 @@ implementation
   end;
 
 
-  function TALTStrings.get_Value(const aName: ALTString): ALTString;
+  function TUtf8Strings.get_Value(const aName: Utf8String): Utf8String;
   var
     i: Integer;
   begin
@@ -1028,7 +593,7 @@ implementation
   end;
 
 
-  function TALTStrings.IndexOf(const aString: ALTString): Integer;
+  function TUtf8Strings.IndexOf(const aString: Utf8String): Integer;
   begin
     for result := 0 to Pred(Count) do
       if CompareStrings(Get(result), aString) = 0 then
@@ -1038,17 +603,17 @@ implementation
   end;
 
 
-  function TALTStrings.IndexOfName(const aName: ALTString): Integer;
+  function TUtf8Strings.IndexOfName(const aName: Utf8String): Integer;
   begin
     for result := 0 to Pred(Count) do
-      if ALT.BeginsWith(Get(result), aName) then
+      if Utf8.BeginsWith(Get(result), aName) then
         EXIT;
 
     result := -1;
   end;
 
 
-  function TALTStrings.IndexOfObject(aObject: TObject): Integer;
+  function TUtf8Strings.IndexOfObject(aObject: TObject): Integer;
   begin
     for result := 0 to Pred(Count) do
       if get_Object(result) = aObject then
@@ -1058,14 +623,14 @@ implementation
   end;
 
 
-  procedure TALTStrings.InsertObject(aIndex: Integer; const aString: ALTString; aObject: TObject);
+  procedure TUtf8Strings.InsertObject(aIndex: Integer; const aString: Utf8String; aObject: TObject);
   begin
     Insert(aIndex, aString);
     set_Object(aIndex, aObject);
   end;
 
 
-  procedure TALTStrings.LoadFromFile(const aFileName: String);
+  procedure TUtf8Strings.LoadFromFile(const aFileName: String);
 //  var
 //    Stream: TStream;
   begin
@@ -1082,16 +647,16 @@ implementation
   end;
 
 
-  procedure TALTStrings.LoadFromStream(Stream: TStream);
+  procedure TUtf8Strings.LoadFromStream(Stream: TStream);
   begin
     // TODO
   end;
 
 
-  procedure TALTStrings.Move(aCurIndex, aNewIndex: Integer);
+  procedure TUtf8Strings.Move(aCurIndex, aNewIndex: Integer);
   var
     TempObject: TObject;
-    TempString: ALTString;
+    TempString: Utf8String;
   begin
     if aCurIndex <> aNewIndex then
     begin
@@ -1112,7 +677,7 @@ implementation
   end;
 
 
-  procedure TALTStrings.Put(aIndex: Integer; const aString: ALTString);
+  procedure TUtf8Strings.Put(aIndex: Integer; const aString: Utf8String);
   var
     TempObject: TObject;
   begin
@@ -1122,13 +687,13 @@ implementation
   end;
 
 
-  procedure TALTStrings.set_Object(aIndex: Integer; aObject: TObject);
+  procedure TUtf8Strings.set_Object(aIndex: Integer; aObject: TObject);
   begin
     // NO-OP - override in descendants
   end;
 
 
-  procedure TALTStrings.ReadData(aReader: TReader);
+  procedure TUtf8Strings.ReadData(aReader: TReader);
   begin
     aReader.ReadListBegin;
 
@@ -1136,10 +701,10 @@ implementation
     try
       Clear;
       while NOT aReader.EndOfList do
-      {$ifdef UNICODE}
-        Add(ANSI.FromWIDE(aReader.ReadString));
+      {$ifNdef UNICODE}
+        Add(Utf8.FromAnsi(aReader.ReadString));
       {$else}
-        Add(aReader.ReadWideString);
+        Add(Utf8.FromWide(aReader.ReadString));
       {$endif}
 
     finally
@@ -1150,34 +715,34 @@ implementation
   end;
 
 
-  procedure TALTStrings.SaveToFile(const aFileName: String);
+  procedure TUtf8Strings.SaveToFile(const aFileName: String);
   begin
     // TODO:
   end;
 
 
-  procedure TALTStrings.SaveToStream(Stream: TStream);
+  procedure TUtf8Strings.SaveToStream(Stream: TStream);
   begin
     // TODO:
   end;
 
 
-  procedure TALTStrings.set_Capacity(aNewCapacity: Integer);
+  procedure TUtf8Strings.set_Capacity(aNewCapacity: Integer);
   begin
     // do nothing - descendents may optionally implement this method
   end;
 
 
-  procedure TALTStrings.set_CommaText(const aValue: ALTString);
+  procedure TUtf8Strings.set_CommaText(const aValue: Utf8String);
   begin
     // TODO:
   end;
 
 
-  procedure TALTStrings.set_Text(const aValue: ALTString);
+  procedure TUtf8Strings.set_Text(const aValue: Utf8String);
   var
     P, Start: PWIDEChar;
-    S: ALTString;
+    S: Utf8String;
   begin
     BeginUpdate;
     try
@@ -1203,12 +768,12 @@ implementation
     end;
   end;
 
-  procedure TALTStrings.SetUpdateState(Updating: Boolean);
+  procedure TUtf8Strings.SetUpdateState(Updating: Boolean);
   begin
   end;
 
 
-  procedure TALTStrings.set_Value(const aName, aValue: ALTString);
+  procedure TUtf8Strings.set_Value(const aName, aValue: Utf8String);
   var
     I: Integer;
   begin
@@ -1216,49 +781,46 @@ implementation
     if aValue <> '' then
     begin
       if I < 0 then I := Add('');
-      Put(I, aName + NameValueSeparator + aValue);
+      Put(I, Utf8.Append(aName, Utf8.Append(NameValueSeparator, aValue)));
     end
-    else
-    begin
-      if I >= 0 then Delete(I);
-    end;
+    else if I >= 0 then Delete(I);
   end;
 
 
-  procedure TALTStrings.WriteData(aWriter: TWriter);
+  procedure TUtf8Strings.WriteData(aWriter: TWriter);
   var
     i: Integer;
   begin
     aWriter.WriteListBegin;
 
     for i := 0 to Pred(Count) do
-    {$ifdef UNICODE}
-      aWriter.WriteString(WIDE.FromANSI(Get(i)));
+    {$ifNdef UNICODE}
+      aWriter.WriteString(Ansi.FromUtf8(Get(i)));
     {$else}
-      aWriter.WriteWideString(Get(i));
+      aWriter.WriteString(Wide.FromUtf8(Get(i)));
     {$endif}
 
     aWriter.WriteListEnd;
   end;
 
 
-  function TALTStrings.CompareStrings(const S1, S2: ALTString): Integer;
+  function TUtf8Strings.CompareStrings(const S1, S2: Utf8String): Integer;
   begin
-    result := ALT.Compare(S1, S2);
+    result := Utf8.Compare(S1, S2);
   end;
 
 
-  function TALTStrings.get_ValueFromIndex(aIndex: Integer): ALTString;
+  function TUtf8Strings.get_ValueFromIndex(aIndex: Integer): Utf8String;
   var
-    value: {$ifdef UNICODE}ANSIString{$else}UnicodeString{$endif};
+    value: Utf8String;
     p: Integer;
   begin
     if aIndex >= 0 then
     begin
       value := Get(aIndex);
 
-      if ALT.Find(value, NameValueSeparator, p) then
-        ALT.DeleteLeft(value, p)
+      if Utf8.Find(value, NameValueSeparator, p) then
+        Utf8.DeleteLeft(value, p)
       else
         result := '';
     end
@@ -1267,15 +829,15 @@ implementation
   end;
 
 
-  procedure TALTStrings.set_ValueFromIndex(      aIndex: Integer;
-                                            const aValue: ALTString);
+  procedure TUtf8Strings.set_ValueFromIndex(      aIndex: Integer;
+                                            const aValue: Utf8String);
   begin
     if aValue <> '' then
     begin
       if aIndex < 0 then
         aIndex := Add('');
 
-      Put(aIndex, Names[aIndex] + NameValueSeparator + aValue);
+      Put(aIndex, Utf8.Append(Names[aIndex], Utf8.Append(NameValueSeparator, aValue)));
     end
     else if aIndex >= 0 then
       Delete(aIndex);
@@ -1288,20 +850,20 @@ implementation
 
 
 
-  constructor TALTStringList.Create;
+  constructor TUtf8StringList.Create;
   begin
     inherited Create;
   end;
 
 
-  constructor TALTStringList.Create(aOwnsObjects: Boolean);
+  constructor TUtf8StringList.Create(aOwnsObjects: Boolean);
   begin
     inherited Create;
     fOwnsObjects := aOwnsObjects;
   end;
 
 
-  destructor TALTStringList.Destroy;
+  destructor TUtf8StringList.Destroy;
   begin
     fOnChange   := NIL;
     fOnChanging := NIL;
@@ -1322,13 +884,13 @@ implementation
   end;
 
 
-  function TALTStringList.Add(const aString: ALTString): Integer;
+  function TUtf8StringList.Add(const aString: Utf8String): Integer;
   begin
     result := AddObject(aString, NIL);
   end;
 
 
-  function TALTStringList.AddObject(const aString: ALTString;
+  function TUtf8StringList.AddObject(const aString: Utf8String;
                                           aObject: TObject): Integer;
   begin
     if NOT Sorted then
@@ -1344,13 +906,13 @@ implementation
   end;
 
 
-  procedure TALTStringList.Assign(aSource: TPersistent);
+  procedure TUtf8StringList.Assign(aSource: TPersistent);
   var
-    src: TALTStringList absolute aSource;
+    src: TUtf8StringList absolute aSource;
   begin
     inherited Assign(aSource);
 
-    if aSource is TALTStringList then
+    if aSource is TUtf8StringList then
     begin
       fCaseSensitive  := src.fCaseSensitive;
       fDuplicates     := src.fDuplicates;
@@ -1359,21 +921,21 @@ implementation
   end;
 
 
-  procedure TALTStringList.Changed;
+  procedure TUtf8StringList.Changed;
   begin
     if (UpdateCount = 0) and Assigned(fOnChange) then
       fOnChange(self);
   end;
 
 
-  procedure TALTStringList.Changing;
+  procedure TUtf8StringList.Changing;
   begin
     if (UpdateCount = 0) and Assigned(fOnChanging) then
       fOnChanging(self);
   end;
 
 
-  procedure TALTStringList.Clear;
+  procedure TUtf8StringList.Clear;
   begin
     if fCount <> 0 then
     begin
@@ -1394,7 +956,7 @@ implementation
     end;
   end;
 
-  procedure TALTStringList.Delete(aIndex: Integer);
+  procedure TUtf8StringList.Delete(aIndex: Integer);
   var
     Obj: TObject;
   begin
@@ -1418,7 +980,7 @@ implementation
 
     if aIndex < FCount then
     begin
-      System.Move(fList[aIndex + 1], fList[aIndex], (fCount - aIndex) * sizeof(TALTStringItem));
+      System.Move(fList[aIndex + 1], fList[aIndex], (fCount - aIndex) * sizeof(TUtf8StringItem));
 
       // Make sure there is no danglng pointer in the last (now unused) element
 
@@ -1433,7 +995,7 @@ implementation
   end;
 
 
-  procedure TALTStringList.Exchange(aIndex1, aIndex2: Integer);
+  procedure TUtf8StringList.Exchange(aIndex1, aIndex2: Integer);
   begin
     if (aIndex1 < 0) or (aIndex1 >= fCount) then Error(Pointer(@SListIndexError), aIndex1);
     if (aIndex2 < 0) or (aIndex2 >= fCount) then Error(Pointer(@SListIndexError), aIndex2);
@@ -1446,10 +1008,10 @@ implementation
   end;
 
 
-  procedure TALTStringList.ExchangeItems(aIndex1, aIndex2: Integer);
+  procedure TUtf8StringList.ExchangeItems(aIndex1, aIndex2: Integer);
   var
     Temp: Pointer;
-    Item1, Item2: PALTStringItem;
+    Item1, Item2: PUtf8StringItem;
   begin
     Item1 := @fList[aIndex1];
     Item2 := @fList[aIndex2];
@@ -1464,7 +1026,7 @@ implementation
   end;
 
 
-  function TALTStringList.Find(const aString: ALTString;
+  function TUtf8StringList.Find(const aString: Utf8String;
                                 var aIndex: Integer): Boolean;
   var
     L, H, I, C: Integer;
@@ -1496,7 +1058,7 @@ implementation
   end;
 
 
-  procedure TALTStringList.FreeOwnedObjects;
+  procedure TUtf8StringList.FreeOwnedObjects;
   var
     i: Integer;
   begin
@@ -1506,7 +1068,7 @@ implementation
   end;
 
 
-  procedure TALTStringList.GatherOwnedObjects;
+  procedure TUtf8StringList.GatherOwnedObjects;
   var
     i, j: Integer;
   begin
@@ -1524,7 +1086,7 @@ implementation
   end;
 
 
-  function TALTStringList.Get(aIndex: Integer): ALTString;
+  function TUtf8StringList.Get(aIndex: Integer): Utf8String;
   begin
     if Cardinal(aIndex) >= Cardinal(fCount) then
       Error(Pointer(@SListIndexError), aIndex);
@@ -1533,31 +1095,31 @@ implementation
   end;
 
 
-  function TALTStringList.get_Capacity: Integer;
+  function TUtf8StringList.get_Capacity: Integer;
   begin
     result := fCapacity;
   end;
 
 
-  function TALTStringList.get_Count: Integer;
+  function TUtf8StringList.get_Count: Integer;
   begin
     result := fCount;
   end;
 
 
-  function TALTStringList.get_Object(aIndex: Integer): TObject;
+  function TUtf8StringList.get_Object(aIndex: Integer): TObject;
   begin
     result := GetObject(aIndex);
   end;
 
 
-  procedure TALTStringList.set_Object(aIndex: Integer; aObject: TObject);
+  procedure TUtf8StringList.set_Object(aIndex: Integer; aObject: TObject);
   begin
     PutObject(aIndex, aObject);
   end;
 
 
-  function TALTStringList.GetObject(aIndex: Integer): TObject;
+  function TUtf8StringList.GetObject(aIndex: Integer): TObject;
   begin
     if Cardinal(aIndex) >= Cardinal(fCount) then
       Error(Pointer(@SListIndexError), aIndex);
@@ -1566,7 +1128,7 @@ implementation
   end;
 
 
-  procedure TALTStringList.Grow;
+  procedure TUtf8StringList.Grow;
   var
     delta: Integer;
   begin
@@ -1581,7 +1143,7 @@ implementation
   end;
 
 
-  function TALTStringList.IndexOf(const aString: ALTString): Integer;
+  function TUtf8StringList.IndexOf(const aString: Utf8String): Integer;
   begin
     if NOT Sorted then
       result := inherited IndexOf(aString)
@@ -1590,14 +1152,14 @@ implementation
   end;
 
 
-  procedure TALTStringList.Insert(aIndex: Integer; const aString: ALTString);
+  procedure TUtf8StringList.Insert(aIndex: Integer; const aString: Utf8String);
   begin
     InsertObject(aIndex, aString, NIL);
   end;
 
 
-  procedure TALTStringList.InsertObject(      aIndex: Integer;
-                                         const aString: ALTString;
+  procedure TUtf8StringList.InsertObject(      aIndex: Integer;
+                                         const aString: Utf8String;
                                                aObject: TObject);
   begin
     if Sorted then
@@ -1610,8 +1172,8 @@ implementation
   end;
 
 
-  procedure TALTStringList.InsertItem(       aIndex: Integer;
-                                        const aString: ALTString;
+  procedure TUtf8StringList.InsertItem(       aIndex: Integer;
+                                        const aString: Utf8String;
                                               aObject: TObject);
   begin
     Changing;
@@ -1620,7 +1182,7 @@ implementation
       Grow;
 
     if aIndex < fCount then
-      System.Move(fList[aIndex], fList[aIndex + 1], (fCount - aIndex) * sizeof(TALTStringItem));
+      System.Move(fList[aIndex], fList[aIndex + 1], (fCount - aIndex) * sizeof(TUtf8StringItem));
 
     Pointer(fList[aIndex].fString) := NIL;
     Pointer(fList[aIndex].fObject) := NIL;
@@ -1633,8 +1195,8 @@ implementation
   end;
 
 
-  procedure TALTStringList.Put(      aIndex: Integer;
-                                const aString: ALTString);
+  procedure TUtf8StringList.Put(      aIndex: Integer;
+                                const aString: Utf8String);
   begin
     if Sorted then
       Error(Pointer(@SSortedListError), 0);
@@ -1650,7 +1212,7 @@ implementation
   end;
 
 
-  procedure TALTStringList.PutObject(aIndex: Integer; aObject: TObject);
+  procedure TUtf8StringList.PutObject(aIndex: Integer; aObject: TObject);
   begin
     if Cardinal(aIndex) >= Cardinal(fCount) then
       Error(Pointer(@SListIndexError), aIndex);
@@ -1663,8 +1225,8 @@ implementation
   end;
 
 
-  procedure TALTStringList.QuickSort(L, R: Integer;
-                                      aCompareFn: TALTStringListSortCompare);
+  procedure TUtf8StringList.QuickSort(L, R: Integer;
+                                      aCompareFn: TUtf8StringListSortCompareFn);
   var
     I, J, P: Integer;
   begin
@@ -1698,7 +1260,7 @@ implementation
   end;
 
 
-  procedure TALTStringList.set_Capacity(aNewCapacity: Integer);
+  procedure TUtf8StringList.set_Capacity(aNewCapacity: Integer);
   begin
     if (aNewCapacity < fCount) then
       Error(Pointer(@SListCapacityError), aNewCapacity);
@@ -1711,7 +1273,7 @@ implementation
   end;
 
 
-  procedure TALTStringList.set_Sorted(aValue: Boolean);
+  procedure TUtf8StringList.set_Sorted(aValue: Boolean);
   begin
     if fSorted <> aValue then
     begin
@@ -1721,7 +1283,7 @@ implementation
   end;
 
 
-  procedure TALTStringList.SetUpdateState(aUpdating: Boolean);
+  procedure TUtf8StringList.SetUpdateState(aUpdating: Boolean);
   begin
     if (aUpdating) then
       Changing
@@ -1730,13 +1292,13 @@ implementation
   end;
 
 
-  procedure TALTStringList.Sort;
+  procedure TUtf8StringList.Sort;
   begin
     CustomSort(StringListCompareStrings);
   end;
 
 
-  procedure TALTStringList.CustomSort(aCompareFn: TALTStringListSortCompare);
+  procedure TUtf8StringList.CustomSort(aCompareFn: TUtf8StringListSortCompareFn);
   begin
     if NOT Sorted and (fCount > 1) then
     begin
@@ -1747,15 +1309,21 @@ implementation
   end;
 
 
-  function TALTStringList.CompareStrings(const aS1, aS2: ALTString): Integer;
+  function TUtf8StringList.CompareStrings(const aS1, aS2: Utf8String): Integer;
   const
     CASEMODE: array[FALSE..TRUE] of TCaseSensitivity = (csIgnoreCase, csCaseSensitive);
   begin
-    result := ALT.Compare(aS1, aS2, CASEMODE[CaseSensitive]);
+    result := Utf8.Compare(aS1, aS2, CASEMODE[CaseSensitive]);
   end;
 
 
-  procedure TALTStringList.set_CaseSensitive(const aValue: Boolean);
+  function TUtf8StringList.ContainsName(const aName: Utf8String): Boolean;
+  begin
+    result := IndexOfName(aName) <> -1;
+  end;
+
+
+  procedure TUtf8StringList.set_CaseSensitive(const aValue: Boolean);
   begin
     if aValue <> fCaseSensitive then
     begin
@@ -1774,6 +1342,314 @@ implementation
 
 
 
+
+
+{ TComInterfacedUtf8StringList ------------------------------------------------------------------- }
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  constructor TComInterfacedUtf8StringList.Create;
+  begin
+    inherited;
+
+    fList := TUtf8StringList.Create;
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  function TComInterfacedUtf8StringList.Add(const aString: Utf8String): Integer;
+  begin
+    result := -1;
+
+    if fUnique then
+      result := fList.IndexOf(aString);
+
+    if (NOT fUnique) or (result = -1) then
+      result := fList.Add(aString);
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  procedure TComInterfacedUtf8StringList.Add(const aList: IUtf8StringList);
+  begin
+    Add(aList.List);
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  procedure TComInterfacedUtf8StringList.Add(const aStrings: TUtf8Strings);
+  var
+    i: Integer;
+  begin
+    if fList.Sorted then
+      fList.AddStrings(aStrings)
+    else
+      for i := 0 to Pred(aStrings.Count) do
+        Add(aStrings[i]);
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  procedure TComInterfacedUtf8StringList.Add(const aArray: Utf8StringArray);
+  var
+    i: Integer;
+  begin
+    if fList.Capacity - fList.Count < Length(aArray) then
+      fList.Capacity := fList.Count + Length(aArray);
+
+    for i := 0 to High(aArray) do
+      fList.Add(aArray[i]);
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  procedure TComInterfacedUtf8StringList.Clear;
+  begin
+    fList.Clear;
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  function TComInterfacedUtf8StringList.Clone: IUtf8StringList;
+  begin
+    result := TComInterfacedUtf8StringList.Create;
+    result.Unique := self.get_Unique;
+    result.Sorted := self.get_Sorted;
+    result.Add(self);
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  function TComInterfacedUtf8StringList.Contains(const aString: Utf8String): Boolean;
+  begin
+    result := (fList.IndexOf(aString) <> -1);
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  function TComInterfacedUtf8StringList.ContainsName(const aName: Utf8String): Boolean;
+  begin
+    result := fList.ContainsName(aName);
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  procedure TComInterfacedUtf8StringList.Delete(const aIndex: Integer);
+  begin
+    fList.Delete(aIndex);
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  procedure TComInterfacedUtf8StringList.Delete(const aString: Utf8String);
+  var
+    idx: Integer;
+  begin
+    idx := IndexOf(aString);
+    if idx <> -1 then
+      Delete(idx);
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  destructor TComInterfacedUtf8StringList.Destroy;
+  begin
+    fList.Free;
+
+    inherited;
+  end;
+
+
+{$ifdef ForInEnumerators}
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  function TComInterfacedUtf8StringList.GetEnumerator: TUtf8StringsEnumerator;
+  begin
+    result := TUtf8StringsEnumerator.Create(self);
+  end;
+{$endif}
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  function TComInterfacedUtf8StringList.get_AsArray: Utf8StringArray;
+  var
+    i: Integer;
+  begin
+    SetLength(result, get_Count);
+
+    for i := 0 to Pred(get_Count) do
+      result[i] := fList[i];
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  function TComInterfacedUtf8StringList.get_Capacity: Integer;
+  begin
+    result:= fList.Capacity;
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  function TComInterfacedUtf8StringList.get_Count: Integer;
+  begin
+    result := fList.Count;
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  function TComInterfacedUtf8StringList.get_Item(const aIndex: Integer): Utf8String;
+  begin
+    result := fList[aIndex];
+  end;
+
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  function TComInterfacedUtf8StringList.get_List: TUtf8StringList;
+  begin
+    result := fList;
+  end;
+
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  function TComInterfacedUtf8StringList.get_Name(const aIndex: Integer): Utf8String;
+  begin
+    result := fList.Names[aIndex];
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  function TComInterfacedUtf8StringList.get_Sorted: Boolean;
+  begin
+    result := fList.Sorted;
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  function TComInterfacedUtf8StringList.get_Unique: Boolean;
+  begin
+    result := fUnique;
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  function TComInterfacedUtf8StringList.get_Value(const aName: Utf8String): Utf8String;
+  begin
+    result := fList.Values[aName];
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  function TComInterfacedUtf8StringList.IndexOf(const aString: Utf8String): Integer;
+  begin
+    result := fList.IndexOf(aString);
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  function TComInterfacedUtf8StringList.IndexOfName(const aName: Utf8String): Integer;
+  begin
+    result := fList.IndexOfName(aName);
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  procedure TComInterfacedUtf8StringList.Insert(const aIndex: Integer;
+                                            const aStrings: TUtf8Strings);
+  var
+    i: Integer;
+  begin
+    for i := 0 to Pred(aStrings.Count) do
+      fList.Insert(aIndex + i, aStrings[i]);
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  procedure TComInterfacedUtf8StringList.LoadFromFile(const aFilename: String);
+  begin
+    fList.LoadFromFile(aFilename);
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  procedure TComInterfacedUtf8StringList.SaveToFile(const aFilename: String);
+  begin
+    fList.SaveToFile(aFilename);
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  procedure TComInterfacedUtf8StringList.Insert(const aIndex: Integer;
+                                            const aString: Utf8String);
+  begin
+    fList.Insert(aIndex, aString);
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  procedure TComInterfacedUtf8StringList.set_Capacity(const aValue: Integer);
+  begin
+    fList.Capacity := aValue;
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  procedure TComInterfacedUtf8StringList.set_Item(const aIndex: Integer;
+                                              const aValue: Utf8String);
+  begin
+    fList[aIndex] := aValue;
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  procedure TComInterfacedUtf8StringList.set_Sorted(const aValue: Boolean);
+  begin
+    fList.Sorted := aValue;
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  procedure TComInterfacedUtf8StringList.set_Unique(const aValue: Boolean);
+  begin
+    fUnique := aValue;
+
+    if fUnique then
+      fList.Duplicates := dupIgnore
+    else
+      fList.Duplicates := dupAccept;
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  procedure TComInterfacedUtf8StringList.set_Value(const aName: Utf8String;
+                                               const aValue: Utf8String);
+  begin
+    fList.Values[aName] := aValue;
+  end;
+
+
+{ TUtf8StringsEnumerator }
+
+  constructor TUtf8StringsEnumerator.Create(aStrings: IUtf8StringList);
+  begin
+    inherited Create;
+
+    fIndex    := -1;
+    fStrings  := aStrings;
+  end;
+
+
+  function TUtf8StringsEnumerator.GetCurrent: Utf8String;
+  begin
+    result := fStrings[fIndex];
+  end;
+
+
+  function TUtf8StringsEnumerator.MoveNext: Boolean;
+  begin
+    result := fIndex < fStrings.Count - 1;
+    if result then
+      Inc(fIndex);
+  end;
 
 end.
 

@@ -52,17 +52,41 @@ interface
   uses
     Classes,
     SysUtils,
-    Deltics.StringTypes,
     Deltics.Strings.Encoding,
     Deltics.Strings.Fns.Ansi,
     Deltics.Strings.Fns.Utf8,
     Deltics.Strings.Fns.Utf32,
     Deltics.Strings.Fns.Wide,
+    Deltics.Strings.Lists,
     Deltics.Strings.Types,
-    Deltics.Strings.Utils;
+    Deltics.Strings.Utils,
+    Deltics.StringTypes;
 
 
   {$i deltics.stringtypes.aliases.inc}
+
+  type
+    IStringList         = Deltics.Strings.Lists.IStringList;
+    IAnsiStringList     = Deltics.Strings.Lists.IStringList;
+    IUnicodeStringList  = Deltics.Strings.Lists.IUnicodeStringList;
+    IUtf8StringList     = Deltics.Strings.Lists.IUtf8StringList;
+    IWideStringList     = Deltics.Strings.Lists.IWideStringList;
+
+    TAnsiStringList     = Deltics.Strings.Lists.TStringList;
+    TAnsiStrings        = Deltics.Strings.Lists.TStrings;
+
+    TStrings            = Deltics.Strings.Lists.TStrings;
+    TStringList         = Deltics.Strings.Lists.TStringList;
+
+    TUnicodeStringList  = Deltics.Strings.Lists.TWideStringList;
+    TUnicodeStrings     = Deltics.Strings.Lists.TWideStrings;
+
+    TUtf8Strings        = Deltics.Strings.Lists.TUtf8Strings;
+    TUtf8StringList     = Deltics.Strings.Lists.TUtf8StringList;
+
+    TWideStrings        = Deltics.Strings.Lists.TWideStrings;
+    TWideStringList     = Deltics.Strings.Lists.TWideStringList;
+
 
   type
     Encoding      = Deltics.Strings.Encoding.Encoding;
@@ -149,21 +173,21 @@ interface
     Utf8Fn  = class(Deltics.Strings.Fns.Utf8.Utf8Fn);
     Utf32Fn = class(Deltics.Strings.Fns.Utf32.Utf32Fn);
 
-    ASCIIFn = class
+    AsciiFn = class
     public
-      class function Encode(const aString: String): ASCIIString;
-      class function TryEncode(const aString: String; var aASCII: ASCIIString): Boolean;
+      class function Encode(const aString: String): AsciiString;
+      class function TryEncode(const aString: String; var aAscii: AsciiString): Boolean;
     end;
 
   {$ifdef UNICODE}
-    STRFn = class(Deltics.Strings.Fns.Wide.WideFn)
+    StrFn = class(Deltics.Strings.Fns.Wide.WideFn)
     public
       class function AllocAnsi(const aString: String): PAnsiChar;
       class function AllocWide(const aString: String): PWideChar;
       class function FromWide(const aString: String): UnicodeString; overload;
     end;
   {$else}
-    STRFn = class(Deltics.Strings.Fns.Ansi.AnsiFn)
+    StrFn = class(Deltics.Strings.Fns.Ansi.AnsiFn)
     public
       class function AllocAnsi(const aString: String): PAnsiChar;
       class function AllocWide(const aString: String): PWideChar;
@@ -176,8 +200,8 @@ interface
   Utf8Class   = class of Utf8Fn;
   Utf32Class  = class of Utf32Fn;
   WideClass   = class of WideFn;
-  STRClass    = class of STRFn;
-  ASCIIClass  = class of ASCIIFn;
+  StrClass    = class of StrFn;
+  AsciiClass  = class of AsciiFn;
 
   function Ansi: AnsiClass; overload; {$ifdef InlineMethods} inline; {$endif}
   function Ansi(aBuffer: PAnsiChar; aLen: Integer): AnsiString; overload;
@@ -194,14 +218,14 @@ interface
   function Wide(aString: AnsiString): UnicodeString; overload;
   function Wide(const aInteger: Integer): UnicodeString; overload;
 
-  function STR: STRClass; overload; {$ifdef InlineMethods} inline; {$endif}
-  function STR(aInteger: Integer): String; overload;
-  function STR(aString: AnsiString): String; overload;
-  function STR(aString: UnicodeString): String; overload;
+  function Str: StrClass; overload; {$ifdef InlineMethods} inline; {$endif}
+  function Str(aInteger: Integer): String; overload;
+  function Str(aString: AnsiString): String; overload;
+  function Str(aString: UnicodeString): String; overload;
 
   function Utf8: Utf8Class; overload; {$ifdef InlineMethods} inline; {$endif}
   function Utf32: Utf32Class; overload; {$ifdef InlineMethods} inline; {$endif}
-  function ASCII: ASCIIClass; overload; {$ifdef InlineMethods} inline; {$endif}
+  function Ascii: AsciiClass; overload; {$ifdef InlineMethods} inline; {$endif}
 
 
   {$ifdef TYPE_HELPERS}
@@ -232,7 +256,7 @@ interface
       function IsNotEmptyOrWhitespace: Boolean; inline;
       function IsOneOfText(const aArray: array of String): Boolean;
       function Split(aChar: WideChar; var aLeft, aRight: UnicodeString): Boolean; overload;
-      function Split(aChar: WideChar; var aArray: WideStringArray): Integer; overload;
+      function Split(aChar: WideChar; var aArray: UnicodeStringArray): Integer; overload;
       function ToLower: String;
       function ToUpper: String;
       function Startcase: String;
@@ -264,11 +288,13 @@ interface
     EUnicodeDataloss          = class(EUnicode);
 
 
+  function NewStringArray(const aStrings: array of String): StringArray;
+
 
 implementation
 
   uses
-  {$ifdef FASTSTRINGS}
+  {$ifdef FASTStrINGS}
     FastStrings,
   {$endif}
   {$ifdef DELPHIXE4__}
@@ -338,38 +364,38 @@ implementation
 
 {$ifdef UNICODE}
 
-  class function STRFn.AllocAnsi(const aString: String): PAnsiChar;
+  class function StrFn.AllocAnsi(const aString: String): PAnsiChar;
   begin
     result := Wide.AllocAnsi(aString);
   end;
 
 
-  class function STRFn.AllocWide(const aString: String): PWideChar;
+  class function StrFn.AllocWide(const aString: String): PWideChar;
   begin
     result := Wide.Alloc(aString);
   end;
 
 
-  class function STRFn.FromWide(const aString: String): UnicodeString;
+  class function StrFn.FromWide(const aString: String): UnicodeString;
   begin
     result := aString;
   end;
 
 {$else}
 
-  class function STRFn.AllocWide(const aString: String): PWideChar;
+  class function StrFn.AllocWide(const aString: String): PWideChar;
   begin
     result := Ansi.AllocWide(aString);
   end;
 
 
-  class function STRFn.AllocAnsi(const aString: String): PAnsiChar;
+  class function StrFn.AllocAnsi(const aString: String): PAnsiChar;
   begin
     result := Ansi.Alloc(aString);
   end;
 
 
-  class function STRFn.FromAnsi(const aString: String): AnsiString;
+  class function StrFn.FromAnsi(const aString: String): AnsiString;
   begin
     result := aString;
   end;
@@ -378,19 +404,19 @@ implementation
 
 
 
-  class function ASCIIFn.Encode(const aString: String): ASCIIString;
+  class function AsciiFn.Encode(const aString: String): AsciiString;
   begin
     TryEncode(aString, result);
   end;
 
 
-  class function ASCIIFn.TryEncode(const aString: String;
-                                   var   aASCII: ASCIIString): Boolean;
+  class function AsciiFn.TryEncode(const aString: String;
+                                   var   aAscii: AsciiString): Boolean;
   var
     i: Integer;
     c: Char;
   begin
-    aASCII := ASCIIString(aString);
+    aAscii := AsciiString(aString);
     result := TRUE;
 
     for i := 1 to Length(aString) do
@@ -400,7 +426,7 @@ implementation
       if Ord(c) > 127 then
       begin
         result    := FALSE;
-        aASCII[i] := '?';
+        aAscii[i] := '?';
       end;
     end;
   end;
@@ -537,21 +563,21 @@ implementation
   end;
 
 
-  { STR  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
+  { Str  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
 
 
-  function STR: STRClass; overload;
+  function Str: StrClass; overload;
   begin
-    result := STRFn;
+    result := StrFn;
   end;
 
 
-  function STR(aInteger: Integer): String;
+  function Str(aInteger: Integer): String;
   begin
     result := IntToStr(aInteger);
   end;
 
-  function STR(aString: AnsiString): String;
+  function Str(aString: AnsiString): String;
   begin
   {$ifdef UNICODE}
     result := Wide(aString);
@@ -560,7 +586,7 @@ implementation
   {$endif}
   end;
 
-  function STR(aString: UnicodeString): String;
+  function Str(aString: UnicodeString): String;
   begin
   {$ifNdef UNICODE}
     result := Ansi(aString);
@@ -585,9 +611,9 @@ implementation
   end;
 
 
-  function ASCII: ASCIIClass;
+  function Ascii: AsciiClass;
   begin
-    result := ASCIIFn;
+    result := AsciiFn;
   end;
 
 
@@ -683,7 +709,7 @@ implementation
 
   function UnicodeStringHelper.IsNotEmptyOrWhitespace: Boolean;
   begin
-    result := STR.Trim(self) <> '';
+    result := Str.Trim(self) <> '';
   end;
 
 
@@ -695,7 +721,7 @@ implementation
 
     for i := 0 to High(aArray) do
     begin
-      result := STR.SameText(aArray[i], self);
+      result := Str.SameText(aArray[i], self);
       if result then
         EXIT;
     end;
@@ -707,7 +733,7 @@ implementation
     result := Wide.Split(self, aChar, aLeft, aRight);
   end;
 
-  function UnicodeStringHelper.Split(aChar: WideChar; var aArray: WideStringArray): Integer;
+  function UnicodeStringHelper.Split(aChar: WideChar; var aArray: UnicodeStringArray): Integer;
   begin
     result := Wide.Split(self, aChar, aArray);
   end;
@@ -803,6 +829,17 @@ implementation
 {$endif}
 
 
+
+
+
+  function NewStringArray(const aStrings: array of String): StringArray;
+  var
+    i: Integer;
+  begin
+    SetLength(result, Length(aStrings));
+    for i := 0 to High(aStrings) do
+      result[i] := aStrings[i];
+  end;
 
 
 end.
