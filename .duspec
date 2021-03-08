@@ -7,20 +7,20 @@
     "strings",
     "unicode"
   ],
-  "copyright":"\u00A92019 Jolyon Direnko-Smith",
+  "copyright":"\u00a92019 Jolyon Direnko-Smith",
   "language":"en",
   "content":"source",
   "dependencies":[
-    "deltics.contracts:2.0.0",
-    "deltics.exchange:1.0.1-beta.1",
+    "deltics.contracts:3.1.0",
+    "deltics.exchange:1.1.0",
     "deltics.guids:1.0.0",
     "deltics.interfacedobjects:1.2.0",
     "deltics.reversebytes:1.0.0",
     "deltics.math:1.0.0",
-    "deltics.memory:1.0.0-beta.14",
+    "deltics.memory:1.0.0",
     "deltics.multicast:1.0.0",
-    "deltics.stringtypes:1.0.0-beta.3",
-    "deltics.unicode:1.0.0-beta.29"
+    "deltics.stringtypes:1.1.0",
+    "deltics.unicode:1.0.0"
   ],
   "source":{
       "files":[
