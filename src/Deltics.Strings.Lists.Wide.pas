@@ -215,6 +215,7 @@ interface
       function CompareStrings(const aS1, aS2: WideString): Integer; override;
       procedure InsertItem(aIndex: Integer; const aString: WideString; aObject: TObject); virtual;
     public
+      class function CreateManaged: IWideStringList;
       constructor Create; overload;
       constructor Create(aOwnsObjects: Boolean); overload;
       destructor Destroy; override;
@@ -854,6 +855,12 @@ implementation
 
 
 
+
+
+  class function TWideStringList.CreateManaged: IWideStringList;
+  begin
+    result := TComInterfacedWideStringList.Create;
+  end;
 
 
   constructor TWideStringList.Create;

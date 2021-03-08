@@ -213,6 +213,7 @@ interface
       function CompareStrings(const aS1, aS2: Utf8String): Integer; override;
       procedure InsertItem(aIndex: Integer; const aString: Utf8String; aObject: TObject); virtual;
     public
+      class function CreateManaged: IUtf8StringList;
       constructor Create; overload;
       constructor Create(aOwnsObjects: Boolean); overload;
       destructor Destroy; override;
@@ -848,6 +849,10 @@ implementation
 
 
 
+  class function TUtf8StringList.CreateManaged: IUtf8StringList;
+  begin
+    result := TComInterfacedUtf8StringList.Create;
+  end;
 
 
   constructor TUtf8StringList.Create;

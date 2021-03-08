@@ -215,6 +215,7 @@ interface
       function CompareStrings(const aS1, aS2: AnsiString): Integer; override;
       procedure InsertItem(aIndex: Integer; const aString: AnsiString; aObject: TObject); virtual;
     public
+      class function CreateManaged: IAnsiStringList;
       constructor Create; overload;
       constructor Create(aOwnsObjects: Boolean); overload;
       destructor Destroy; override;
@@ -241,6 +242,7 @@ interface
 
 
     TComInterfacedAnsiStringList = class(TComInterfacedObject, IAnsiStringList)
+    protected
       function get_AsArray: AnsiStringArray;
       function get_Capacity: Integer;
       function get_Count: Integer;
@@ -854,6 +856,10 @@ implementation
 
 
 
+  class function TAnsiStringList.CreateManaged: IAnsiStringList;
+  begin
+    result := TComInterfacedAnsiStringList.Create;
+  end;
 
 
   constructor TAnsiStringList.Create;
