@@ -57,36 +57,12 @@ interface
     Deltics.Strings.Fns.Utf8,
     Deltics.Strings.Fns.Utf32,
     Deltics.Strings.Fns.Wide,
-    Deltics.Strings.Lists,
     Deltics.Strings.Types,
     Deltics.Strings.Utils,
     Deltics.StringTypes;
 
 
   {$i deltics.stringtypes.aliases.inc}
-
-  type
-    IStringList         = Deltics.Strings.Lists.IStringList;
-    IAnsiStringList     = Deltics.Strings.Lists.IStringList;
-    IUnicodeStringList  = Deltics.Strings.Lists.IUnicodeStringList;
-    IUtf8StringList     = Deltics.Strings.Lists.IUtf8StringList;
-    IWideStringList     = Deltics.Strings.Lists.IWideStringList;
-
-    TAnsiStringList     = Deltics.Strings.Lists.TStringList;
-    TAnsiStrings        = Deltics.Strings.Lists.TStrings;
-
-    TStrings            = Deltics.Strings.Lists.TStrings;
-    TStringList         = Deltics.Strings.Lists.TStringList;
-
-    TUnicodeStringList  = Deltics.Strings.Lists.TWideStringList;
-    TUnicodeStrings     = Deltics.Strings.Lists.TWideStrings;
-
-    TUtf8Strings        = Deltics.Strings.Lists.TUtf8Strings;
-    TUtf8StringList     = Deltics.Strings.Lists.TUtf8StringList;
-
-    TWideStrings        = Deltics.Strings.Lists.TWideStrings;
-    TWideStringList     = Deltics.Strings.Lists.TWideStringList;
-
 
   type
     Encoding      = Deltics.Strings.Encoding.Encoding;

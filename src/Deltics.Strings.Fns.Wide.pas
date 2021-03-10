@@ -9,7 +9,6 @@ interface
 
   uses
     Windows,
-    Deltics.Strings.Lists,
     Deltics.Strings.Parsers.Wide,
     Deltics.Strings.Types;
 
@@ -30,6 +29,9 @@ interface
     public
       // Parser
       class function Parse: WideParserClass;
+
+      // Arrays
+      class function AsArray(const aItems: array of UnicodeString): UnicodeStringArray;
 
       // Transcoding
       class function Encode(const aString: String): UnicodeString;
@@ -431,7 +433,7 @@ interface
       class function Snakecase(const aString: UnicodeString): UnicodeString;
       class function Startcase(const aString: UnicodeString): UnicodeString;
       class function Titlecase(const aString: UnicodeString): UnicodeString; overload;
-      class function Titlecase(const aString: UnicodeString; const aLower: TUnicodeStringList): UnicodeString; overload;
+      class function Titlecase(const aString: UnicodeString; const aLower: UnicodeStringArray): UnicodeString; overload;
       class function Uppercase(aChar: WideChar): WideChar; overload;
       class function Uppercase(const aString: UnicodeString): UnicodeString; overload;
     end;
@@ -468,7 +470,7 @@ implementation
     MAX_LoSurrogate : WideChar = #$dfff;
 
   var
-    LowercaseWordsForTitlecase: TUnicodeStringList = NIL;
+    LowercaseWordsForTitlecase: UnicodeStringArray;
 
 
   function WhenLoSurrogate(const aChar: WideChar; const aAction: SurrogateAction): SurrogateAction; overload;
@@ -2204,6 +2206,17 @@ implementation
   class function WideFn.AsBoolean(const aString: UnicodeString): Boolean;
   begin
     result := Parse.AsBoolean(PWideChar(aString), Length(aString));
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
+  class function WideFn.AsArray(const aItems: array of UnicodeString): UnicodeStringArray;
+  var
+    i: Integer;
+  begin
+    SetLength(result, Length(aItems));
+    for i := 0 to High(aItems) do
+      result[i] := aItems[i];
   end;
 
 
@@ -6371,7 +6384,20 @@ implementation
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class function WideFn.Titlecase(const aString: UnicodeString;
-                                  const aLower: TUnicodeStringList): UnicodeString;
+                                  const aLower: UnicodeStringArray): UnicodeString;
+
+    function ForceLower(const aString: UnicodeString): Boolean;
+    var
+      i: Integer;
+    begin
+      result := TRUE;
+      for i := Low(aLower) to High(aLower) do
+        if SameText(aString, aLower[i]) then
+          EXIT;
+
+      result := FALSE;
+    end;
+
   var
     i: Integer;
     pieces: UnicodeStringArray;
@@ -6385,7 +6411,7 @@ implementation
 
     for i := 0 to High(p) - 1 do
       if   Wide.IsAlphaNumeric(result[p[i] - 1])
-       and (aLower.IndexOf(pieces[i + 1]) <> -1) then
+       and ForceLower(pieces[i + 1]) then
         result[p[i] + 1] := Wide.Lowercase(result[p[i] + 1]);
   end;
 
@@ -6424,27 +6450,24 @@ implementation
 
 
 initialization
-  LowercaseWordsForTitlecase := TUnicodeStringList.Create;
-  LowercaseWordsForTitlecase.Sorted := TRUE;
+  LowercaseWordsForTitlecase := Wide.AsArray([
+    'a',
+    'am',
+    'an',
+    'and',
+    'are',
+    'as',
+    'at',
+    'for',
+    'from',
+    'in',
+    'is',
+    'of',
+    'on',
+    'the',
+    'this',
+    'to',
+    'upon'
+  ]);
 
-  LowercaseWordsForTitlecase.Add('a');
-  LowercaseWordsForTitlecase.Add('am');
-  LowercaseWordsForTitlecase.Add('an');
-  LowercaseWordsForTitlecase.Add('and');
-  LowercaseWordsForTitlecase.Add('are');
-  LowercaseWordsForTitlecase.Add('as');
-  LowercaseWordsForTitlecase.Add('at');
-  LowercaseWordsForTitlecase.Add('for');
-  LowercaseWordsForTitlecase.Add('from');
-  LowercaseWordsForTitlecase.Add('in');
-  LowercaseWordsForTitlecase.Add('is');
-  LowercaseWordsForTitlecase.Add('of');
-  LowercaseWordsForTitlecase.Add('on');
-  LowercaseWordsForTitlecase.Add('the');
-  LowercaseWordsForTitlecase.Add('this');
-  LowercaseWordsForTitlecase.Add('to');
-  LowercaseWordsForTitlecase.Add('upon');
-
-finalization
-  LowercaseWordsForTitlecase.Free;
 end.
