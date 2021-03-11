@@ -52,7 +52,6 @@ interface
   uses
     Classes,
     SysUtils,
-    Deltics.Strings.Encoding,
     Deltics.Strings.Fns.Ansi,
     Deltics.Strings.Fns.Utf8,
     Deltics.Strings.Fns.Utf32,
@@ -63,19 +62,6 @@ interface
 
 
   {$i deltics.stringtypes.aliases.inc}
-
-  type
-    Encoding      = Deltics.Strings.Encoding.Encoding;
-    TEncoding     = Deltics.Strings.Encoding.TEncoding;
-
-  const
-    cpAscii    = Deltics.Strings.Encoding.cpAscii;
-    cpUtf8     = Deltics.Strings.Encoding.cpUtf8;
-    cpUtf16    = Deltics.Strings.Encoding.cpUtf16;
-    cpUtf16Le  = Deltics.Strings.Encoding.cpUtf16Le;
-    cpUtf32    = Deltics.Strings.Encoding.cpUtf32;
-    cpUtf32Le  = Deltics.Strings.Encoding.cpUtf32Le;
-
 
   type
     TCaseSensitivity        = Deltics.Strings.Types.TCaseSensitivity;
