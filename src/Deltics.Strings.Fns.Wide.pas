@@ -9,7 +9,6 @@ interface
 
   uses
     Windows,
-    Deltics.Strings.Parsers.Wide,
     Deltics.Strings.Types;
 
   type
@@ -27,9 +26,6 @@ interface
 //      class function Replace(aScope: TStringScope; const aString, aFindStr, aReplaceStr: UnicodeString; var aCount: Integer; aCaseMode: TCaseSensitivity): UnicodeString; overload;
 
     public
-      // Parser
-      class function Parse: WideParserClass;
-
       // Arrays
       class function AsArray(const aItems: array of UnicodeString): UnicodeStringArray;
 
@@ -83,17 +79,7 @@ interface
       class function StringOf(aChar: WideChar; aCount: Integer): UnicodeString; overload;
       class function StringOf(const aString: UnicodeString; aCount: Integer): UnicodeString; overload;
 
-      // Type conversions
-      class function AsBoolean(const aString: UnicodeString): Boolean; overload;
-      class function AsBoolean(const aString: UnicodeString; aDefault: Boolean): Boolean; overload;
-      class function AsInteger(const aString: UnicodeString): Integer; overload;
-      class function AsInteger(const aString: UnicodeString; aDefault: Integer): Integer; overload;
-      class function IsBoolean(const aString: UnicodeString): Boolean; overload;
-      class function IsBoolean(const aString: UnicodeString; var aValue: Boolean): Boolean; overload;
-      class function IsInteger(const aString: UnicodeString): Boolean; overload;
-      class function IsInteger(const aString: UnicodeString; var aValue: Integer): Boolean; overload;
-
-      // Testing things about a string
+      // Testing things about a string
       class function IsAlpha(aChar: WideChar): Boolean; overload;
       class function IsAlpha(const aString: UnicodeString): Boolean; overload;
       class function IsAlphaNumeric(aChar: WideChar): Boolean; overload;
@@ -955,13 +941,6 @@ implementation
 
 
 
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WideFn.Parse: WideParserClass;
-  begin
-    result := WideParser;
-  end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
@@ -2203,13 +2182,6 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WideFn.AsBoolean(const aString: UnicodeString): Boolean;
-  begin
-    result := Parse.AsBoolean(PWideChar(aString), Length(aString));
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class function WideFn.AsArray(const aItems: array of UnicodeString): UnicodeStringArray;
   var
     i: Integer;
@@ -2218,62 +2190,6 @@ implementation
     for i := 0 to High(aItems) do
       result[i] := aItems[i];
   end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WideFn.AsBoolean(const aString: UnicodeString;
-                                        aDefault: Boolean): Boolean;
-  begin
-    result := Parse.AsBoolean(PWideChar(aString), Length(aString), aDefault);
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WideFn.AsInteger(const aString: UnicodeString): Integer;
-  begin
-    result := Parse.AsInteger(PWideChar(aString), Length(aString));
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WideFn.AsInteger(const aString: UnicodeString;
-                                        aDefault: Integer): Integer;
-  begin
-    result := Parse.AsInteger(PWideChar(aString), Length(aString), aDefault);
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WideFn.IsBoolean(const aString: UnicodeString): Boolean;
-  begin
-    result := Parse.IsBoolean(PWideChar(aString), Length(aString));
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WideFn.IsBoolean(const aString: UnicodeString;
-                                  var   aValue: Boolean): Boolean;
-  begin
-    result := Parse.IsBoolean(PWideChar(aString), Length(aString), aValue);
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WideFn.IsInteger(const aString: UnicodeString): Boolean;
-  begin
-    result := Parse.IsInteger(PWideChar(aString), Length(aString));
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WideFn.IsInteger(const aString: UnicodeString;
-                                  var   aValue: Integer): Boolean;
-  begin
-    result := Parse.IsInteger(PWideChar(aString), Length(aString), aValue);
-  end;
-
-
-
 
 
 

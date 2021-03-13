@@ -10,7 +10,6 @@ interface
   uses
     SysUtils,
     Windows,
-    Deltics.Strings.Parsers.Ansi,
     Deltics.Strings.Types;
 
 
@@ -27,9 +26,6 @@ interface
       class procedure CopyToBuffer(const aString: AnsiString; aMaxBytes: Integer; aBuffer: Pointer; aOffset: Integer); overload;
 
     public
-      // Parser
-      class function Parse: AnsiParserClass;
-
       // Transcoding
       class function Encode(const aString: String): AnsiString;
       class function FromAnsi(const aBuffer: PAnsiChar; aMaxLen: Integer = -1): AnsiString; overload;
@@ -76,16 +72,6 @@ interface
       class function StringOf(aChar: AnsiChar; aCount: Integer): AnsiString; overload;
       class function StringOf(aChar: WideChar; aCount: Integer): AnsiString; overload;
       class function StringOf(const aString: AnsiString; aCount: Integer): AnsiString; overload;
-
-      // Type conversions
-      class function AsBoolean(const aString: AnsiString): Boolean; overload;
-      class function AsBoolean(const aString: AnsiString; aDefault: Boolean): Boolean; overload;
-      class function AsInteger(const aString: AnsiString): Integer; overload;
-      class function AsInteger(const aString: AnsiString; aDefault: Integer): Integer; overload;
-      class function IsBoolean(const aString: AnsiString): Boolean; overload;
-      class function IsBoolean(const aString: AnsiString; var aValue: Boolean): Boolean; overload;
-      class function IsInteger(const aString: AnsiString): Boolean; overload;
-      class function IsInteger(const aString: AnsiString; var aValue: Integer): Boolean; overload;
 
       // Testing things about a string
       class function IsAlpha(aChar: AnsiChar): Boolean; overload;
@@ -854,13 +840,6 @@ implementation
 
 
 
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function AnsiFn.Parse: AnsiParserClass;
-  begin
-    result := AnsiParser;
-  end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
@@ -5144,66 +5123,6 @@ implementation
     end
     else
       result := '';
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function AnsiFn.AsBoolean(const aString: AnsiString): Boolean;
-  begin
-    result := Parse.AsBoolean(PAnsiChar(aString), Length(aString));
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function AnsiFn.AsBoolean(const aString: AnsiString;
-                                        aDefault: Boolean): Boolean;
-  begin
-    result := Parse.AsBoolean(PAnsiChar(aString), Length(aString), aDefault);
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function AnsiFn.AsInteger(const aString: AnsiString): Integer;
-  begin
-    result := Parse.AsInteger(PAnsiChar(aString), Length(aString));
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function AnsiFn.AsInteger(const aString: AnsiString;
-                                        aDefault: Integer): Integer;
-  begin
-    result := Parse.AsInteger(PAnsiChar(aString), Length(aString), aDefault);
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function AnsiFn.IsBoolean(const aString: AnsiString): Boolean;
-  begin
-    result := Parse.IsBoolean(PAnsiChar(aString), Length(aString));
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function AnsiFn.IsBoolean(const aString: AnsiString;
-                                  var   aValue: Boolean): Boolean;
-  begin
-    result := Parse.IsBoolean(PAnsiChar(aString), Length(aString), aValue);
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function AnsiFn.IsInteger(const aString: AnsiString): Boolean;
-  begin
-    result := Parse.IsInteger(PAnsiChar(aString), Length(aString));
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function AnsiFn.IsInteger(const aString: AnsiString;
-                                  var   aValue: Integer): Boolean;
-  begin
-    result := Parse.IsInteger(PAnsiChar(aString), Length(aString), aValue);
   end;
 
 
