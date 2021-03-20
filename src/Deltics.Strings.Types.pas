@@ -10,30 +10,13 @@ interface
   uses
     Classes,
     SysUtils,
-    Deltics.Strings.Types.BOM,
-    Deltics.Strings.Types.Core;
+    Deltics.StringTypes;
+
+
+  {$i deltics.stringtypes.aliases.inc}
 
 
   type
-    Codepoint     = Deltics.Strings.Types.Core.Codepoint;
-    PCodePoint    = Deltics.Strings.Types.Core.PCodepoint;
-
-    Utf8String    = Deltics.Strings.Types.Core.Utf8String;
-    UnicodeString = Deltics.Strings.Types.Core.UnicodeString;
-
-    Utf8Char      = Deltics.Strings.Types.Core.Utf8Char;
-    PUtf8Char     = Deltics.Strings.Types.Core.PUtf8Char;
-
-    Utf32Char     = Deltics.Strings.Types.Core.Utf32Char;
-    PUtf32Char    = Deltics.Strings.Types.Core.PUtf32Char;
-
-    Utf32Array    = array of Utf32Char;
-
-    AsciiString = Deltics.Strings.Types.Core.AsciiString;
-    AsciiChar   = Deltics.Strings.Types.Core.AsciiChar;
-
-    TAnsiCharSet = set of AnsiChar;
-
     TStringProcessingFlag = (
                              rsFromStart,
                              rsFromEnd,
@@ -42,16 +25,11 @@ interface
     TReplaceStringFlag  = rsFromStart..rsIgnoreCase;
     TReplaceStringFlags = set of TReplaceStringFlag;
 
-    TUnicodeSurrogateStrategy = (
-                                 ssError,   // An EUnicodeOrphanSurrogate exception is raised if a string operation results in an orphan surrogate
-                                 ssIgnore,  // String operations may result in orphan surrogates
-                                 ssAvoid    // String operations will ensure that surrogates are not orphaned
-                                );
-
-    EUnicode                  = class(Exception);
-    EUnicodeDataloss          = class(EUnicode);
-    EUnicodeRequiresMultibyte = class(EUnicode);
-    EUnicodeOrphanSurrogate   = class(EUnicode);
+    SurrogateAction = (
+                       saError,   // An EUnicodeOrphanSurrogate exception is raised if a string operation results in an orphan surrogate
+                       saIgnore,  // String operations may result in orphan surrogates
+                       saDelete   // String operations will ensure that surrogates are not orphaned
+                      );
 
   const
     ssFromStart   = rsFromStart;
@@ -64,20 +42,8 @@ interface
 
 
   type
-    TCharIndexArray   = array of Integer;
-    TAnsiStringArray  = array of AnsiString;
-    TUtf8StringArray  = array of Utf8String;
-    TWideStringArray  = array of UnicodeString;
+    CharIndexArray   = array of Integer;
 
-  {$ifdef UNICODE}
-    TStringArray = TWideStringArray;
-  {$else}
-    TStringArray = TAnsiStringArray;
-  {$endif}
-
-    TAnsiCharArray  = array of AnsiChar;
-    TUtf8CharArray  = array of Utf8Char;
-    TWideCharArray  = array of WideChar;
 
     TAlphaCase  = (
                    acNotAlpha,
@@ -153,17 +119,6 @@ interface
                                 doDeleteOptionalDelimiter,
                                 doExtractOptionalDelimiter
                                ];
-
-
-  type
-    TBOM        = Deltics.Strings.Types.BOM.TBOM;
-    Utf8Bom     = Deltics.Strings.Types.BOM.Utf8Bom;
-    Utf16Bom    = Deltics.Strings.Types.BOM.Utf16Bom;
-    Utf16LEBom  = Deltics.Strings.Types.BOM.Utf16LEBom;
-    Utf32Bom    = Deltics.Strings.Types.BOM.Utf32Bom;
-    Utf32LEBom  = Deltics.Strings.Types.BOM.Utf32LEBom;
-
-
 
 
 implementation

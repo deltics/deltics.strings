@@ -40,8 +40,8 @@ implementation
   {$endif}
     SysUtils,
     Windows,
-    Deltics.Strings,
-    Deltics.Pointers;
+    Deltics.Memory,
+    Deltics.Strings;
 
 
 { _Utf32 ------------------------------------------------------------------------------------------ }
@@ -188,7 +188,7 @@ implementation
     if (aMaxBytes < len) then
       len := aMaxBytes;
 
-    CopyMemory(Memory.ByteOffset(aBuffer, aOffset), PUtf32Char(aString), len);
+    CopyMemory(Memory.Offset(aBuffer, aOffset), PUtf32Char(aString), len);
   end;
 
 

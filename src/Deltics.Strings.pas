@@ -52,92 +52,31 @@ interface
   uses
     Classes,
     SysUtils,
-    Deltics.Strings.Encoding,
     Deltics.Strings.Fns.Ansi,
     Deltics.Strings.Fns.Utf8,
     Deltics.Strings.Fns.Utf32,
     Deltics.Strings.Fns.Wide,
-    Deltics.Strings.StringBuilder,
-    Deltics.Strings.StringList,
-    Deltics.Strings.Templates,
     Deltics.Strings.Types,
-    Deltics.Strings.Types.BOM,
-    Deltics.Strings.Utils;
+    Deltics.Strings.Utils,
+    Deltics.StringTypes;
 
+
+  {$i deltics.stringtypes.aliases.inc}
 
   type
-    Encoding          = Deltics.Strings.Encoding.Encoding;
-    TEncoding         = Deltics.Strings.Encoding.TEncoding;
-
-    ASCIIString       = Deltics.Strings.Types.ASCIIString;
-    ASCIIChar         = Deltics.Strings.Types.ASCIIChar;
-
-    Utf8Char          = Deltics.Strings.Types.Utf8Char;
-    PUtf8Char         = Deltics.Strings.Types.PUtf8Char;
-
-    Utf32Char         = Deltics.Strings.Types.Utf32Char;
-    PUtf32Char        = Deltics.Strings.Types.PUtf32Char;
-
-    Utf8String        = Deltics.Strings.Types.Utf8String;
-    Utf32Array        = Deltics.Strings.Types.Utf32Array;
-    UnicodeString     = Deltics.Strings.Types.UnicodeString;
-
-    TCharIndexArray   = Deltics.Strings.Types.TCharIndexArray;
-    TUtf8StringArray  = Deltics.Strings.Types.TUtf8StringArray;
-
-    TAnsiCharSet      = Deltics.Strings.Types.TAnsiCharSet;
-    TAnsiStringArray  = Deltics.Strings.Types.TAnsiStringArray;
-    TAnsiStringList   = Deltics.Strings.StringList.TAnsiStringList;
-    TAnsiStrings      = Deltics.Strings.StringList.TAnsiStrings;
-
-    TWideStringArray  = Deltics.Strings.Types.TWideStringArray;
-    TWideStringList   = Deltics.Strings.StringList.TWideStringList;
-    TWideStrings      = Deltics.Strings.StringList.TWideStrings;
-
-    TUnicodeStringArray  = Deltics.Strings.Types.TWideStringArray;
-
     TCaseSensitivity        = Deltics.Strings.Types.TCaseSensitivity;
     TCompareResult          = Deltics.Strings.Types.TCompareResult;
     TContainNeeds           = Deltics.Strings.Types.TContainNeeds;
     TCopyDelimiterOption    = Deltics.Strings.Types.TCopyDelimiterOption;
     TExtractDelimiterOption = Deltics.Strings.Types.TExtractDelimiterOption;
-    TStringArray            = Deltics.Strings.Types.TStringArray;
     TStringProcessingFlag   = Deltics.Strings.Types.TStringProcessingFlag;
     TStringScope            = Deltics.Strings.Types.TStringScope;
 
-    TStringBuilder            = Deltics.Strings.StringBuilder.TStringBuilder;
-    TStringList               = Deltics.Strings.StringList.TStringList;
-    IStringList               = Deltics.Strings.StringList.IStringList;
-    TComInterfacedStringList  = Deltics.Strings.StringList.TComInterfacedStringList;
-
-    TStringTemplate           = Deltics.Strings.Templates.TStringTemplate;
-
-    TUnicodeSurrogateStrategy = Deltics.Strings.Types.TUnicodeSurrogateStrategy;
-
-    EUnicode                  = Deltics.Strings.Types.EUnicode;
-    EUnicodeDataloss          = Deltics.Strings.Types.EUnicodeDataloss;
-    EUnicodeRequiresMultibyte = Deltics.Strings.Types.EUnicodeRequiresMultibyte;
-    EUnicodeOrphanSurrogate   = Deltics.Strings.Types.EUnicodeOrphanSurrogate;
+    SurrogateAction         = Deltics.Strings.Types.SurrogateAction;
 
     Utils = Deltics.Strings.Utils.Utils;
 
-    TBOM        = Deltics.Strings.Types.BOM.TBOM;
-
-    Utf8Bom     = Deltics.Strings.Types.BOM.Utf8Bom;
-    Utf16Bom    = Deltics.Strings.Types.BOM.Utf16Bom;
-    Utf16LEBom  = Deltics.Strings.Types.BOM.Utf16LEBom;
-    Utf32Bom    = Deltics.Strings.Types.BOM.Utf32Bom;
-    Utf32LEBom  = Deltics.Strings.Types.BOM.Utf32LEBom;
-
-
   const
-    cpUtf32LE  = Deltics.Strings.Encoding.cpUtf32LE;
-    cpUtf32    = Deltics.Strings.Encoding.cpUtf32;
-    cpUtf16LE  = Deltics.Strings.Encoding.cpUtf16LE;
-    cpUtf16    = Deltics.Strings.Encoding.cpUtf16;
-    cpASCII    = Deltics.Strings.Encoding.cpASCII;
-    cpUtf8     = Deltics.Strings.Encoding.cpUtf8;
-
     csCaseSensitive  = Deltics.Strings.Types.csCaseSensitive;
     csIgnoreCase     = Deltics.Strings.Types.csIgnoreCase;
 
@@ -168,10 +107,10 @@ interface
     ssFirst   = Deltics.Strings.Types.ssFirst;
     ssLast    = Deltics.Strings.Types.ssLast;
 
-    ssError   = Deltics.Strings.Types.ssError;   // An EUnicodeOrphanSurrogate exception is raised if a string operation results in an orphan surrogate
-    ssIgnore  = Deltics.Strings.Types.ssIgnore;  // String operations may result in orphan surrogates
+    saError   = Deltics.Strings.Types.saError;   // An EUnicodeOrphanSurrogate exception is raised if a string operation results in an orphan surrogate
+    saIgnore  = Deltics.Strings.Types.saIgnore;  // String operations may result in orphan surrogates
 
-    ssAvoid   = Deltics.Strings.Types.ssAvoid;   // String operations will ensure that surrogates are not orphaned
+    saDelete  = Deltics.Strings.Types.saDelete;  // String operations will ensure that surrogates are not orphaned
 
 
     dupAccept = Classes.dupAccept;
@@ -196,21 +135,21 @@ interface
     Utf8Fn  = class(Deltics.Strings.Fns.Utf8.Utf8Fn);
     Utf32Fn = class(Deltics.Strings.Fns.Utf32.Utf32Fn);
 
-    ASCIIFn = class
+    AsciiFn = class
     public
-      class function Encode(const aString: String): ASCIIString;
-      class function TryEncode(const aString: String; var aASCII: ASCIIString): Boolean;
+      class function Encode(const aString: String): AsciiString;
+      class function TryEncode(const aString: String; var aAscii: AsciiString): Boolean;
     end;
 
   {$ifdef UNICODE}
-    STRFn = class(Deltics.Strings.Fns.Wide.WideFn)
+    StrFn = class(Deltics.Strings.Fns.Wide.WideFn)
     public
       class function AllocAnsi(const aString: String): PAnsiChar;
       class function AllocWide(const aString: String): PWideChar;
       class function FromWide(const aString: String): UnicodeString; overload;
     end;
   {$else}
-    STRFn = class(Deltics.Strings.Fns.Ansi.AnsiFn)
+    StrFn = class(Deltics.Strings.Fns.Ansi.AnsiFn)
     public
       class function AllocAnsi(const aString: String): PAnsiChar;
       class function AllocWide(const aString: String): PWideChar;
@@ -223,8 +162,8 @@ interface
   Utf8Class   = class of Utf8Fn;
   Utf32Class  = class of Utf32Fn;
   WideClass   = class of WideFn;
-  STRClass    = class of STRFn;
-  ASCIIClass  = class of ASCIIFn;
+  StrClass    = class of StrFn;
+  AsciiClass  = class of AsciiFn;
 
   function Ansi: AnsiClass; overload; {$ifdef InlineMethods} inline; {$endif}
   function Ansi(aBuffer: PAnsiChar; aLen: Integer): AnsiString; overload;
@@ -241,28 +180,28 @@ interface
   function Wide(aString: AnsiString): UnicodeString; overload;
   function Wide(const aInteger: Integer): UnicodeString; overload;
 
-  function STR: STRClass; overload; {$ifdef InlineMethods} inline; {$endif}
-  function STR(aInteger: Integer): String; overload;
-  function STR(aString: AnsiString): String; overload;
-  function STR(aString: UnicodeString): String; overload;
+  function Str: StrClass; overload; {$ifdef InlineMethods} inline; {$endif}
+  function Str(aInteger: Integer): String; overload;
+  function Str(aString: AnsiString): String; overload;
+  function Str(aString: UnicodeString): String; overload;
 
   function Utf8: Utf8Class; overload; {$ifdef InlineMethods} inline; {$endif}
   function Utf32: Utf32Class; overload; {$ifdef InlineMethods} inline; {$endif}
-  function ASCII: ASCIIClass; overload; {$ifdef InlineMethods} inline; {$endif}
+  function Ascii: AsciiClass; overload; {$ifdef InlineMethods} inline; {$endif}
 
 
   {$ifdef TYPE_HELPERS}
   type
-    TAnsiStringHelper = record helper for AnsiString
+    AnsiStringHelper = record helper for AnsiString
     private
       function get_Length: Integer; inline;
     public
       function Split(aChar: AnsiChar; var aLeft, aRight: AnsiString): Boolean; overload;
-      function Split(aChar: AnsiChar; var aArray: TAnsiStringArray): Boolean; overload;
+      function Split(aChar: AnsiChar; var aArray: AnsiStringArray): Boolean; overload;
       property Length: Integer read get_Length;
     end;
 
-    TStringHelper = record helper for UnicodeString
+    UnicodeStringHelper = record helper for String
     private
       function get_Length: Integer; //inline;
     public
@@ -279,7 +218,7 @@ interface
       function IsNotEmptyOrWhitespace: Boolean; inline;
       function IsOneOfText(const aArray: array of String): Boolean;
       function Split(aChar: WideChar; var aLeft, aRight: UnicodeString): Boolean; overload;
-      function Split(aChar: WideChar; var aArray: TWideStringArray): Integer; overload;
+      function Split(aChar: WideChar; var aArray: UnicodeStringArray): Integer; overload;
       function ToLower: String;
       function ToUpper: String;
       function Startcase: String;
@@ -287,7 +226,7 @@ interface
     end;
 
 
-    TStringArrayHelper = record helper for TUnicodeStringArray
+    StringArrayHelper = record helper for StringArray
     private
       function get_Count: Integer; inline;
       function get_IsEmpty: Boolean; inline;
@@ -295,42 +234,41 @@ interface
       function Add(const aString: String): Integer; inline;
       function Delete(const aIndex: Integer): Integer; inline;
       procedure Insert(const aIndex: Integer; const aValue: String); overload; inline;
-      procedure Insert(const aIndex: Integer; const aValues: TStringArray); overload; inline;
+      procedure Insert(const aIndex: Integer; const aValues: StringArray); overload; inline;
       property Count: Integer read get_Count;
       property IsEmpty: Boolean read get_IsEmpty;
     end;
+  {$endif}
 
-
-    TStringListHelper = class helper for TStringList
-    public
-      procedure Add(const aArray: TStringArray); overload;
-      function AsArray: TStringArray;
-    end;
-
-  {$endif TYPE_HELPERS}
-
-  const
-    BytesPerChar  = {$ifdef UNICODE} 2 {$else} 1 {$endif};
 
   var
-    AllowUnicodeDataLoss      : Boolean = TRUE;
-    UnicodeSurrogateStrategy  : TUnicodeSurrogateStrategy;
+    AllowUnicodeDataLoss: Boolean = FALSE;
+
+  type
+    EUnicode                  = class(Exception);
+    EUnicodeRequiresMultibyte = class(EUnicode);
+    EUnicodeDataloss          = class(EUnicode);
+
+
+  function NewStringArray(const aStrings: array of String): StringArray;
 
 
 implementation
 
   uses
-  {$ifdef FASTSTRINGS}
+  {$ifdef FASTStrINGS}
     FastStrings,
   {$endif}
-  { vcl: }
   {$ifdef DELPHIXE4__}
     AnsiStrings,
   {$endif}
   {$ifdef __DELPHIXE2}
     StrUtils,
   {$endif}
-    Windows;
+    Windows
+  {$ifdef InlineMethodsSupported}
+    ,Deltics.Unicode.Types
+  {$endif};
 
 
 
@@ -388,38 +326,38 @@ implementation
 
 {$ifdef UNICODE}
 
-  class function STRFn.AllocAnsi(const aString: String): PAnsiChar;
+  class function StrFn.AllocAnsi(const aString: String): PAnsiChar;
   begin
     result := Wide.AllocAnsi(aString);
   end;
 
 
-  class function STRFn.AllocWide(const aString: String): PWideChar;
+  class function StrFn.AllocWide(const aString: String): PWideChar;
   begin
     result := Wide.Alloc(aString);
   end;
 
 
-  class function STRFn.FromWide(const aString: String): UnicodeString;
+  class function StrFn.FromWide(const aString: String): UnicodeString;
   begin
     result := aString;
   end;
 
 {$else}
 
-  class function STRFn.AllocWide(const aString: String): PWideChar;
+  class function StrFn.AllocWide(const aString: String): PWideChar;
   begin
     result := Ansi.AllocWide(aString);
   end;
 
 
-  class function STRFn.AllocAnsi(const aString: String): PAnsiChar;
+  class function StrFn.AllocAnsi(const aString: String): PAnsiChar;
   begin
     result := Ansi.Alloc(aString);
   end;
 
 
-  class function STRFn.FromAnsi(const aString: String): AnsiString;
+  class function StrFn.FromAnsi(const aString: String): AnsiString;
   begin
     result := aString;
   end;
@@ -428,19 +366,19 @@ implementation
 
 
 
-  class function ASCIIFn.Encode(const aString: String): ASCIIString;
+  class function AsciiFn.Encode(const aString: String): AsciiString;
   begin
     TryEncode(aString, result);
   end;
 
 
-  class function ASCIIFn.TryEncode(const aString: String;
-                                   var   aASCII: ASCIIString): Boolean;
+  class function AsciiFn.TryEncode(const aString: String;
+                                   var   aAscii: AsciiString): Boolean;
   var
     i: Integer;
     c: Char;
   begin
-    aASCII := ASCIIString(aString);
+    aAscii := AsciiString(aString);
     result := TRUE;
 
     for i := 1 to Length(aString) do
@@ -450,7 +388,7 @@ implementation
       if Ord(c) > 127 then
       begin
         result    := FALSE;
-        aASCII[i] := '?';
+        aAscii[i] := '?';
       end;
     end;
   end;
@@ -487,23 +425,21 @@ implementation
   var
     usedDefault: BOOL;
   begin
-    if aChar = #0 then
-    begin
-      result := #0;
-      EXIT;
+    case aChar of
+      #$0000..#$007f  : result := AnsiChar(aChar);
+    else
+      usedDefault := FALSE;
+
+      if (WideCharToMultiByte(CP_ACP, 0, @aChar, 0, NIL, 0, '?', @usedDefault) > 1) then
+//       or (usedDefault and NOT AllowUnicodeDataLoss) then
+        raise EUnicodeRequiresMultibyte.Create('Unicode character ''' + aChar + ''' does not map to a single-byte character in the default Ansi codepage');
+
+      if WideCharToMultiByte(CP_ACP, 0, @aChar, 1, @result, 1, '?', @usedDefault) = 0 then
+        raise EUnicode.Create('Unexpected error converting Unicode character ''' + aChar + ''' to the default Ansi codepage');
+
+      if usedDefault and NOT AllowUnicodeDataLoss then
+        raise EUnicodeDataloss.Create('Unicode character ''' + aChar + ''' is not supported in the current Ansi codepage');
     end;
-
-    usedDefault := FALSE;
-
-    if (WideCharToMultiByte(CP_ACP, 0, @aChar, 0, NIL, 0, '?', @usedDefault) > 1)
-     or (usedDefault and NOT AllowUnicodeDataLoss) then
-      raise EUnicodeRequiresMultibyte.Create('Unicode character ''' + aChar + ''' does not map to a single-byte character in the default Ansi codepage');
-
-    if WideCharToMultiByte(CP_ACP, 0, @aChar, 1, @result, 1, '?', @usedDefault) = 0 then
-      raise EUnicode.Create('Unexpected error converting Unicode character ''' + aChar + ''' to the default Ansi codepage');
-
-    if usedDefault and NOT AllowUnicodeDataLoss then
-      raise EUnicodeDataloss.Create('Unicode character ''' + aChar + ''' is not supported in the current Ansi codepage');
   end;
 
 
@@ -512,15 +448,21 @@ implementation
     len: Integer;
     usedDefault: BOOL;
   begin
-    len := WideCharToMultiByte(CP_ACP, 0, @aChar, 1, NIL, 0, '?', NIL);
+    case aChar of
+      #$0000..#$007f  : aMBCS := AnsiChar(aChar);
+    else
+      len := WideCharToMultiByte(CP_ACP, 0, @aChar, 1, NIL, 0, '?', NIL);
 
-    SetLength(aMBCS, len);
+      SetLength(aMBCS, len);
 
-    if WideCharToMultiByte(CP_ACP, 0, @aChar, 1, PAnsiChar(aMBCS), len, '?', @usedDefault) = 0 then
-      raise EUnicode.Create('Unexpected error converting Unicode character ''' + aChar + ''' to the default Ansi codepage');
+      usedDefault := FALSE;
 
-    if usedDefault and NOT AllowUnicodeDataLoss then
-      raise EUnicodeDataloss.Create('Unicode character ''' + aChar + ''' is not supported in the current Ansi codepage');
+      if WideCharToMultiByte(CP_ACP, 0, @aChar, 1, PAnsiChar(aMBCS), len, '?', @usedDefault) = 0 then
+        raise EUnicode.Create('Unexpected error converting Unicode character ''' + aChar + ''' to the default Ansi codepage');
+
+      if usedDefault and NOT AllowUnicodeDataLoss then
+        raise EUnicodeDataloss.Create('Unicode character ''' + aChar + ''' is not supported in the current Ansi codepage');
+    end;
   end;
 
 
@@ -583,21 +525,21 @@ implementation
   end;
 
 
-  { STR  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
+  { Str  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
 
 
-  function STR: STRClass; overload;
+  function Str: StrClass; overload;
   begin
-    result := STRFn;
+    result := StrFn;
   end;
 
 
-  function STR(aInteger: Integer): String;
+  function Str(aInteger: Integer): String;
   begin
     result := IntToStr(aInteger);
   end;
 
-  function STR(aString: AnsiString): String;
+  function Str(aString: AnsiString): String;
   begin
   {$ifdef UNICODE}
     result := Wide(aString);
@@ -606,7 +548,7 @@ implementation
   {$endif}
   end;
 
-  function STR(aString: UnicodeString): String;
+  function Str(aString: UnicodeString): String;
   begin
   {$ifNdef UNICODE}
     result := Ansi(aString);
@@ -631,9 +573,9 @@ implementation
   end;
 
 
-  function ASCII: ASCIIClass;
+  function Ascii: AsciiClass;
   begin
-    result := ASCIIFn;
+    result := AsciiFn;
   end;
 
 
@@ -644,19 +586,19 @@ implementation
 
 { TAnsiStringHelper ------------------------------------------------------------------------------ }
 
-  function TAnsiStringHelper.get_Length: Integer;
+  function AnsiStringHelper.get_Length: Integer;
   begin
     result := System.Length(self);
   end;
 
 
-  function TAnsiStringHelper.Split(aChar: AnsiChar; var aLeft, aRight: AnsiString): Boolean;
+  function AnsiStringHelper.Split(aChar: AnsiChar; var aLeft, aRight: AnsiString): Boolean;
   begin
     result := Ansi.Split(self, aChar, aLeft, aRight);
   end;
 
 
-  function TAnsiStringHelper.Split(aChar: AnsiChar; var aArray: TAnsiStringArray): Boolean;
+  function AnsiStringHelper.Split(aChar: AnsiChar; var aArray: AnsiStringArray): Boolean;
   begin
     result := Ansi.Split(self, aChar, aArray);
   end;
@@ -666,74 +608,74 @@ implementation
 
 { TStringHelper ---------------------------------------------------------------------------------- }
 
-  function TStringHelper.get_Length: Integer;
+  function UnicodeStringHelper.get_Length: Integer;
   begin
     result := System.Length(self);
   end;
 
-  function TStringHelper.BeginsWith(const aString: String): Boolean;
+  function UnicodeStringHelper.BeginsWith(const aString: String): Boolean;
   begin
     result := Wide.BeginsWith(self, aString, csCaseSensitive);
   end;
 
-  function TStringHelper.BeginsWithText(const aString: String): Boolean;
+  function UnicodeStringHelper.BeginsWithText(const aString: String): Boolean;
   begin
     result := Wide.BeginsWith(self, aString, csIgnoreCase);
   end;
 
-  function TStringHelper.Contains(aChar: AnsiChar): Boolean;
+  function UnicodeStringHelper.Contains(aChar: AnsiChar): Boolean;
   var
     notUsed: Integer;
   begin
     result := Wide.Find(self, Wide.FromAnsi(aChar), notUsed);
   end;
 
-  function TStringHelper.Contains(aChar: WideChar): Boolean;
+  function UnicodeStringHelper.Contains(aChar: WideChar): Boolean;
   var
     notUsed: Integer;
   begin
     result := Wide.Find(self, aChar, notUsed);
   end;
 
-  function TStringHelper.Contains(const aString: String): Boolean;
+  function UnicodeStringHelper.Contains(const aString: String): Boolean;
   var
     notUsed: Integer;
   begin
     result := Wide.Find(self, aString, notUsed);
   end;
 
-  function TStringHelper.EndsWith(const aChar: WideChar): Boolean;
+  function UnicodeStringHelper.EndsWith(const aChar: WideChar): Boolean;
   begin
     result := Wide.EndsWith(self, aChar);
   end;
 
-  function TStringHelper.EndsWith(const aString: String): Boolean;
+  function UnicodeStringHelper.EndsWith(const aString: String): Boolean;
   begin
     result := Wide.EndsWith(self, aString);
   end;
 
-  function TStringHelper.EqualsText(const aString: String): Boolean;
+  function UnicodeStringHelper.EqualsText(const aString: String): Boolean;
   begin
     result := (Wide.Compare(self, aString, csIgnoreCase) = isEqual);
   end;
 
-  function TStringHelper.IsEmpty: Boolean;
+  function UnicodeStringHelper.IsEmpty: Boolean;
   begin
     result := self = '';
   end;
 
-  function TStringHelper.IsNotEmpty: Boolean;
+  function UnicodeStringHelper.IsNotEmpty: Boolean;
   begin
     result := self <> '';
   end;
 
-  function TStringHelper.IsNotEmptyOrWhitespace: Boolean;
+  function UnicodeStringHelper.IsNotEmptyOrWhitespace: Boolean;
   begin
-    result := STR.Trim(self) <> '';
+    result := Str.Trim(self) <> '';
   end;
 
 
-  function TStringHelper.IsOneOfText(const aArray: array of String): Boolean;
+  function UnicodeStringHelper.IsOneOfText(const aArray: array of String): Boolean;
   var
     i: Integer;
   begin
@@ -741,35 +683,35 @@ implementation
 
     for i := 0 to High(aArray) do
     begin
-      result := STR.SameText(aArray[i], self);
+      result := Str.SameText(aArray[i], self);
       if result then
         EXIT;
     end;
   end;
 
 
-  function TStringHelper.Split(aChar: WideChar; var aLeft, aRight: String): Boolean;
+  function UnicodeStringHelper.Split(aChar: WideChar; var aLeft, aRight: String): Boolean;
   begin
     result := Wide.Split(self, aChar, aLeft, aRight);
   end;
 
-  function TStringHelper.Split(aChar: WideChar; var aArray: TWideStringArray): Integer;
+  function UnicodeStringHelper.Split(aChar: WideChar; var aArray: UnicodeStringArray): Integer;
   begin
     result := Wide.Split(self, aChar, aArray);
   end;
 
-  function TStringHelper.Startcase: String;
+  function UnicodeStringHelper.Startcase: String;
   begin
     result := Wide.Startcase(self);
   end;
 
-  function TStringHelper.ToLower: String;
+  function UnicodeStringHelper.ToLower: String;
   begin
     result := Wide.Lowercase(self);
   end;
 
 
-  function TStringHelper.ToUpper: String;
+  function UnicodeStringHelper.ToUpper: String;
   begin
     result := Wide.Uppercase(self);
   end;
@@ -778,19 +720,19 @@ implementation
 
 
 
-  function TStringArrayHelper.get_Count: Integer;
+  function StringArrayHelper.get_Count: Integer;
   begin
     result := Length(self);
   end;
 
 
-  function TStringArrayHelper.get_IsEmpty: Boolean;
+  function StringArrayHelper.get_IsEmpty: Boolean;
   begin
     result := Length(self) = 0;
   end;
 
 
-  function TStringArrayHelper.Add(const aString: String): Integer;
+  function StringArrayHelper.Add(const aString: String): Integer;
   begin
     result := Length(self);
     SetLength(self, result + 1);
@@ -799,7 +741,7 @@ implementation
 
 
 
-  function TStringArrayHelper.Delete(const aIndex: Integer): Integer;
+  function StringArrayHelper.Delete(const aIndex: Integer): Integer;
   var
     i: Integer;
   begin
@@ -815,7 +757,7 @@ implementation
   end;
 
 
-  procedure TStringArrayHelper.Insert(const aIndex: Integer;
+  procedure StringArrayHelper.Insert(const aIndex: Integer;
                                       const aValue: String);
   var
     i: Integer;
@@ -830,8 +772,8 @@ implementation
   end;
 
 
-  procedure TStringArrayHelper.Insert(const aIndex: Integer;
-                                      const aValues: TStringArray);
+  procedure StringArrayHelper.Insert(const aIndex: Integer;
+                                      const aValues: StringArray);
   var
     i: Integer;
     wedge: Integer;
@@ -846,35 +788,20 @@ implementation
     for i := 0 to Pred(wedge) do
       self[aIndex + i] := aValues[i];
   end;
+{$endif}
 
 
 
 
 
-  procedure TStringListHelper.Add(const aArray: TStringArray);
+  function NewStringArray(const aStrings: array of String): StringArray;
   var
     i: Integer;
   begin
-    for i := 0 to High(aArray) do
-      Add(aArray[i]);
+    SetLength(result, Length(aStrings));
+    for i := 0 to High(aStrings) do
+      result[i] := aStrings[i];
   end;
-
-
-
-  function TStringListHelper.AsArray: TStringArray;
-  var
-    i: Integer;
-  begin
-    SetLength(result, Count);
-
-    for i := 0 to Pred(Count) do
-      result[i] := self[i];
-  end;
-
-
-
-
-{$endif TYPE_HELPERS}
 
 
 end.

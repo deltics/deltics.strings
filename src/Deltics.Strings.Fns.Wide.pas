@@ -9,8 +9,6 @@ interface
 
   uses
     Windows,
-    Deltics.Strings.Parsers.Wide,
-    Deltics.Strings.StringList,
     Deltics.Strings.Types;
 
   type
@@ -28,11 +26,13 @@ interface
 //      class function Replace(aScope: TStringScope; const aString, aFindStr, aReplaceStr: UnicodeString; var aCount: Integer; aCaseMode: TCaseSensitivity): UnicodeString; overload;
 
     public
-      class function Parse: WideParserClass; {$ifdef InlineMethods} inline; {$endif}
+      // Arrays
+      class function AsArray(const aItems: array of UnicodeString): UnicodeStringArray;
 
       // Transcoding
       class function Encode(const aString: String): UnicodeString;
-      class function FromAnsi(const aString: AnsiString): UnicodeString; overload;
+      class function FromAnsi(const aChar: AnsiChar): WideChar; overload;
+      class function FromAnsi(const aString: AnsiString): UnicodeString; overload;
       class function FromAnsi(aBuffer: PAnsiChar; aMaxLen: Integer = -1): UnicodeString; overload;
       class function FromString(const aString: String): UnicodeString;
       class function FromUtf8(const aString: Utf8String): UnicodeString; overload;
@@ -51,7 +51,10 @@ interface
 
       // Misc utilities
       class function Coalesce(const aString, aDefault: UnicodeString): UnicodeString; overload;
-      class function HasLength(const aString: UnicodeString; var aLength: Integer): Boolean;
+      class function IsEmpty(const aString: UnicodeString): Boolean; overload;
+      class function IsEmpty(const aString: UnicodeString; var aLength: Integer): Boolean; overload;
+      class function IsNotEmpty(const aString: UnicodeString): Boolean; overload;
+      class function IsNotEmpty(const aString: UnicodeString; var aLength: Integer): Boolean; overload;
       class function HasIndex(const aString: UnicodeString; aIndex: Integer): Boolean; overload;
       class function HasIndex(const aString: UnicodeString; aIndex: Integer; var aChar: WideChar): Boolean; overload;
       class function IIf(aValue: Boolean; const aWhenTrue, aWhenFalse: UnicodeString): UnicodeString; overload;
@@ -61,9 +64,9 @@ interface
       class function Split(const aString: UnicodeString; const aChar: AnsiChar; var aLeft, aRight: UnicodeString): Boolean; overload;
       class function Split(const aString: UnicodeString; const aChar: WideChar; var aLeft, aRight: UnicodeString): Boolean; overload;
       class function Split(const aString, aDelim: UnicodeString; var aLeft, aRight: UnicodeString): Boolean; overload;
-      class function Split(const aString: UnicodeString; const aChar: AnsiChar; var aParts: TWideStringArray): Integer; overload;
-      class function Split(const aString: UnicodeString; const aChar: WideChar; var aParts: TWideStringArray): Integer; overload;
-      class function Split(const aString, aDelim: UnicodeString; var aParts: TWideStringArray): Integer; overload;
+      class function Split(const aString: UnicodeString; const aChar: AnsiChar; var aParts: UnicodeStringArray): Integer; overload;
+      class function Split(const aString: UnicodeString; const aChar: WideChar; var aParts: UnicodeStringArray): Integer; overload;
+      class function Split(const aString, aDelim: UnicodeString; var aParts: UnicodeStringArray): Integer; overload;
 
       // Assembling a string
       class function Concat(const aArray: array of UnicodeString): UnicodeString; overload;
@@ -73,22 +76,11 @@ interface
       class function StringOf(aChar: WideChar; aCount: Integer): UnicodeString; overload;
       class function StringOf(const aString: UnicodeString; aCount: Integer): UnicodeString; overload;
 
-      // Type conversions
-      class function AsBoolean(const aString: UnicodeString): Boolean; overload;
-      class function AsBoolean(const aString: UnicodeString; aDefault: Boolean): Boolean; overload;
-      class function AsInteger(const aString: UnicodeString): Integer; overload;
-      class function AsInteger(const aString: UnicodeString; aDefault: Integer): Integer; overload;
-      class function IsBoolean(const aString: UnicodeString): Boolean; overload;
-      class function IsBoolean(const aString: UnicodeString; var aValue: Boolean): Boolean; overload;
-      class function IsInteger(const aString: UnicodeString): Boolean; overload;
-      class function IsInteger(const aString: UnicodeString; var aValue: Integer): Boolean; overload;
-
-      // Testing things about a string
+      // Testing things about a string
       class function IsAlpha(aChar: WideChar): Boolean; overload;
       class function IsAlpha(const aString: UnicodeString): Boolean; overload;
       class function IsAlphaNumeric(aChar: WideChar): Boolean; overload;
       class function IsAlphaNumeric(const aString: UnicodeString): Boolean; overload;
-      class function IsEmpty(const aString: UnicodeString): Boolean; overload;
       class function IsHiSurrogate(const aChar: WideChar): Boolean;
       class function IsLoSurrogate(const aChar: WideChar): Boolean;
       class function IsLowercase(const aChar: WideChar): Boolean; overload;
@@ -154,12 +146,12 @@ interface
       class function FindLastText(const aString: UnicodeString; aChar: AnsiChar; var aPos: Integer): Boolean; overload;
       class function FindLastText(const aString: UnicodeString; aChar: WideChar; var aPos: Integer): Boolean; overload;
       class function FindLastText(const aString, aSubstring: UnicodeString; var aPos: Integer): Boolean; overload;
-      class function FindAll(const aString: UnicodeString; aChar: AnsiChar; var aPos: TCharIndexArray; aCaseMode: TCaseSensitivity = csCaseSensitive): Integer; overload;
-      class function FindAll(const aString: UnicodeString; aChar: WideChar; var aPos: TCharIndexArray; aCaseMode: TCaseSensitivity = csCaseSensitive): Integer; overload;
-      class function FindAll(const aString, aSubstring: UnicodeString; var aPos: TCharIndexArray; aCaseMode: TCaseSensitivity = csCaseSensitive): Integer; overload;
-      class function FindAllText(const aString: UnicodeString; aChar: AnsiChar; var aPos: TCharIndexArray): Integer; overload;
-      class function FindAllText(const aString: UnicodeString; aChar: WideChar; var aPos: TCharIndexArray): Integer; overload;
-      class function FindAllText(const aString, aSubstring: UnicodeString; var aPos: TCharIndexArray): Integer; overload;
+      class function FindAll(const aString: UnicodeString; aChar: AnsiChar; var aPos: CharIndexArray; aCaseMode: TCaseSensitivity = csCaseSensitive): Integer; overload;
+      class function FindAll(const aString: UnicodeString; aChar: WideChar; var aPos: CharIndexArray; aCaseMode: TCaseSensitivity = csCaseSensitive): Integer; overload;
+      class function FindAll(const aString, aSubstring: UnicodeString; var aPos: CharIndexArray; aCaseMode: TCaseSensitivity = csCaseSensitive): Integer; overload;
+      class function FindAllText(const aString: UnicodeString; aChar: AnsiChar; var aPos: CharIndexArray): Integer; overload;
+      class function FindAllText(const aString: UnicodeString; aChar: WideChar; var aPos: CharIndexArray): Integer; overload;
+      class function FindAllText(const aString, aSubstring: UnicodeString; var aPos: CharIndexArray): Integer; overload;
 
       // Adding to a string
       class function Append(const aString: UnicodeString; aChar: AnsiChar): UnicodeString; overload;
@@ -182,14 +174,9 @@ interface
       class function Embrace(const aString: UnicodeString; aBrace: AnsiChar): UnicodeString; overload;
       class function Embrace(const aString: UnicodeString; aBrace: WideChar = '('): UnicodeString; overload;
       class function Enquote(const aString: UnicodeString; aQuote: AnsiChar): UnicodeString; overload;
-      class function Enquote(const aString: UnicodeString; aQuote: AnsiChar; aEscape: AnsiChar): UnicodeString; overload;
       class function Enquote(const aString: UnicodeString; aQuote: WideChar = ''''; aEscape: WideChar = ''''): UnicodeString; overload;
-      class function PadLeft(const aValue: Integer; aLength: Integer; aChar: AnsiChar): UnicodeString; overload;
-      class function PadLeft(const aValue: Integer; aLength: Integer; aChar: WideChar = ' '): UnicodeString; overload;
-      class function PadLeft(const aString: UnicodeString; aLength: Integer; aChar: AnsiChar): UnicodeString; overload;
+      class function PadLeft(const aString: UnicodeString; aLength: Integer; aChar: AnsiChar): UnicodeString; overload;
       class function PadLeft(const aString: UnicodeString; aLength: Integer; aChar: WideChar = ' '): UnicodeString; overload;
-      class function PadRight(const aValue: Integer; aLength: Integer; aChar: AnsiChar): UnicodeString; overload;
-      class function PadRight(const aValue: Integer; aLength: Integer; aChar: WideChar = ' '): UnicodeString; overload;
       class function PadRight(const aString: UnicodeString; aLength: Integer; aChar: AnsiChar): UnicodeString; overload;
       class function PadRight(const aString: UnicodeString; aLength: Integer; aChar: WideChar = ' '): UnicodeString; overload;
 
@@ -429,8 +416,7 @@ interface
       class function Snakecase(const aString: UnicodeString): UnicodeString;
       class function Startcase(const aString: UnicodeString): UnicodeString;
       class function Titlecase(const aString: UnicodeString): UnicodeString; overload;
-      class function Titlecase(const aString: UnicodeString; const aLower: TWideStringArray): UnicodeString; overload;
-      class function Titlecase(const aString: UnicodeString; aLower: TWideStringList): UnicodeString; overload;
+      class function Titlecase(const aString: UnicodeString; const aLower: UnicodeStringArray): UnicodeString; overload;
       class function Uppercase(aChar: WideChar): WideChar; overload;
       class function Uppercase(const aString: UnicodeString): UnicodeString; overload;
     end;
@@ -443,12 +429,18 @@ implementation
     Deltics.Contracts,
     Deltics.Exchange,
     Deltics.Math,
-    Deltics.Pointers,
+    Deltics.Memory,
     Deltics.ReverseBytes,
-    Deltics.Strings,
-    Deltics.Strings.Encoding,
-    Deltics.Strings.Utils;
+    Deltics.Strings.Fns.Ansi,
+    Deltics.Strings.Fns.utf8,
+    Deltics.Strings.Utils,
+    Deltics.Unicode;
 
+
+  type
+    Ansi = AnsiFn;
+    Utf8 = Utf8Fn;
+    Wide = WideFn;
 
   const
     ERRFMT_ORPHAN_DELETIONLEAVES_N = 'Deletion leaves surrogate orphan at index %d';
@@ -461,41 +453,41 @@ implementation
     MAX_LoSurrogate : WideChar = #$dfff;
 
   var
-    LowercaseWordsForTitlecase: TWideStringList = NIL;
+    LowercaseWordsForTitlecase: UnicodeStringArray;
 
 
-  function LoSurrogateStrategy(aChar: WideChar): TUnicodeSurrogateStrategy; overload;
+  function WhenLoSurrogate(const aChar: WideChar; const aAction: SurrogateAction): SurrogateAction; overload;
   begin
-    result := UnicodeSurrogateStrategy;
-    if (result <> ssIgnore) and NOT Wide.IsLoSurrogate(aChar) then
-      result := ssIgnore;
+    result := aAction;
+    if (result <> saIgnore) and NOT Unicode.IsLoSurrogate(aChar) then
+      result := saIgnore;
   end;
 
-  function LoSurrogateStrategy(const aString: UnicodeString; aIndex: Integer): TUnicodeSurrogateStrategy; overload;
+  function WhenLoSurrogate(const aString: UnicodeString; const aIndex: Integer; const aAction: SurrogateAction): SurrogateAction; overload;
   var
     c: WideChar;
   begin
-    result := UnicodeSurrogateStrategy;
-    if (result <> ssIgnore) and (   NOT Wide.HasIndex(aString, aIndex, c)
-                                 or NOT Wide.IsLoSurrogate(c)) then
-      result := ssIgnore;
+    result := aAction;
+    if (result <> saIgnore) and (   NOT Wide.HasIndex(aString, aIndex, c)
+                                 or NOT Unicode.IsLoSurrogate(c)) then
+      result := saIgnore;
   end;
 
-  function HiSurrogateStrategy(aChar: WideChar): TUnicodeSurrogateStrategy; overload;
+  function WhenHiSurrogate(const aChar: WideChar; const aAction: SurrogateAction): SurrogateAction; overload;
   begin
-    result := UnicodeSurrogateStrategy;
-    if (result <> ssIgnore) and NOT Wide.IsHiSurrogate(aChar) then
-      result := ssIgnore;
+    result := aAction;
+    if (result <> saIgnore) and NOT Unicode.IsHiSurrogate(aChar) then
+      result := saIgnore;
   end;
 
-  function HiSurrogateStrategy(const aString: UnicodeString; aIndex: Integer): TUnicodeSurrogateStrategy; overload;
+  function WhenHiSurrogate(const aString: UnicodeString; const aIndex: Integer; const aAction: SurrogateAction): SurrogateAction; overload;
   var
     c: WideChar;
   begin
-    result := UnicodeSurrogateStrategy;
-    if (result <> ssIgnore) and (   NOT Wide.HasIndex(aString, aIndex, c)
-                                 or NOT Wide.IsHiSurrogate(c)) then
-      result := ssIgnore;
+    result := aAction;
+    if (result <> saIgnore) and (   NOT Wide.HasIndex(aString, aIndex, c)
+                                 or NOT Unicode.IsHiSurrogate(c)) then
+      result := saIgnore;
   end;
 
 
@@ -646,17 +638,17 @@ implementation
   var
     len: Integer;
   begin
-    Require('aBuffer', aBuffer).IsAssigned;
-    Require('aMaxChars', aMaxChars).IsPositiveOrZero;
+    Contract.Requires('aBuffer', aBuffer).IsAssigned;
+    Contract.Requires('aMaxChars', aMaxChars).IsPositiveOrZero;
 
-    if  (aMaxChars = 0)
-     or NOT HasLength(aString, len) then
+    if (aMaxChars = 0)
+     or IsEmpty(aString, len) then
       EXIT;
 
     if (aMaxChars < len) then
       len := aMaxChars;
 
-    FastCopy(aString, Memory.ByteOffset(aBuffer, aByteOffset), len);
+    FastCopy(aString, Memory.Offset(aBuffer, aByteOffset), len);
   end;
 
 
@@ -682,7 +674,7 @@ implementation
                                       aCaseMode: TCaseSensitivity): UnicodeString;
   var
     i: Integer;
-    pa: TCharIndexArray;
+    pa: CharIndexArray;
     pr, ps, px: PWideChar;
     p, flen, xlen, rlen, clen: Integer;
   begin
@@ -777,8 +769,31 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WideFn.HasLength(const aString: UnicodeString;
-                                  var   aLength: Integer): Boolean;
+  class function WideFn.IsEmpty(const aString: UnicodeString): Boolean;
+  begin
+    result := Length(aString) = 0;
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
+  class function WideFn.IsEmpty(const aString: UnicodeString;
+                                var   aLength: Integer): Boolean;
+  begin
+    aLength := Length(aString);
+    result  := aLength = 0;
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
+  class function WideFn.IsNotEmpty(const aString: UnicodeString): Boolean;
+  begin
+    result := Length(aString) > 0;
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
+  class function WideFn.IsNotEmpty(const aString: UnicodeString;
+                                   var   aLength: Integer): Boolean;
   begin
     aLength := Length(aString);
     result  := aLength > 0;
@@ -867,12 +882,13 @@ implementation
     pc, prc: PWideChar;
     loSurrogate: Boolean;
   begin
-    if NOT HasLength(aString, strLen) then
+    if IsEmpty(aString, strLen) then
       EXIT;
 
-    result := aString;
-    pc   := PWideChar(result);
-    prc  := @result[strLen];
+    result  := aString;
+    pc      := PWideChar(result);
+    prc     := @result[strLen];
+
     loSurrogate := FALSE;
 
     for i := 1 to strLen div 2 do
@@ -924,9 +940,6 @@ implementation
 
 
 
-
-
-
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class function WideFn.Encode(const aString: String): UnicodeString;
   begin
@@ -950,6 +963,13 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
+  class function WideFn.FromAnsi(const aChar: AnsiChar): WideChar;
+  begin
+    result := Unicode.AnsiCharToWide(aChar);
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class function WideFn.FromAnsi(const aString: AnsiString): UnicodeString;
   begin
     result := FromAnsi(PAnsiChar(aString), System.Length(aString));
@@ -968,7 +988,7 @@ implementation
 
     if (aMaxLen > 0) then
     begin
-      len := AnsiFn.Len(PAnsiChar(aBuffer));
+      len := Ansi.Len(PAnsiChar(aBuffer));
       if len < aMaxLen then
         aMaxLen := len;
     end
@@ -1123,27 +1143,19 @@ implementation
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class function WideFn.FromBuffer(aBuffer: PWideChar;
                                    aLen: Integer): UnicodeString;
-  var
-    enc: TEncoding;
-    resultCharCount: Integer;
   begin
-    Require('aLen', aLen).IsNotLessThan(-1);
+    Contract.Requires('aLen', aLen).IsNotLessThan(-1);
 
     if aLen = -1 then
       aLen := Len(aBuffer);
 
-    SetLength(result, 0);
+    SetLength(result, aLen);
     if aLen = 0 then
       EXIT;
 
-    Encoding.Identify(aBuffer^, aLen, enc);
-    if NOT Assigned(enc) or NOT enc.IsUtf16 then
-      raise Exception.Create('Not a valid UTF16 encoded buffer');
-
-    resultCharCount := enc.GetCharCount(aBuffer^, aLen);
-    SetLength(result, resultCharCount);
-
-    enc.Decode(aBuffer, aLen, @result[1], resultCharCount);
+    Memory.Copy(aBuffer, aLen, Pointer(result));
+    while (result[aLen] = #$0000) do
+      SetLength(result, Length(result) - 1);
   end;
 
 
@@ -1288,7 +1300,7 @@ implementation
   class function WideFn.StringOf(aChar: AnsiChar;
                                  aCount: Integer): UnicodeString;
   begin
-    result := StringOf(Wide(aChar), aCount);
+    result := StringOf(FromAnsi(aChar), aCount);
   end;
 
 
@@ -1352,8 +1364,8 @@ implementation
   var
     chars: PWideChar absolute aString;
   begin
-    Require('aChar', aChar).IsNotNull;
-    Require('aCaseMode', aCaseMode in [csCaseSensitive, csIgnoreCase]);
+    Contract.Requires('aChar', aChar).IsNotNull;
+    Contract.Requires('aCaseMode', aCaseMode in [csCaseSensitive, csIgnoreCase]);
 
     case aCaseMode of
 
@@ -1375,7 +1387,7 @@ implementation
                                          aChar: AnsiChar;
                                          aCaseMode: TCaseSensitivity): Boolean;
   begin
-    result := BeginsWith(aString, Wide(aChar), aCaseMode);
+    result := BeginsWith(aString, FromAnsi(aChar), aCaseMode);
   end;
 
 
@@ -1386,7 +1398,7 @@ implementation
   var
     len: Integer;
   begin
-    Require('aSubString', aSubString).IsNotEmpty;
+    Contract.Requires('aSubString', aSubString).IsNotEmpty;
 
     len := System.Length(aSubstring);
 
@@ -1401,7 +1413,7 @@ implementation
   class function WideFn.BeginsWithText(const aString: UnicodeString;
                                              aChar: WideChar): Boolean;
   begin
-    Require('aChar', aChar).IsNotNull;
+    Contract.Requires('aChar', aChar).IsNotNull;
 
     result := (aString <> '')
           and (CompareStringW(LOCALE_USER_DEFAULT, NORM_IGNORECASE,
@@ -1414,7 +1426,7 @@ implementation
   class function WideFn.BeginsWithText(const aString: UnicodeString;
                                              aChar: AnsiChar): Boolean;
   begin
-    result := BeginsWithText(aString, Wide(aChar));
+    result := BeginsWithText(aString, FromAnsi(aChar));
   end;
 
 
@@ -1424,7 +1436,7 @@ implementation
   var
     len: Integer;
   begin
-    Require('aSubString', aSubString).IsNotEmpty;
+    Contract.Requires('aSubString', aSubString).IsNotEmpty;
 
     len := System.Length(aSubstring);
 
@@ -1503,7 +1515,7 @@ implementation
                                        aChar: AnsiChar;
                                        aCaseMode: TCaseSensitivity): Boolean;
   begin
-    result := EndsWith(aString, Wide(aChar), aCaseMode);
+    result := EndsWith(aString, FromAnsi(aChar), aCaseMode);
   end;
 
 
@@ -1515,15 +1527,14 @@ implementation
     chars: PWideChar absolute aString;
     len: Integer;
   begin
-    Require('aChar', aChar).IsNotNull;
-    Require('aCaseMode', aCaseMode in [csCaseSensitive, csIgnoreCase]);
+    Contract.Requires('aChar', aChar).IsNotNull;
+    Contract.Requires('aCaseMode', aCaseMode in [csCaseSensitive, csIgnoreCase]);
 
     result := FALSE;
-    if NOT HasLength(aString, len) then
+    if IsEmpty(aString, len) then
       EXIT;
 
     case aCaseMode of
-
       csCaseSensitive : result := (chars[len - 1] = aChar);
 
       csIgnoreCase    : result := CompareStringW(LOCALE_USER_DEFAULT, CASEMODE_FLAG[aCaseMode],
@@ -1544,10 +1555,10 @@ implementation
     len: Integer;
     subLen: Integer;
   begin
-    Require('aSubstring', aSubstring).IsNotEmpty.GetLength(subLen);
+    Contract.Requires('aSubstring', aSubstring).IsNotEmpty.GetLength(subLen);
 
     result := FALSE;
-    if NOT HasLength(aString, len) then
+    if IsEmpty(aString, len) then
       EXIT;
 
     result := (subLen <= len)
@@ -1561,7 +1572,7 @@ implementation
   class function WideFn.EndsWithText(const aString: UnicodeString;
                                            aChar: AnsiChar): Boolean;
   begin
-    result := EndsWith(aString, Wide(aChar), csIgnoreCase);
+    result := EndsWith(aString, FromAnsi(aChar), csIgnoreCase);
   end;
 
 
@@ -1582,10 +1593,10 @@ implementation
     len: Integer;
     subLen: Integer;
   begin
-    Require('aSubstring', aSubstring).IsNotEmpty.GetLength(subLen);
+    Contract.Requires('aSubstring', aSubstring).IsNotEmpty.GetLength(subLen);
 
     result := FALSE;
-    if NOT HasLength(aString, len) then
+    if IsEmpty(aString, len) then
       EXIT;
 
     result := (subLen <= len)
@@ -1727,7 +1738,7 @@ implementation
                                  var   aPos: Integer;
                                        aCaseMode: TCaseSensitivity): Boolean;
   begin
-    result := FindNext(aString, Wide(aChar), aPos, aCaseMode);
+    result := FindNext(aString, FromAnsi(aChar), aPos, aCaseMode);
   end;
 
 
@@ -1742,21 +1753,21 @@ implementation
     first: PWideChar;
     curr: PWideChar;
   begin
-    Require('aChar', aChar).IsNotNull;
+    Contract.Requires('aChar', aChar).IsNotNull;
 
-    curr   := NIL;
     first  := NIL;
+    curr   := NIL;
     result := FALSE;
     try
-      if aPos < 0 then
-        aPos := 0;
+      if aPos < 1 then
+        aPos := 1;
 
-      if  (NOT HasLength(aString, len))
+      if  (IsEmpty(aString, len))
        or (aPos >= len) then
         EXIT;
 
-      first := Pointer(aString);
-      curr  := PWideChar(Memory.ByteOffset(first, aPos * 2));
+      first := PWideChar(aString);
+      curr  := @aString[aPos - 1];
       Dec(len, aPos - 1);
 
       if (aCaseMode = csCaseSensitive) or (NOT Wide.IsAlpha(aChar)) then
@@ -1806,7 +1817,7 @@ implementation
     first: PWideChar;
     curr: PWideChar;
   begin
-    Require('aSubstring', aSubstring).IsNotEmpty.GetLength(subLen);
+    Contract.Requires('aSubstring', aSubstring).IsNotEmpty.GetLength(subLen);
 
     curr   := NIL;
     first  := NIL;
@@ -1815,15 +1826,15 @@ implementation
       if aPos < 0 then
         aPos := 0;
 
-      if  (NOT HasLength(aString, strLen))
+      if  (IsEmpty(aString, strLen))
        or (aPos + subLen > strLen) then
         EXIT;
 
       first := PWideChar(aString);
-      curr  := PWideChar(Memory.ByteOffset(first, aPos * 2));
-      Dec(strLen, aPos + subLen - 1);
+      curr  := @aString[aPos];
+      Dec(strLen, subLen - 1);
 
-      for i := 1 to strLen do
+      for i := aPos to strLen do
       begin
         result := CompareStringW(LOCALE_USER_DEFAULT, CASEMODE_FLAG[aCaseMode],
                                  curr, subLen,
@@ -1876,7 +1887,7 @@ implementation
                                      var   aPos: Integer;
                                            aCaseMode: TCaseSensitivity): Boolean;
   begin
-    result := FindPrevious(aString, Wide(aChar), aPos, aCaseMode);
+    result := FindPrevious(aString, FromAnsi(aChar), aPos, aCaseMode);
   end;
 
 
@@ -1892,18 +1903,18 @@ implementation
     first: PWideChar;
     curr: PWideChar;
   begin
-    Require('aChar', aChar).IsNotNull;
+    Contract.Requires('aChar', aChar).IsNotNull;
 
     curr   := NIL;
     first  := NIL;
     result := FALSE;
     try
-      if (aPos < 1) or NOT HasLength(aString, len) then
+      if (aPos < 1) or IsEmpty(aString, len) then
         EXIT;
 
       pos   := Min(aPos, len + 1);
       first := PWideChar(aString);
-      curr  := PWideChar(Memory.ByteOffset(first, 2 * (aPos - 2)));
+      curr  := @aString[aPos - 1];
       len   := pos - 1;
 
       if (aCaseMode = csCaseSensitive) or (NOT Wide.IsAlpha(aChar)) then
@@ -1953,19 +1964,19 @@ implementation
     first: PWideChar;
     curr: PWideChar;
   begin
-    Require('aSubstring', aSubstring).IsNotEmpty.GetLength(subLen);
+    Contract.Requires('aSubstring', aSubstring).IsNotEmpty.GetLength(subLen);
 
     curr   := NIL;
     first  := NIL;
     result := FALSE;
     try
       if  (aPos < 1)
-       or (NOT HasLength(aString, strLen)) then
+       or (IsEmpty(aString, strLen)) then
         EXIT;
 
       aPos  := Min(aPos - 1, strLen - subLen + 1);
       first := PWideChar(aString);
-      curr  := PWideChar(Memory.ByteOffset(first, 2 * (aPos - 1)));
+      curr  := @aString[aPos - 1];
 
       for i := 1 to aPos do
       begin
@@ -2018,17 +2029,17 @@ implementation
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class function WideFn.FindAll(const aString: UnicodeString;
                                       aChar: AnsiChar;
-                                var   aPos: TCharIndexArray;
+                                var   aPos: CharIndexArray;
                                       aCaseMode: TCaseSensitivity): Integer;
   begin
-    result := FindAll(aString, Wide(aChar), aPos, aCaseMode);
+    result := FindAll(aString, FromAnsi(aChar), aPos, aCaseMode);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class function WideFn.FindAll(const aString: UnicodeString;
                                       aChar: WideChar;
-                                var   aPos: TCharIndexArray;
+                                var   aPos: CharIndexArray;
                                       aCaseMode: TCaseSensitivity): Integer;
   var
     i: Integer;
@@ -2036,12 +2047,12 @@ implementation
     firstChar: PWideChar;
     currChar: PWideChar;
   begin
-    Require('aChar', aChar).IsNotNull;
+    Contract.Requires('aChar', aChar).IsNotNull;
 
     result := 0;
     SetLength(aPos, 0);
 
-    if NOT HasLength(aString, len) then
+    if IsEmpty(aString, len) then
       EXIT;
 
     SetLength(aPos, len);
@@ -2086,7 +2097,7 @@ implementation
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class function WideFn.FindAll(const aString: UnicodeString;
                                 const aSubstring: UnicodeString;
-                                var   aPos: TCharIndexArray;
+                                var   aPos: CharIndexArray;
                                       aCaseMode: TCaseSensitivity): Integer;
   var
     i: Integer;
@@ -2096,7 +2107,7 @@ implementation
     strLen: Integer;
     subLen: Integer;
   begin
-    Require('aSubstring', aSubstring).IsNotEmpty.GetLength(subLen);
+    Contract.Requires('aSubstring', aSubstring).IsNotEmpty.GetLength(subLen);
 
     result := 0;
     SetLength(aPos, 0);
@@ -2130,7 +2141,7 @@ implementation
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class function WideFn.FindAllText(const aString: UnicodeString;
                                           aChar: AnsiChar;
-                                    var   aPos: TCharIndexArray): Integer;
+                                    var   aPos: CharIndexArray): Integer;
   begin
     result := FindAll(aString, aChar, aPos, csIgnoreCase);
   end;
@@ -2139,7 +2150,7 @@ implementation
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class function WideFn.FindAllText(const aString: UnicodeString;
                                           aChar: WideChar;
-                                    var   aPos: TCharIndexArray): Integer;
+                                    var   aPos: CharIndexArray): Integer;
   begin
     result := FindAll(aString, aChar, aPos, csIgnoreCase);
   end;
@@ -2148,7 +2159,7 @@ implementation
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class function WideFn.FindAllText(const aString: UnicodeString;
                                     const aSubstring: UnicodeString;
-                                    var   aPos: TCharIndexArray): Integer;
+                                    var   aPos: CharIndexArray): Integer;
   begin
     result := FindAll(aString, aSubstring, aPos, csIgnoreCase);
   end;
@@ -2168,66 +2179,14 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WideFn.AsBoolean(const aString: UnicodeString): Boolean;
+  class function WideFn.AsArray(const aItems: array of UnicodeString): UnicodeStringArray;
+  var
+    i: Integer;
   begin
-    result := Parse.AsBoolean(PWideChar(aString), Length(aString));
+    SetLength(result, Length(aItems));
+    for i := 0 to High(aItems) do
+      result[i] := aItems[i];
   end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WideFn.AsBoolean(const aString: UnicodeString;
-                                        aDefault: Boolean): Boolean;
-  begin
-    result := Parse.AsBoolean(PWideChar(aString), Length(aString), aDefault);
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WideFn.AsInteger(const aString: UnicodeString): Integer;
-  begin
-    result := Parse.AsInteger(PWideChar(aString), Length(aString));
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WideFn.AsInteger(const aString: UnicodeString;
-                                        aDefault: Integer): Integer;
-  begin
-    result := Parse.AsInteger(PWideChar(aString), Length(aString), aDefault);
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WideFn.IsBoolean(const aString: UnicodeString): Boolean;
-  begin
-    result := Parse.IsBoolean(PWideChar(aString), Length(aString));
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WideFn.IsBoolean(const aString: UnicodeString;
-                                  var   aValue: Boolean): Boolean;
-  begin
-    result := Parse.IsBoolean(PWideChar(aString), Length(aString), aValue);
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WideFn.IsInteger(const aString: UnicodeString): Boolean;
-  begin
-    result := Parse.IsInteger(PWideChar(aString), Length(aString));
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WideFn.IsInteger(const aString: UnicodeString;
-                                  var   aValue: Integer): Boolean;
-  begin
-    result := Parse.IsInteger(PWideChar(aString), Length(aString), aValue);
-  end;
-
-
-
 
 
 
@@ -2259,7 +2218,7 @@ implementation
   begin
     result := FALSE;
 
-    if NOT HasLength(aString, len) then
+    if IsEmpty(aString, len) then
       EXIT;
 
     for i := 0 to Pred(len) do
@@ -2286,7 +2245,7 @@ implementation
   begin
     result := FALSE;
 
-    if NOT HasLength(aString, len) then
+    if IsEmpty(aString, len) then
       EXIT;
 
     for i := 0 to Pred(len) do
@@ -2294,13 +2253,6 @@ implementation
         EXIT;
 
     result := TRUE;
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WideFn.IsEmpty(const aString: UnicodeString): Boolean;
-  begin
-    result := Length(aString) = 0;
   end;
 
 
@@ -2359,7 +2311,7 @@ implementation
   begin
     result := FALSE;
 
-    if NOT HasLength(aString, len) then
+    if IsEmpty(aString, len) then
       EXIT;
 
     hasDP         := FALSE;
@@ -2486,14 +2438,10 @@ implementation
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class function WideFn.Append(const aString: UnicodeString;
                                      aChar: AnsiChar): UnicodeString;
-  var
-    ch: WideChar;
   begin
     result := aString;
-    ch     := Wide(aChar);
-
     SetLength(result, Length(result) + 1);
-    result[Length(result)] := ch;
+    result[Length(result)] := FromAnsi(aChar);
   end;
 
 
@@ -2501,6 +2449,8 @@ implementation
   class function WideFn.Append(const aString: UnicodeString;
                                      aChar: WideChar): UnicodeString;
   begin
+    Contract.Requires('aChar', aChar).IsNotSurrogate;
+
     result := aString;
     SetLength(result, Length(result) + 1);
     result[Length(result)] := aChar;
@@ -2513,18 +2463,19 @@ implementation
     orgLen: Integer;
     sfxlen: Integer;
   begin
-    if HasLength(aString, orgLen) then
+    if IsEmpty(aString, orgLen) then
     begin
-      result := aString;
-
-      if HasLength(aSuffix, sfxLen) then
-      begin
-        SetLength(result, orgLen + sfxlen);
-        FastCopy(aSuffix, result, orgLen + 1);
-      end;
-    end
-    else
       result := aSuffix;
+      EXIT;
+    end;
+
+    result := aString;
+
+    if IsNotEmpty(aSuffix, sfxLen) then
+    begin
+      SetLength(result, orgLen + sfxlen);
+      FastCopy(aSuffix, result, orgLen + 1);
+    end;
   end;
 
 
@@ -2533,7 +2484,7 @@ implementation
                                const aSuffix: UnicodeString;
                                      aSeparator: AnsiChar): UnicodeString;
   begin
-    result := Append(aString, aSuffix, Wide(aSeparator));
+    result := Append(aString, aSuffix, FromAnsi(aSeparator));
   end;
 
 
@@ -2545,23 +2496,24 @@ implementation
     orgLen: Integer;
     sfxLen: Integer;
   begin
-    Require('aSeparator', aSeparator).IsNotNull;
+    Contract.Requires('aSeparator', aSeparator).IsNotNull;
 
-    if HasLength(aString, orgLen) then
+    if IsEmpty(aString, orgLen) then
     begin
-      result := aString;
+      result := aSuffix;
+      EXIT;
+    end;
 
-      if HasLength(aSuffix, sfxlen) then
-      begin
-        SetLength(result, orgLen + sfxLen + 1);
+    result := aString;
 
-        PWideChar(result)[orgLen] := aSeparator;
+    if IsNotEmpty(aSuffix, sfxlen) then
+    begin
+      SetLength(result, orgLen + sfxLen + 1);
 
-        FastCopy(aSuffix, result, orgLen + 2);
-      end;
-    end
-    else
-      result := aSuffix
+      PWideChar(result)[orgLen] := aSeparator;
+
+      FastCopy(aSuffix, result, orgLen + 2);
+    end;
   end;
 
 
@@ -2574,29 +2526,30 @@ implementation
     sepLen: Integer;
     sfxLen: Integer;
   begin
-    if HasLength(aString, orgLen) then
+    if IsEmpty(aString, orgLen) then
     begin
-      result := aString;
+      result := aSuffix;
+      EXIT;
+    end;
 
-      if HasLength(aSuffix, sfxlen) then
-      begin
-        if HasLength(aSeparator, sepLen) then
-        begin
-          SetLength(result, orgLen + sepLen + sfxLen);
+    result := aString;
 
-          FastCopy(aSeparator, result, orgLen + 1);
-          FastCopy(aSuffix, result, orgLen + sepLen + 1);
-        end
-        else
-        begin
-          SetLength(result, orgLen + sfxLen);
+    if IsEmpty(aSuffix, sfxlen) then
+      EXIT;
 
-          FastCopy(aSeparator, result, orgLen + 1);
-        end;
-      end;
+    if IsNotEmpty(aSeparator, sepLen) then
+    begin
+      SetLength(result, orgLen + sepLen + sfxLen);
+
+      FastCopy(aSeparator, result, orgLen + 1);
+      FastCopy(aSuffix, result, orgLen + sepLen + 1);
     end
     else
-      result := aSuffix
+    begin
+      SetLength(result, orgLen + sfxLen);
+
+      FastCopy(aSeparator, result, orgLen + 1);
+    end;
   end;
 
 
@@ -2605,7 +2558,7 @@ implementation
                                      aPos: Integer;
                                      aChar: AnsiChar): UnicodeString;
   begin
-    result := Insert(aString, aPos, Wide(aChar));
+    result := Insert(aString, aPos, FromAnsi(aChar));
   end;
 
 
@@ -2616,11 +2569,11 @@ implementation
   var
     strLen: Integer;
   begin
-    Require('aChar', aChar).IsNotNull;
+    Contract.Requires('aChar', aChar).IsNotNull;
 
     result := aString;
 
-    if  NOT HasLength(aString, strLen)
+    if  IsEmpty(aString, strLen)
      or NOT HasIndex(aString, aPos) then
       EXIT;
 
@@ -2717,7 +2670,7 @@ implementation
      or ((aPos <= 1) or (aPos > strLen)) then   // Deals with strLen = 0
       EXIT;
 
-    if HasLength(aSeparator, sepLen) then
+    if IsNotEmpty(aSeparator, sepLen) then
     begin
       SetLength(result, strLen + ifxLen + (2 * sepLen));
 
@@ -2742,7 +2695,7 @@ implementation
   class function WideFn.Prepend(const aString: UnicodeString;
                                       aChar: AnsiChar): UnicodeString;
   begin
-    result := Prepend(aString, Wide(aChar));
+    result := Prepend(aString, FromAnsi(aChar));
   end;
 
 
@@ -2753,9 +2706,9 @@ implementation
     dest: PWideChar absolute result;
     strLen: Integer;
   begin
-    Require('aChar', aChar).IsNotNull;
+    Contract.Requires('aChar', aChar).IsNotNull;
 
-    if HasLength(aString, strLen) then
+    if IsNotEmpty(aString, strLen) then
     begin
       result := aString;
 
@@ -2776,11 +2729,11 @@ implementation
     strLen: Integer;
     pfxLen: Integer;
   begin
-    if HasLength(aString, strLen) then
+    if IsNotEmpty(aString, strLen) then
     begin
       result := aString;
 
-      if HasLength(aPrefix, pfxLen) then
+      if IsNotEmpty(aPrefix, pfxLen) then
       begin
         SetLength(result, strLen + pfxLen);
 
@@ -2798,7 +2751,7 @@ implementation
                                 const aPrefix: UnicodeString;
                                       aSeparator: AnsiChar): UnicodeString;
   begin
-    result := Prepend(aString, aPrefix, Wide(aSeparator));
+    result := Prepend(aString, aPrefix, FromAnsi(aSeparator));
   end;
 
 
@@ -2811,11 +2764,11 @@ implementation
     strLen: Integer;
     pfxLen: Integer;
   begin
-    if HasLength(aString, strLen) then
+    if IsNotEmpty(aString, strLen) then
     begin
       result := aString;
 
-      if HasLength(aPrefix, pfxLen) then
+      if IsNotEmpty(aPrefix, pfxLen) then
       begin
         SetLength(result, strLen + pfxLen + 1);
 
@@ -2839,14 +2792,14 @@ implementation
     pfxLen: Integer;
     sepLen: Integer;
   begin
-    if HasLength(aString, strLen) then
+    if IsNotEmpty(aString, strLen) then
     begin
       result := aString;
 
-      if NOT HasLength(aPrefix, pfxLen) then
+      if IsEmpty(aPrefix, pfxLen) then
         EXIT;
 
-      if HasLength(aSeparator, sepLen) then
+      if IsNotEmpty(aSeparator, sepLen) then
       begin
         SetLength(result, strLen + pfxLen + sepLen);
 
@@ -2866,7 +2819,7 @@ implementation
   class function WideFn.Embrace(const aString: UnicodeString;
                                       aBrace: AnsiChar): UnicodeString;
   begin
-    result := Embrace(aString, Wide(aBrace));
+    result := Embrace(aString, FromAnsi(aBrace));
   end;
 
 
@@ -2876,7 +2829,9 @@ implementation
   var
     strLen: Integer;
   begin
-    if HasLength(aString, strLen) then
+    Contract.Requires('aBrace', aBrace).IsNotSurrogate;
+
+    if IsNotEmpty(aString, strLen) then
     begin
       SetLength(result, strLen + 2);
       FastCopy(aString, result, 2);
@@ -2901,16 +2856,7 @@ implementation
   class function WideFn.Enquote(const aString: UnicodeString;
                                       aQuote: AnsiChar): UnicodeString;
   begin
-    result := Enquote(aString, Wide(aQuote), Wide(aQuote));
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WideFn.Enquote(const aString: UnicodeString;
-                                      aQuote: AnsiChar;
-                                      aEscape: AnsiChar): UnicodeString;
-  begin
-    result := Enquote(aString, Wide(aQuote), Wide(aEscape));
+    result := Enquote(aString, FromAnsi(aQuote), FromAnsi(aQuote));
   end;
 
 
@@ -2953,29 +2899,11 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WideFn.PadLeft(const aValue: Integer;
-                                   aLength: Integer;
-                                   aChar: AnsiChar): UnicodeString;
-  begin
-    result := PadLeft(Wide(aValue), aLength, Wide(aChar));
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WideFn.PadLeft(const aValue: Integer;
-                                   aLength: Integer;
-                                   aChar: WideChar): UnicodeString;
-  begin
-    result := PadLeft(Wide(aValue), aLength, aChar);
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class function WideFn.PadLeft(const aString: UnicodeString;
-                                   aLength: Integer;
-                                   aChar: AnsiChar): UnicodeString;
+                                      aLength: Integer;
+                                      aChar: AnsiChar): UnicodeString;
   begin
-    result := PadLeft(aString, aLength, Wide(aChar));
+    result := PadLeft(aString, aLength, FromAnsi(aChar));
   end;
 
 
@@ -3010,36 +2938,18 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WideFn.PadRight(const aValue: Integer;
-                                   aLength: Integer;
-                                   aChar: AnsiChar): UnicodeString;
+  class function WideFn.PadRight(const aString: UnicodeString;
+                                       aLength: Integer;
+                                       aChar: AnsiChar): UnicodeString;
   begin
-    result := PadRight(Wide(aValue), aLength, Wide(aChar));
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WideFn.PadRight(const aValue: Integer;
-                                   aLength: Integer;
-                                   aChar: WideChar): UnicodeString;
-  begin
-    result := PadRight(Wide(aValue), aLength, aChar);
+    result := PadRight(aString, aLength, FromAnsi(aChar));
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class function WideFn.PadRight(const aString: UnicodeString;
-                                   aLength: Integer;
-                                   aChar: AnsiChar): UnicodeString;
-  begin
-    result := PadRight(aString, aLength, Wide(aChar));
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WideFn.PadRight(const aString: UnicodeString;
-                                   aLength: Integer;
-                                   aChar: WideChar): UnicodeString;
+                                       aLength: Integer;
+                                       aChar: WideChar): UnicodeString;
   var
     i: Integer;
     len: Integer;
@@ -3065,18 +2975,11 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WideFn.Parse: WideParserClass;
-  begin
-    result := WideParser;
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class function WideFn.Split(const aString: UnicodeString;
                               const aChar: AnsiChar;
                               var   aLeft, aRight: UnicodeString): Boolean;
   begin
-    result := Split(aString, Wide(aChar), aLeft, aRight);
+    result := Split(aString, FromAnsi(aChar), aLeft, aRight);
   end;
 
 
@@ -3088,7 +2991,7 @@ implementation
     p: Integer;
     source: UnicodeString;
   begin
-    Require('aChar', aChar).IsNotSurrogate;
+    Contract.Requires('aChar', aChar).IsNotSurrogate;
 
     source  := aString;
     aLeft   := source;
@@ -3129,22 +3032,22 @@ implementation
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class function WideFn.Split(const aString: UnicodeString;
                               const aChar: AnsiChar;
-                              var   aParts: TWideStringArray): Integer;
+                              var   aParts: UnicodeStringArray): Integer;
   begin
-    result := Split(aString, Wide(aChar), aParts);
+     result := Split(aString, FromAnsi(aChar), aParts);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class function WideFn.Split(const aString: UnicodeString;
                               const aChar: WideChar;
-                              var   aParts: TWideStringArray): Integer;
+                              var   aParts: UnicodeStringArray): Integer;
   var
     i: Integer;
-    p: TCharIndexArray;
+    p: CharIndexArray;
     plen: Integer;
   begin
-    Require('aChar', aChar).IsNotSurrogate;
+    Contract.Requires('aChar', aChar).IsNotSurrogate;
 
     result := 0;
     SetLength(aParts, 0);
@@ -3178,13 +3081,13 @@ implementation
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class function WideFn.Split(const aString: UnicodeString;
                               const aDelim: UnicodeString;
-                              var   aParts: TWideStringArray): Integer;
+                              var   aParts: UnicodeStringArray): Integer;
   var
     i: Integer;
-    p: TCharIndexArray;
+    p: CharIndexArray;
     plen, delimLen: Integer;
   begin
-    Require('aDelim', aDelim).IsNotEmpty.GetLength(delimLen);
+    Contract.Requires('aDelim', aDelim).IsNotEmpty.GetLength(delimLen);
 
     result := 0;
     SetLength(aParts, 0);
@@ -3222,23 +3125,19 @@ implementation
 
 
 
-
-
-
-
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class procedure WideFn.Delete(var aString: UnicodeString;
                                     aIndex: Integer);
   begin
-    Require('aIndex', aIndex).IsValidIndexForString(aString);
+    Contract.Requires('aIndex', aIndex).IsValidIndexFor(aString);
 
-    case LoSurrogateStrategy(aString, aIndex + 1) of
-      ssAvoid : System.Delete(aString, aIndex, 2);
-      ssError : raise EUnicodeOrphanSurrogate.CreateFmt(ERRFMT_ORPHAN_DELETIONLEAVES_N, [aIndex + 1]);
+    case WhenLoSurrogate(aString, aIndex + 1, saDelete) of
+      saDelete : System.Delete(aString, aIndex, 2);
+      saError : raise EUnicodeOrphanSurrogate.CreateFmt(ERRFMT_ORPHAN_DELETIONLEAVES_N, [aIndex + 1]);
     else
-      case HiSurrogateStrategy(aString, aIndex - 1) of
-        ssAvoid : System.Delete(aString, aIndex - 1, 2);
-        ssError : raise EUnicodeOrphanSurrogate.CreateFmt(ERRFMT_ORPHAN_DELETIONLEAVES_N, [aIndex - 1]);
+      case WhenHiSurrogate(aString, aIndex - 1, saDelete) of
+        saDelete : System.Delete(aString, aIndex - 1, 2);
+        saError : raise EUnicodeOrphanSurrogate.CreateFmt(ERRFMT_ORPHAN_DELETIONLEAVES_N, [aIndex - 1]);
       else
         System.Delete(aString, aIndex, 1);
       end;
@@ -3251,21 +3150,21 @@ implementation
                                     aIndex: Integer;
                                     aLength: Integer);
   begin
-    Require('aIndex', aIndex).IsValidIndexForString(aString);
-    Require('aLength', aLength).IsPositiveOrZero;
+    Contract.Requires('aIndex', aIndex).IsValidIndexFor(aString);
+    Contract.Requires('aLength', aLength).IsPositiveOrZero;
 
     case aLength of
       0 : { NO-OP };
       1 : Delete(aString, aIndex);
     else
-      case LoSurrogateStrategy(aString, aIndex) of
-        ssAvoid : Dec(aIndex);
-        ssError : raise EUnicodeOrphanSurrogate.CreateFmt(ERRFMT_ORPHAN_DELETIONLEAVES_N, [aIndex - 1]);
+      case WhenLoSurrogate(aString, aIndex, saDelete) of
+        saDelete : Dec(aIndex);
+        saError : raise EUnicodeOrphanSurrogate.CreateFmt(ERRFMT_ORPHAN_DELETIONLEAVES_N, [aIndex - 1]);
       end;
 
-      case HiSurrogateStrategy(aString, aIndex + aLength - 1) of
-        ssAvoid : Inc(aLength);
-        ssError : raise EUnicodeOrphanSurrogate.CreateFmt(ERRFMT_ORPHAN_DELETIONLEAVES_N, [aIndex + aLength]);
+      case WhenHiSurrogate(aString, aIndex + aLength - 1, saDelete) of
+        saDelete : Inc(aLength);
+        saError : raise EUnicodeOrphanSurrogate.CreateFmt(ERRFMT_ORPHAN_DELETIONLEAVES_N, [aIndex + aLength]);
       end;
 
       System.Delete(aString, aIndex, aLength);
@@ -3278,20 +3177,20 @@ implementation
                                          aIndex: Integer;
                                          aEndIndex: Integer);
   begin
-    Require('aIndex', aIndex).IsValidIndexForString(aString);
-    Require('aEndIndex', aEndIndex).IsValidIndexForString(aString);
+    Contract.Requires('aIndex', aIndex).IsValidIndexFor(aString);
+    Contract.Requires('aEndIndex', aEndIndex).IsValidIndexFor(aString);
 
     if aIndex > aEndIndex then
       Exchange(aIndex, aEndIndex);
 
-    case LoSurrogateStrategy(aString, aIndex) of
-      ssAvoid : Dec(aIndex);
-      ssError : raise EUnicodeOrphanSurrogate.CreateFmt(ERRFMT_ORPHAN_DELETIONLEAVES_N, [aIndex - 1]);
+    case WhenLoSurrogate(aString, aIndex, saDelete) of
+      saDelete : Dec(aIndex);
+      saError : raise EUnicodeOrphanSurrogate.CreateFmt(ERRFMT_ORPHAN_DELETIONLEAVES_N, [aIndex - 1]);
     end;
 
-    case HiSurrogateStrategy(aString, aEndIndex) of
-      ssAvoid : Inc(aEndIndex);
-      ssError : raise EUnicodeOrphanSurrogate.CreateFmt(ERRFMT_ORPHAN_DELETIONLEAVES_N, [aEndIndex + 1]);
+    case WhenHiSurrogate(aString, aEndIndex, saDelete) of
+      saDelete : Inc(aEndIndex);
+      saError : raise EUnicodeOrphanSurrogate.CreateFmt(ERRFMT_ORPHAN_DELETIONLEAVES_N, [aEndIndex + 1]);
     end;
 
     System.Delete(aString, aIndex, aEndIndex - aIndex + 1);
@@ -3305,7 +3204,7 @@ implementation
   var
     idx: Integer;
   begin
-    result := Find(aString, Wide(aChar), idx, aCaseMode);
+    result := Find(aString, FromAnsi(aChar), idx, aCaseMode);
     if result then
       Delete(aString, idx);
   end;
@@ -3344,7 +3243,7 @@ implementation
   var
     idx: Integer;
   begin
-    result := Find(aString, Wide(aChar), idx, csIgnoreCase);
+    result := Find(aString, FromAnsi(aChar), idx, csIgnoreCase);
     if result then
       Delete(aString, idx);
   end;
@@ -3378,7 +3277,7 @@ implementation
                                         aCaseMode: TCaseSensitivity): Integer;
   var
     i: Integer;
-    idx: TCharIndexArray;
+    idx: CharIndexArray;
     subLen: Integer;
   begin
     result := FindAll(aString, aSubstring, idx, aCaseMode);
@@ -3398,12 +3297,14 @@ implementation
                                       aCaseMode: TCaseSensitivity): Integer;
   var
     i: Integer;
-    idx: TCharIndexArray;
+    idx: CharIndexArray;
   begin
-    result := FindAll(aString, aChar, idx, aCaseMode);
-    if result > 0 then
-      for i := 0 to Pred(Length(idx)) do
-        Delete(aString, idx[i] - i, 1);
+    result := FindAll(aString, FromAnsi(aChar), idx, aCaseMode);
+    if result = 0 then
+      EXIT;
+
+    for i := 0 to Pred(Length(idx)) do
+      Delete(aString, idx[i] - i, 1);
   end;
 
 
@@ -3412,7 +3313,7 @@ implementation
                                       aChar: WideChar;
                                       aCaseMode: TCaseSensitivity): Integer;
   begin
-    result := DeleteAll(aString, Ansi(aChar), aCaseMode);
+    result := DeleteAll(aString, aChar, aCaseMode);
   end;
 
 
@@ -3420,7 +3321,7 @@ implementation
   class function WideFn.DeleteAllText(var aString: UnicodeString;
                                           aChar: AnsiChar): Integer;
   begin
-    result := DeleteAll(aString, aChar, csIgnoreCase);
+    result := DeleteAll(aString, FromAnsi(aChar), csIgnoreCase);
   end;
 
 
@@ -3428,7 +3329,7 @@ implementation
   class function WideFn.DeleteAllText(var aString: UnicodeString;
                                           aChar: WideChar): Integer;
   begin
-    result := DeleteAll(aString, Ansi(aChar), csIgnoreCase);
+    result := DeleteAll(aString, aChar, csIgnoreCase);
   end;
 
 
@@ -3447,7 +3348,7 @@ implementation
   var
     idx: Integer;
   begin
-    result := FindLast(aString, aChar, idx, aCaseMode);
+    result := FindLast(aString, FromAnsi(aChar), idx, aCaseMode);
     if result then
       Delete(aString, idx, 1);
   end;
@@ -3460,7 +3361,7 @@ implementation
   var
     idx: Integer;
   begin
-    result := FindLast(aString, Ansi(aChar), idx, aCaseMode);
+    result := FindLast(aString, aChar, idx, aCaseMode);
     if result then
       Delete(aString, idx, 1);
   end;
@@ -3483,7 +3384,7 @@ implementation
   class function WideFn.DeleteLastText(var aString: UnicodeString;
                                            aChar: AnsiChar): Boolean;
   begin
-    result := Delete(aString, Wide(aChar), csIgnoreCase);
+    result := Delete(aString, FromAnsi(aChar), csIgnoreCase);
   end;
 
 
@@ -3518,19 +3419,19 @@ implementation
   var
     len: Integer;
   begin
-    Require('aCount', aCount).IsPositiveOrZero;
+    Contract.Requires('aCount', aCount).IsPositiveOrZero;
 
-    if (aCount <= 0) or NOT HasLength(aString, len) then
+    if (aCount <= 0) or IsEmpty(aString, len) then
       EXIT;
 
     Dec(len, aCount);
 
     if len > 0 then
     begin
-      case LoSurrogateStrategy(PWideChar(aString)[aCount]) of
-        ssIgnore  : System.Delete(aString, 1, aCount);
-        ssAvoid   : System.Delete(aString, 1, aCount + 1);
-        ssError   : raise EUnicodeOrphanSurrogate.CreateFmt(ERRFMT_ORPHAN_DELETIONLEAVES_N, [aCount + 1]);
+      case WhenLoSurrogate(PWideChar(aString)[aCount], saDelete) of
+        saIgnore  : System.Delete(aString, 1, aCount);
+        saDelete   : System.Delete(aString, 1, aCount + 1);
+        saError   : raise EUnicodeOrphanSurrogate.CreateFmt(ERRFMT_ORPHAN_DELETIONLEAVES_N, [aCount + 1]);
       end;
     end
     else
@@ -3563,14 +3464,14 @@ implementation
   var
     len: Integer;
   begin
-    if (aCount <= 0) or NOT HasLength(aString, len) then
+    if (aCount <= 0) or IsEmpty(aString, len) then
       EXIT;
 
     SetLength(aString, len - aCount);
 
-    case HiSurrogateStrategy(aString, len) of
-      ssAvoid : SetLength(aString, len - 1);
-      ssError : raise EUnicodeOrphanSurrogate.CreateFmt(ERRFMT_ORPHAN_DELETIONLEAVES_N, [len - 1]);
+    case WhenHiSurrogate(aString, len, saDelete) of
+      saDelete : SetLength(aString, len - 1);
+      saError : raise EUnicodeOrphanSurrogate.CreateFmt(ERRFMT_ORPHAN_DELETIONLEAVES_N, [len - 1]);
     end;
   end;
 
@@ -3610,7 +3511,7 @@ implementation
                                      aCaseMode: TCaseSensitivity): UnicodeString;
   begin
     result := aString;
-    Delete(result, Wide(aChar), aCaseMode);
+    Delete(result, FromAnsi(aChar), aCaseMode);
   end;
 
 
@@ -3638,7 +3539,7 @@ implementation
                                          aChar: AnsiChar): UnicodeString;
   begin
     result := aString;
-    Delete(result, Wide(aChar), csIgnoreCase);
+    Delete(result, FromAnsi(aChar), csIgnoreCase);
   end;
 
 
@@ -3674,7 +3575,7 @@ implementation
                                         aCaseMode: TCaseSensitivity): UnicodeString;
   begin
     result := aString;
-    DeleteAll(result, Wide(aChar), aCaseMode);
+    DeleteAll(result, FromAnsi(aChar), aCaseMode);
   end;
 
 
@@ -3693,7 +3594,7 @@ implementation
                                             aChar: AnsiChar): UnicodeString;
   begin
     result := aString;
-    DeleteAll(result, Wide(aChar), csIgnoreCase);
+    DeleteAll(result, FromAnsi(aChar), csIgnoreCase);
   end;
 
 
@@ -3720,7 +3621,7 @@ implementation
                                          aCaseMode: TCaseSensitivity): UnicodeString;
   begin
     result := aString;
-    DeleteLast(result, Wide(aChar), aCaseMode);
+    DeleteLast(result, FromAnsi(aChar), aCaseMode);
   end;
 
 
@@ -3748,7 +3649,7 @@ implementation
                                              aChar: AnsiChar): UnicodeString;
   begin
     result := aString;
-    DeleteLast(result, Wide(aChar), csIgnoreCase);
+    DeleteLast(result, FromAnsi(aChar), csIgnoreCase);
   end;
 
 
@@ -3799,17 +3700,17 @@ implementation
   var
     strLen: Integer;
   begin
-    Require('aLength', aLength).IsPositiveOrZero;
+    Contract.Requires('aLength', aLength).IsPositiveOrZero;
 
     aExtract := '';
     result   := FALSE;
 
     if  (aLength = 0)
-     or NOT HasLength(aString, strLen) then
+     or IsEmpty(aString, strLen) then
       EXIT;
 
-    Require('aIndex', aIndex).IsValidIndexForString(aString);
-    Require('aIndex + aLength - 1', aIndex + aLength - 1).IsValidIndexForString(aString);
+    Contract.Requires('aIndex', aIndex).IsValidIndexFor(aString);
+    Contract.Requires('aIndex + aLength - 1', aIndex + aLength - 1).IsValidIndexFor(aString);
 
     aExtract := self.Copy(aString, aIndex, aLength);
     Delete(aString, aIndex, aLength);
@@ -3831,7 +3732,7 @@ implementation
                                         aCount: Integer;
                                     var aExtract: UnicodeString): Boolean;
   begin
-    Require('aCount', aCount).IsPositiveOrZero;
+    Contract.Requires('aCount', aCount).IsPositiveOrZero;
 
     aExtract  := System.Copy(aString, 1, aCount);
     result    := NOT IsEmpty(aExtract);
@@ -3857,7 +3758,7 @@ implementation
                                          aDelimiterOption: TExtractDelimiterOption;
                                          aDelimiterCase: TCaseSensitivity): UnicodeString;
   begin
-    ExtractLeft(aString, Wide(aDelimiter), result, aDelimiterOption, aDelimiterCase);
+    ExtractLeft(aString, FromAnsi(aDelimiter), result, aDelimiterOption, aDelimiterCase);
   end;
 
 
@@ -3907,7 +3808,7 @@ implementation
                                          aDelimiterOption: TExtractDelimiterOption;
                                          aDelimiterCase: TCaseSensitivity): Boolean;
   begin
-    result := ExtractLeft(aString, Wide(aDelimiter), aExtract, aDelimiterOption, aDelimiterCase);
+    result := ExtractLeft(aString, FromAnsi(aDelimiter), aExtract, aDelimiterOption, aDelimiterCase);
   end;
 
 
@@ -3958,7 +3859,7 @@ implementation
                                              aDelimiter: AnsiChar;
                                              aDelimiterOption: TExtractDelimiterOption): UnicodeString;
   begin
-    ExtractLeft(aString, Wide(aDelimiter), result, aDelimiterOption, csIgnoreCase);
+    ExtractLeft(aString, FromAnsi(aDelimiter), result, aDelimiterOption, csIgnoreCase);
   end;
 
 
@@ -3987,7 +3888,7 @@ implementation
                                         var  aExtract: UnicodeString;
                                              aDelimiterOption: TExtractDelimiterOption): Boolean;
   begin
-    result := ExtractLeft(aString, Wide(aDelimiter), aExtract, aDelimiterOption, csIgnoreCase);
+    result := ExtractLeft(aString, FromAnsi(aDelimiter), aExtract, aDelimiterOption, csIgnoreCase);
   end;
 
 
@@ -4041,7 +3942,7 @@ implementation
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class function WideFn.ExtractRight(var aString: UnicodeString; aCount: Integer): UnicodeString;
   begin
-    Require('aCount', aCount).IsPositiveOrZero;
+    Contract.Requires('aCount', aCount).IsPositiveOrZero;
 
     result := System.Copy(aString, Length(aString) - aCount + 1, aCount);
     SetLength(aString, Length(aString) - aCount);
@@ -4073,9 +3974,9 @@ implementation
   var
     strLen: Integer;
   begin
-    Require('aIndex', aIndex).IsPositiveOrZero;
+    Contract.Requires('aIndex', aIndex).IsPositiveOrZero;
 
-    result := HasLength(aString, strLen) and (aIndex < strLen);
+    result := IsNotEmpty(aString, strLen) and (aIndex < strLen);
     if result then
     begin
       aExtract := System.Copy(aString, aIndex + 1, strLen - aIndex);
@@ -4102,7 +4003,7 @@ implementation
                                          aDelimiterOption: TExtractDelimiterOption;
                                          aDelimiterCase: TCaseSensitivity): UnicodeString;
   begin
-    ExtractRight(aString, Wide(aDelimiter), result, aDelimiterOption, aDelimiterCase);
+    ExtractRight(aString, FromAnsi(aDelimiter), result, aDelimiterOption, aDelimiterCase);
   end;
 
 
@@ -4126,7 +4027,7 @@ implementation
     pos: Integer;
     strLen: Integer;
   begin
-    result := HasLength(aString, strLen)
+    result := IsNotEmpty(aString, strLen)
           and FindLast(aString, aDelimiter, pos, aDelimiterCase);
 
     if result then
@@ -4155,7 +4056,7 @@ implementation
                                           aDelimiterOption: TExtractDelimiterOption;
                                           aDelimiterCase: TCaseSensitivity): Boolean;
   begin
-    result := ExtractRight(aString, Wide(aDelimiter), aExtract, aDelimiterOption, aDelimiterCase);
+    result := ExtractRight(aString, FromAnsi(aDelimiter), aExtract, aDelimiterOption, aDelimiterCase);
   end;
 
 
@@ -4169,7 +4070,7 @@ implementation
     pos: Integer;
     strLen, delimLen: Integer;
   begin
-    result := HasLength(aString, strLen)
+    result := IsNotEmpty(aString, strLen)
           and FindLast(aString, aDelimiter, pos, aDelimiterCase);
 
     if result then
@@ -4207,7 +4108,7 @@ implementation
                                               aDelimiter: AnsiChar;
                                               aDelimiterOption: TExtractDelimiterOption): UnicodeString;
   begin
-    ExtractRight(aString, Wide(aDelimiter), result, aDelimiterOption, csIgnoreCase);
+    ExtractRight(aString, FromAnsi(aDelimiter), result, aDelimiterOption, csIgnoreCase);
   end;
 
 
@@ -4236,7 +4137,7 @@ implementation
                                          var  aExtract: UnicodeString;
                                               aDelimiterOption: TExtractDelimiterOption): Boolean;
   begin
-    result := ExtractRight(aString, Wide(aDelimiter), aExtract, aDelimiterOption, csIgnoreCase);
+    result := ExtractRight(aString, FromAnsi(aDelimiter), aExtract, aDelimiterOption, csIgnoreCase);
   end;
 
 
@@ -4262,7 +4163,7 @@ implementation
   var
     subLen: Integer;
   begin
-    Require('aSubstring', aSubstring).IsNotEmpty.GetLength(subLen);
+    Contract.Requires('aSubstring', aSubstring).IsNotEmpty.GetLength(subLen);
 
     result := BeginsWith(aString, aSubstring, aCaseMode);
     if result then
@@ -4277,9 +4178,9 @@ implementation
   var
     subLen, strLen: Integer;
   begin
-    Require('aSubstring', aSubstring).IsNotEmpty.GetLength(subLen);
+    Contract.Requires('aSubstring', aSubstring).IsNotEmpty.GetLength(subLen);
 
-    result := HasLength(aString, strLen)
+    result := IsNotEmpty(aString, strLen)
           and EndsWith(aString, aSubstring, aCaseMode);
 
     if result and (strLen > 0) then
@@ -4310,7 +4211,7 @@ implementation
                                    aStartPos, aLength: Integer;
                              var   aCopy: UnicodeString): Boolean;
   begin
-    Require('aStartPos', aStartPos).IsGreaterThan(0);
+    Contract.Requires('aStartPos', aStartPos).IsGreaterThan(0);
 
     aCopy   := System.Copy(aString, aStartPos, aLength);
     result  := Length(aCopy) > 0;
@@ -4330,7 +4231,7 @@ implementation
                                        aIndex: Integer;
                                  var   aCopy: UnicodeString): Boolean;
   begin
-    Require('aIndex', aIndex).IsGreaterThan(0);
+    Contract.Requires('aIndex', aIndex).IsGreaterThan(0);
 
     aCopy   := System.Copy(aString, aIndex, Length(aString) - aIndex + 1);
     result  := Length(aCopy) > 0;
@@ -4352,8 +4253,8 @@ implementation
                                         aEndPos: Integer;
                                   var   aCopy: UnicodeString): Boolean;
   begin
-    Require('aStartPos', aStartPos).IsGreaterThan(0);
-    Require('aEndPos', aEndPos).IsGreaterThanOrEqual(aStartPos, 'aStartPos');
+    Contract.Requires('aStartPos', aStartPos).IsGreaterThan(0);
+    Contract.Requires('aEndPos', aEndPos).IsGreaterThanOrEqual(aStartPos, 'aStartPos');
 
     if (aStartPos = aEndPos) then
       aCopy := ''
@@ -4368,7 +4269,7 @@ implementation
   class function WideFn.CopyLeft(const aString: UnicodeString;
                                        aCount: Integer): UnicodeString;
   begin
-    Require('aCount', aCount).IsPositiveOrZero;
+    Contract.Requires('aCount', aCount).IsPositiveOrZero;
 
     result := System.Copy(aString, 1, aCount);
   end;
@@ -4380,7 +4281,7 @@ implementation
                                     aDelimiterOption: TCopyDelimiterOption;
                                     aDelimiterCase: TCaseSensitivity): UnicodeString;
   begin
-    CopyLeft(aString, aDelimiter, result, aDelimiterOption, aDelimiterCase);
+    CopyLeft(aString, FromAnsi(aDelimiter), result, aDelimiterOption, aDelimiterCase);
   end;
 
 
@@ -4390,7 +4291,7 @@ implementation
                                     aDelimiterOption: TCopyDelimiterOption;
                                     aDelimiterCase: TCaseSensitivity): UnicodeString;
   begin
-    CopyLeft(aString, Ansi(aDelimiter), result, aDelimiterOption, aDelimiterCase);
+    CopyLeft(aString, aDelimiter, result, aDelimiterOption, aDelimiterCase);
   end;
 
 
@@ -4409,7 +4310,7 @@ implementation
                                     aCount: Integer;
                               var   aCopy: UnicodeString): Boolean;
   begin
-    Require('aCount', aCount).IsPositiveOrZero;
+    Contract.Requires('aCount', aCount).IsPositiveOrZero;
 
     aCopy   := System.Copy(aString, 1, aCount);
     result  := Length(aCopy) > 0;
@@ -4418,10 +4319,21 @@ implementation
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class function WideFn.CopyLeft(const aString: UnicodeString;
-                                    aDelimiter: AnsiChar;
-                              var   aCopy: UnicodeString;
-                                    aDelimiterOption: TCopyDelimiterOption;
-                                    aDelimiterCase: TCaseSensitivity): Boolean;
+                                       aDelimiter: AnsiChar;
+                                 var   aCopy: UnicodeString;
+                                       aDelimiterOption: TCopyDelimiterOption;
+                                       aDelimiterCase: TCaseSensitivity): Boolean;
+  begin
+    result := CopyLeft(aString, FromAnsi(aDelimiter), aCopy, aDelimiterOption, aDelimiterCase);
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
+  class function WideFn.CopyLeft(const aString: UnicodeString;
+                                       aDelimiter: WideChar;
+                                 var   aCopy: UnicodeString;
+                                       aDelimiterOption: TCopyDelimiterOption;
+                                       aDelimiterCase: TCaseSensitivity): Boolean;
   var
     p: Integer;
   begin
@@ -4443,17 +4355,6 @@ implementation
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class function WideFn.CopyLeft(const aString: UnicodeString;
-                                       aDelimiter: WideChar;
-                                 var   aCopy: UnicodeString;
-                                       aDelimiterOption: TCopyDelimiterOption;
-                                       aDelimiterCase: TCaseSensitivity): Boolean;
-  begin
-    result := CopyLeft(aString, Ansi(aDelimiter), aCopy, aDelimiterOption, aDelimiterCase);
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WideFn.CopyLeft(const aString: UnicodeString;
                                  const aDelimiter: UnicodeString;
                                  var   aCopy: UnicodeString;
                                        aDelimiterOption: TCopyDelimiterOption;
@@ -4461,7 +4362,7 @@ implementation
   var
     p, delimLen: Integer;
   begin
-    Require('aDelimiter', aDelimiter).IsNotEmpty.GetLength(delimLen);
+    Contract.Requires('aDelimiter', aDelimiter).IsNotEmpty.GetLength(delimLen);
 
     if Find(aString, aDelimiter, p, aDelimiterCase) then
       case aDelimiterOption of
@@ -4490,17 +4391,8 @@ implementation
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class function WideFn.CopyLeftText(const aString: UnicodeString;
-                                        aDelimiter: WideChar;
-                                        aDelimiterOption: TCopyDelimiterOption): UnicodeString;
-  begin
-    CopyLeft(aString, Ansi(aDelimiter), result, aDelimiterOption, csIgnoreCase);
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WideFn.CopyLeftText(const aString: UnicodeString;
-                                  const aDelimiter: UnicodeString;
-                                        aDelimiterOption: TCopyDelimiterOption): UnicodeString;
+                                           aDelimiter: WideChar;
+                                           aDelimiterOption: TCopyDelimiterOption): UnicodeString;
   begin
     CopyLeft(aString, aDelimiter, result, aDelimiterOption, csIgnoreCase);
   end;
@@ -4508,9 +4400,28 @@ implementation
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class function WideFn.CopyLeftText(const aString: UnicodeString;
-                                        aDelimiter: AnsiChar;
-                                  var   aCopy: UnicodeString;
-                                        aDelimiterOption: TCopyDelimiterOption): Boolean;
+                                     const aDelimiter: UnicodeString;
+                                           aDelimiterOption: TCopyDelimiterOption): UnicodeString;
+  begin
+    CopyLeft(aString, aDelimiter, result, aDelimiterOption, csIgnoreCase);
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
+  class function WideFn.CopyLeftText(const aString: UnicodeString;
+                                           aDelimiter: AnsiChar;
+                                     var   aCopy: UnicodeString;
+                                           aDelimiterOption: TCopyDelimiterOption): Boolean;
+  begin
+    result := CopyLeft(aString, FromAnsi(aDelimiter), aCopy, aDelimiterOption, csIgnoreCase);
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
+  class function WideFn.CopyLeftText(const aString: UnicodeString;
+                                           aDelimiter: WideChar;
+                                     var   aCopy: UnicodeString;
+                                           aDelimiterOption: TCopyDelimiterOption): Boolean;
   begin
     result := CopyLeft(aString, aDelimiter, aCopy, aDelimiterOption, csIgnoreCase);
   end;
@@ -4518,19 +4429,9 @@ implementation
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class function WideFn.CopyLeftText(const aString: UnicodeString;
-                                        aDelimiter: WideChar;
-                                  var   aCopy: UnicodeString;
-                                        aDelimiterOption: TCopyDelimiterOption): Boolean;
-  begin
-    result := CopyLeft(aString, Ansi(aDelimiter), aCopy, aDelimiterOption, csIgnoreCase);
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WideFn.CopyLeftText(const aString: UnicodeString;
-                                  const aDelimiter: UnicodeString;
-                                  var   aCopy: UnicodeString;
-                                        aDelimiterOption: TCopyDelimiterOption): Boolean;
+                                     const aDelimiter: UnicodeString;
+                                     var   aCopy: UnicodeString;
+                                           aDelimiterOption: TCopyDelimiterOption): Boolean;
   begin
     result := CopyLeft(aString, aDelimiter, aCopy, aDelimiterOption, csIgnoreCase);
   end;
@@ -4538,9 +4439,9 @@ implementation
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class function WideFn.CopyRight(const aString: UnicodeString;
-                                    aCount: Integer): UnicodeString;
+                                        aCount: Integer): UnicodeString;
   begin
-    Require('aCount', aCount).IsPositiveOrZero;
+    Contract.Requires('aCount', aCount).IsPositiveOrZero;
 
     result := System.Copy(aString, Length(aString) - aCount + 1, aCount);
   end;
@@ -4548,9 +4449,19 @@ implementation
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class function WideFn.CopyRight(const aString: UnicodeString;
-                                    aDelimiter: AnsiChar;
-                                    aDelimiterOption: TCopyDelimiterOption;
-                                    aDelimiterCase: TCaseSensitivity): UnicodeString;
+                                        aDelimiter: AnsiChar;
+                                        aDelimiterOption: TCopyDelimiterOption;
+                                        aDelimiterCase: TCaseSensitivity): UnicodeString;
+  begin
+    CopyRight(aString, FromAnsi(aDelimiter), result, aDelimiterOption, aDelimiterCase);
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
+  class function WideFn.CopyRight(const aString: UnicodeString;
+                                        aDelimiter: WideChar;
+                                        aDelimiterOption: TCopyDelimiterOption;
+                                        aDelimiterCase: TCaseSensitivity): UnicodeString;
   begin
     CopyRight(aString, aDelimiter, result, aDelimiterOption, aDelimiterCase);
   end;
@@ -4558,19 +4469,9 @@ implementation
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class function WideFn.CopyRight(const aString: UnicodeString;
-                                    aDelimiter: WideChar;
-                                    aDelimiterOption: TCopyDelimiterOption;
-                                    aDelimiterCase: TCaseSensitivity): UnicodeString;
-  begin
-    CopyRight(aString, Ansi(aDelimiter), result, aDelimiterOption, aDelimiterCase);
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WideFn.CopyRight(const aString: UnicodeString;
-                              const aDelimiter: UnicodeString;
-                                    aDelimiterOption: TCopyDelimiterOption;
-                                    aDelimiterCase: TCaseSensitivity): UnicodeString;
+                                  const aDelimiter: UnicodeString;
+                                        aDelimiterOption: TCopyDelimiterOption;
+                                        aDelimiterCase: TCaseSensitivity): UnicodeString;
   begin
     CopyRight(aString, aDelimiter, result, aDelimiterOption, aDelimiterCase);
   end;
@@ -4578,10 +4479,10 @@ implementation
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class function WideFn.CopyRight(const aString: UnicodeString;
-                                    aCount: Integer;
-                              var   aCopy: UnicodeString): Boolean;
+                                        aCount: Integer;
+                                  var   aCopy: UnicodeString): Boolean;
   begin
-    Require('aCount', aCount).IsPositiveOrZero;
+    Contract.Requires('aCount', aCount).IsPositiveOrZero;
 
     aCopy   := System.Copy(aString, Length(aString) - aCount + 1, aCount);
     result  := Length(aCopy) > 0;
@@ -4590,10 +4491,21 @@ implementation
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class function WideFn.CopyRight(const aString: UnicodeString;
-                                    aDelimiter: AnsiChar;
-                              var   aCopy: UnicodeString;
-                                    aDelimiterOption: TCopyDelimiterOption;
-                                    aDelimiterCase: TCaseSensitivity): Boolean;
+                                        aDelimiter: AnsiChar;
+                                  var   aCopy: UnicodeString;
+                                        aDelimiterOption: TCopyDelimiterOption;
+                                        aDelimiterCase: TCaseSensitivity): Boolean;
+  begin
+    result := CopyRight(aString, FromAnsi(aDelimiter), aCopy, aDelimiterOption, aDelimiterCase);
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
+  class function WideFn.CopyRight(const aString: UnicodeString;
+                                        aDelimiter: WideChar;
+                                  var   aCopy: UnicodeString;
+                                        aDelimiterOption: TCopyDelimiterOption;
+                                        aDelimiterCase: TCaseSensitivity): Boolean;
   var
     p: Integer;
   begin
@@ -4615,25 +4527,14 @@ implementation
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class function WideFn.CopyRight(const aString: UnicodeString;
-                                    aDelimiter: WideChar;
-                              var   aCopy: UnicodeString;
-                                    aDelimiterOption: TCopyDelimiterOption;
-                                    aDelimiterCase: TCaseSensitivity): Boolean;
-  begin
-    result := CopyRight(aString, Ansi(aDelimiter), aCopy, aDelimiterOption, aDelimiterCase);
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WideFn.CopyRight(const aString: UnicodeString;
-                              const aDelimiter: UnicodeString;
-                              var   aCopy: UnicodeString;
-                                    aDelimiterOption: TCopyDelimiterOption;
-                                    aDelimiterCase: TCaseSensitivity): Boolean;
+                                  const aDelimiter: UnicodeString;
+                                  var   aCopy: UnicodeString;
+                                        aDelimiterOption: TCopyDelimiterOption;
+                                        aDelimiterCase: TCaseSensitivity): Boolean;
   var
     p, delimLen: Integer;
   begin
-    Require('aDelimiter', aDelimiter).IsNotEmpty.GetLength(delimLen);
+    Contract.Requires('aDelimiter', aDelimiter).IsNotEmpty.GetLength(delimLen);
 
     if Find(aString, aDelimiter, p, aDelimiterCase) then
       case aDelimiterOption of
@@ -4654,8 +4555,17 @@ implementation
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class function WideFn.CopyRightText(const aString: UnicodeString;
-                                        aDelimiter: AnsiChar;
-                                        aDelimiterOption: TCopyDelimiterOption): UnicodeString;
+                                            aDelimiter: AnsiChar;
+                                            aDelimiterOption: TCopyDelimiterOption): UnicodeString;
+  begin
+    CopyRight(aString, FromAnsi(aDelimiter), result, aDelimiterOption, csIgnoreCase);
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
+  class function WideFn.CopyRightText(const aString: UnicodeString;
+                                            aDelimiter: WideChar;
+                                            aDelimiterOption: TCopyDelimiterOption): UnicodeString;
   begin
     CopyRight(aString, aDelimiter, result, aDelimiterOption, csIgnoreCase);
   end;
@@ -4663,17 +4573,8 @@ implementation
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class function WideFn.CopyRightText(const aString: UnicodeString;
-                                        aDelimiter: WideChar;
-                                        aDelimiterOption: TCopyDelimiterOption): UnicodeString;
-  begin
-    CopyRight(aString, Ansi(aDelimiter), result, aDelimiterOption, csIgnoreCase);
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WideFn.CopyRightText(const aString: UnicodeString;
-                                  const aDelimiter: UnicodeString;
-                                        aDelimiterOption: TCopyDelimiterOption): UnicodeString;
+                                      const aDelimiter: UnicodeString;
+                                            aDelimiterOption: TCopyDelimiterOption): UnicodeString;
   begin
     CopyRight(aString, aDelimiter, result, aDelimiterOption, csIgnoreCase);
   end;
@@ -4681,9 +4582,19 @@ implementation
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class function WideFn.CopyRightText(const aString: UnicodeString;
-                                        aDelimiter: AnsiChar;
-                                  var   aCopy: UnicodeString;
-                                        aDelimiterOption: TCopyDelimiterOption): Boolean;
+                                            aDelimiter: AnsiChar;
+                                      var   aCopy: UnicodeString;
+                                            aDelimiterOption: TCopyDelimiterOption): Boolean;
+  begin
+    result := CopyRight(aString, FromAnsi(aDelimiter), aCopy, aDelimiterOption, csIgnoreCase);
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
+  class function WideFn.CopyRightText(const aString: UnicodeString;
+                                            aDelimiter: WideChar;
+                                      var   aCopy: UnicodeString;
+                                            aDelimiterOption: TCopyDelimiterOption): Boolean;
   begin
     result := CopyRight(aString, aDelimiter, aCopy, aDelimiterOption, csIgnoreCase);
   end;
@@ -4691,19 +4602,9 @@ implementation
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class function WideFn.CopyRightText(const aString: UnicodeString;
-                                        aDelimiter: WideChar;
-                                  var   aCopy: UnicodeString;
-                                        aDelimiterOption: TCopyDelimiterOption): Boolean;
-  begin
-    result := CopyRight(aString, Ansi(aDelimiter), aCopy, aDelimiterOption, csIgnoreCase);
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WideFn.CopyRightText(const aString: UnicodeString;
-                                  const aDelimiter: UnicodeString;
-                                  var   aCopy: UnicodeString;
-                                        aDelimiterOption: TCopyDelimiterOption): Boolean;
+                                      const aDelimiter: UnicodeString;
+                                      var   aCopy: UnicodeString;
+                                            aDelimiterOption: TCopyDelimiterOption): Boolean;
   begin
     result := CopyRight(aString, aDelimiter, aCopy, aDelimiterOption, csIgnoreCase);
   end;
@@ -4738,7 +4639,7 @@ implementation
                                       aReplacement: AnsiChar;
                                       aCaseMode: TCaseSensitivity): UnicodeString;
   begin
-    Replace(aString, aChar, aReplacement, result, aCaseMode);
+    Replace(aString, FromAnsi(aChar), FromAnsi(aReplacement), result, aCaseMode);
   end;
 
 
@@ -4748,7 +4649,7 @@ implementation
                                       aReplacement: WideChar;
                                       aCaseMode: TCaseSensitivity): UnicodeString;
   begin
-    Replace(aString, Ansi(aChar), Ansi(aReplacement), result, aCaseMode);
+    Replace(aString, aChar, aReplacement, result, aCaseMode);
   end;
 
 
@@ -4776,19 +4677,19 @@ implementation
   class function WideFn.Replace(const aString: UnicodeString;
                                 const aSubstring: UnicodeString;
                                       aReplacement: AnsiChar;
+                                      aCaseMode: TCaseSensitivity): UnicodeString;
+  begin
+    Replace(aString, aSubstring, FromAnsi(aReplacement), result, aCaseMode);
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
+  class function WideFn.Replace(const aString: UnicodeString;
+                                const aSubstring: UnicodeString;
+                                      aReplacement: WideChar;
                                       aCaseMode: TCaseSensitivity): UnicodeString;
   begin
     Replace(aString, aSubstring, aReplacement, result, aCaseMode);
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WideFn.Replace(const aString: UnicodeString;
-                                const aSubstring: UnicodeString;
-                                      aReplacement: WideChar;
-                                      aCaseMode: TCaseSensitivity): UnicodeString;
-  begin
-    Replace(aString, aSubstring, Ansi(aReplacement), result, aCaseMode);
   end;
 
 
@@ -4813,7 +4714,7 @@ implementation
   var
     p: Integer;
   begin
-    Require('aReplacement', aReplacement).IsNotNull;
+    Contract.Requires('aReplacement', aReplacement).IsNotNull;
 
     aResult := aString;
     result := (aChar <> aReplacement) and Find(aString, aChar, p, aCaseMode);
@@ -4829,7 +4730,7 @@ implementation
                                 var   aResult: UnicodeString;
                                       aCaseMode: TCaseSensitivity): Boolean;
   begin
-    result := Replace(aString, Wide(aChar), Wide(aReplacement), aResult, aCaseMode);
+    result := Replace(aString, FromAnsi(aChar), FromAnsi(aReplacement), aResult, aCaseMode);
   end;
 
 
@@ -4848,7 +4749,7 @@ implementation
     result := FindLast(aString, aChar, p, aCaseMode);
     if result then
     begin
-      if HasLength(aReplacement, replaceLen) then
+      if IsNotEmpty(aReplacement, replaceLen) then
       begin
         if (replaceLen > 1) then
         begin
@@ -4876,7 +4777,7 @@ implementation
                                 var   aResult: UnicodeString;
                                       aCaseMode: TCaseSensitivity): Boolean;
   begin
-    result := Replace(aString, Wide(aChar), aReplacement, aResult, aCaseMode);
+    result := Replace(aString, FromAnsi(aChar), aReplacement, aResult, aCaseMode);
   end;
 
 
@@ -4890,7 +4791,7 @@ implementation
     p: Integer;
     strLen, subLen: Integer;
   begin
-    Require('aReplacement', aReplacement).IsNotNull;
+    Contract.Requires('aReplacement', aReplacement).IsNotNull;
 
     aResult := aString;
 
@@ -4921,7 +4822,7 @@ implementation
                                 var   aResult: UnicodeString;
                                       aCaseMode: TCaseSensitivity): Boolean;
   begin
-    result := Replace(aString, aSubstring, Wide(aReplacement), aResult, aCaseMode);
+    result := Replace(aString, aSubstring, FromAnsi(aReplacement), aResult, aCaseMode);
   end;
 
 
@@ -4943,7 +4844,7 @@ implementation
       strLen := Length(aString);
       subLen := Length(aSubstring);
 
-      if HasLength(aReplacement, replaceLen) then
+      if IsNotEmpty(aReplacement, replaceLen) then
       begin
         result := NOT (aReplacement = aSubstring);
         if NOT result then
@@ -4979,7 +4880,7 @@ implementation
                                           aChar: AnsiChar;
                                           aReplacement: AnsiChar): UnicodeString;
   begin
-    result := Replace(aString, aChar, aReplacement, csIgnoreCase);
+    result := Replace(aString, FromAnsi(aChar), FromAnsi(aReplacement), csIgnoreCase);
   end;
 
 
@@ -4988,7 +4889,7 @@ implementation
                                           aChar: WideChar;
                                           aReplacement: WideChar): UnicodeString;
   begin
-    result := Replace(aString, Ansi(aChar), Ansi(aReplacement), csIgnoreCase);
+    result := Replace(aString, aChar, aReplacement, csIgnoreCase);
   end;
 
 
@@ -4997,7 +4898,7 @@ implementation
                                           aChar: AnsiChar;
                                     const aReplacement: UnicodeString): UnicodeString;
   begin
-    result := Replace(aString, aChar, aReplacement, csIgnoreCase);
+    result := Replace(aString, FromAnsi(aChar), aReplacement, csIgnoreCase);
   end;
 
 
@@ -5006,7 +4907,7 @@ implementation
                                           aChar: WideChar;
                                     const aReplacement: UnicodeString): UnicodeString;
   begin
-    result := Replace(aString, Ansi(aChar), aReplacement, csIgnoreCase);
+    result := Replace(aString, aChar, aReplacement, csIgnoreCase);
   end;
 
 
@@ -5024,7 +4925,7 @@ implementation
                                     const aSubstring: UnicodeString;
                                           aReplacement: WideChar): UnicodeString;
   begin
-    result := Replace(aString, aSubstring, Ansi(aReplacement), csIgnoreCase);
+    result := Replace(aString, aSubstring, aReplacement, csIgnoreCase);
   end;
 
 
@@ -5046,7 +4947,7 @@ implementation
                                           aReplacement: AnsiChar;
                                     var   aResult: UnicodeString): Boolean;
   begin
-    result := Replace(aString, aChar, aReplacement, aResult, csIgnoreCase);
+    result := Replace(aString, FromAnsi(aChar), FromAnsi(aReplacement), aResult, csIgnoreCase);
   end;
 
 
@@ -5056,7 +4957,7 @@ implementation
                                           aReplacement: WideChar;
                                     var   aResult: UnicodeString): Boolean;
   begin
-    result := Replace(aString, Ansi(aChar), Ansi(aReplacement), aResult, csIgnoreCase);
+    result := Replace(aString, aChar, aReplacement, aResult, csIgnoreCase);
   end;
 
 
@@ -5076,7 +4977,7 @@ implementation
                                     const aReplacement: UnicodeString;
                               var   aResult: UnicodeString): Boolean;
   begin
-    result := Replace(aString, Ansi(aChar), aReplacement, aResult, csIgnoreCase);
+    result := Replace(aString, aChar, aReplacement, aResult, csIgnoreCase);
   end;
 
 
@@ -5086,7 +4987,7 @@ implementation
                                           aReplacement: AnsiChar;
                                     var   aResult: UnicodeString): Boolean;
   begin
-    result := Replace(aString, aSubString, aReplacement, aResult, csIgnoreCase);
+    result := Replace(aString, aSubString, FromAnsi(aReplacement), aResult, csIgnoreCase);
   end;
 
 
@@ -5096,7 +4997,7 @@ implementation
                                           aReplacement: WideChar;
                                     var   aResult: UnicodeString): Boolean;
   begin
-    result := Replace(aString, aSubstring, Ansi(aReplacement), aResult, csIgnoreCase);
+    result := Replace(aString, aSubstring, aReplacement, aResult, csIgnoreCase);
   end;
 
 
@@ -5122,7 +5023,7 @@ implementation
                                          aCaseMode: TCaseSensitivity): Boolean;
   var
     i: Integer;
-    p: TCharIndexArray;
+    p: CharIndexArray;
   begin
     aResult := aString;
 
@@ -5140,7 +5041,7 @@ implementation
                                    var   aResult: UnicodeString;
                                          aCaseMode: TCaseSensitivity): Boolean;
   begin
-    result := ReplaceAll(aString, Wide(aChar), Wide(aReplacement), aResult);
+    result := ReplaceAll(aString, FromAnsi(aChar), FromAnsi(aReplacement), aResult);
   end;
 
 
@@ -5152,13 +5053,13 @@ implementation
                                          aCaseMode: TCaseSensitivity): Boolean;
   var
     i, p: Integer;
-    pa: TCharIndexArray;
+    pa: CharIndexArray;
     strLen, replaceLen: Integer;
     occurs, nudge: Integer;
   begin
     aResult := aString;
 
-    result := HasLength(aString, strLen);
+    result := IsNotEmpty(aString, strLen);
     if NOT result then
       EXIT;
 
@@ -5167,7 +5068,7 @@ implementation
     if NOT result then
       EXIT;
 
-    if HasLength(aReplacement, replaceLen) then
+    if IsNotEmpty(aReplacement, replaceLen) then
     begin
       if (replaceLen > 1) then
       begin
@@ -5197,7 +5098,7 @@ implementation
                                    var   aResult: UnicodeString;
                                          aCaseMode: TCaseSensitivity): Boolean;
   begin
-    result := ReplaceAll(aString, Wide(aChar), aReplacement, aResult);
+    result := ReplaceAll(aString, FromAnsi(aChar), aReplacement, aResult);
   end;
 
 
@@ -5209,15 +5110,15 @@ implementation
                                          aCaseMode: TCaseSensitivity): Boolean;
   var
     i, p: Integer;
-    pa: TCharIndexArray;
+    pa: CharIndexArray;
     strLen, subLen: Integer;
     occurs, nudge: Integer;
   begin
-    Require('aReplacement', aReplacement).IsNotNull;
+    Contract.Requires('aReplacement', aReplacement).IsNotNull;
 
     aResult := aString;
 
-    result := HasLength(aString, strLen);
+    result := IsNotEmpty(aString, strLen);
     if NOT result then
       EXIT;
 
@@ -5252,7 +5153,7 @@ implementation
                                    var   aResult: UnicodeString;
                                          aCaseMode: TCaseSensitivity): Boolean;
   begin
-    result := ReplaceAll(aString, aSubstring, Wide(aReplacement), aResult);
+    result := ReplaceAll(aString, aSubstring, FromAnsi(aReplacement), aResult);
   end;
 
 
@@ -5264,13 +5165,13 @@ implementation
                                          aCaseMode: TCaseSensitivity): Boolean;
   var
     i, p: Integer;
-    pa: TCharIndexArray;
+    pa: CharIndexArray;
     strLen, subLen, replaceLen: Integer;
     occurs, nudge: Integer;
   begin
     aResult := aString;
 
-    result := HasLength(aString, strLen);
+    result := IsNotEmpty(aString, strLen);
     if NOT result then
       EXIT;
 
@@ -5281,7 +5182,7 @@ implementation
 
     subLen := Length(aSubstring);
 
-    if HasLength(aReplacement, replaceLen) then
+    if IsNotEmpty(aReplacement, replaceLen) then
     begin
       result := NOT (aReplacement = aSubstring);
       if NOT result then
@@ -5342,7 +5243,7 @@ implementation
                                          aReplacement: AnsiChar;
                                          aCaseMode: TCaseSensitivity): UnicodeString;
   begin
-    ReplaceAll(aString, Wide(aChar), Wide(aReplacement), result, aCaseMode);
+    ReplaceAll(aString, FromAnsi(aChar), FromAnsi(aReplacement), result, aCaseMode);
   end;
 
 
@@ -5352,7 +5253,7 @@ implementation
                                    const aReplacement: UnicodeString;
                                          aCaseMode: TCaseSensitivity): UnicodeString;
   begin
-    ReplaceAll(aString, Wide(aChar), aReplacement, result, aCaseMode);
+    ReplaceAll(aString, FromAnsi(aChar), aReplacement, result, aCaseMode);
   end;
 
 
@@ -5372,7 +5273,7 @@ implementation
                                          aReplacement: AnsiChar;
                                          aCaseMode: TCaseSensitivity): UnicodeString;
   begin
-    ReplaceAll(aString, aSubstring, Wide(aReplacement), result, aCaseMode);
+    ReplaceAll(aString, aSubstring, FromAnsi(aReplacement), result, aCaseMode);
   end;
 
 
@@ -5415,7 +5316,7 @@ implementation
                                              aReplacement: AnsiChar;
                                        var   aResult: UnicodeString): Boolean;
   begin
-    result := ReplaceAll(aString, Wide(aChar), Wide(aReplacement), aResult, csIgnoreCase);
+    result := ReplaceAll(aString, FromAnsi(aChar), FromAnsi(aReplacement), aResult, csIgnoreCase);
   end;
 
 
@@ -5425,7 +5326,7 @@ implementation
                                        const aReplacement: UnicodeString;
                                        var   aResult: UnicodeString): Boolean;
   begin
-    result := ReplaceAll(aString, Wide(aChar), aReplacement, aResult, csIgnoreCase);
+    result := ReplaceAll(aString, FromAnsi(aChar), aReplacement, aResult, csIgnoreCase);
   end;
 
 
@@ -5445,7 +5346,7 @@ implementation
                                              aReplacement: AnsiChar;
                                        var   aResult: UnicodeString): Boolean;
   begin
-    result := ReplaceAll(aString, aSubstring, Wide(aReplacement), aResult, csIgnoreCase);
+    result := ReplaceAll(aString, aSubstring, FromAnsi(aReplacement), aResult, csIgnoreCase);
   end;
 
 
@@ -5474,7 +5375,7 @@ implementation
                                              aChar: AnsiChar;
                                              aReplacement: AnsiChar): UnicodeString;
   begin
-    ReplaceAll(aString, Wide(aChar), Wide(aReplacement), result, csIgnoreCase);
+    ReplaceAll(aString, FromAnsi(aChar), FromAnsi(aReplacement), result, csIgnoreCase);
   end;
 
 
@@ -5492,7 +5393,7 @@ implementation
                                              aChar: AnsiChar;
                                        const aReplacement: UnicodeString): UnicodeString;
   begin
-    ReplaceAll(aString, Wide(aChar), aReplacement, result, csIgnoreCase);
+    ReplaceAll(aString, FromAnsi(aChar), aReplacement, result, csIgnoreCase);
   end;
 
 
@@ -5510,7 +5411,7 @@ implementation
                                        const aSubstring: UnicodeString;
                                              aReplacement: AnsiChar): UnicodeString;
   begin
-    ReplaceAll(aString, aSubstring, Wide(aReplacement), result, csIgnoreCase);
+    ReplaceAll(aString, aSubstring, FromAnsi(aReplacement), result, csIgnoreCase);
   end;
 
 
@@ -5545,7 +5446,7 @@ implementation
   var
     p: Integer;
   begin
-    Require('aReplacement', aReplacement).IsNotNull;
+    Contract.Requires('aReplacement', aReplacement).IsNotNull;
 
     aResult := aString;
 
@@ -5562,7 +5463,7 @@ implementation
                                     var   aResult: UnicodeString;
                                           aCaseMode: TCaseSensitivity): Boolean;
   begin
-    result := ReplaceLast(aString, Wide(aChar), Wide(aReplacement), aResult, aCaseMode);
+    result := ReplaceLast(aString, FromAnsi(aChar), FromAnsi(aReplacement), aResult, aCaseMode);
   end;
 
 
@@ -5581,7 +5482,7 @@ implementation
     result := FindLast(aString, aChar, p, aCaseMode);
     if result then
     begin
-      if HasLength(aReplacement, replaceLen) then
+      if IsNotEmpty(aReplacement, replaceLen) then
       begin
         if (replaceLen > 1) then
         begin
@@ -5608,7 +5509,7 @@ implementation
                                     var   aResult: UnicodeString;
                                           aCaseMode: TCaseSensitivity): Boolean;
   begin
-    result := ReplaceLast(aString, Wide(aChar), aReplacement, aResult, aCaseMode);
+    result := ReplaceLast(aString, FromAnsi(aChar), aReplacement, aResult, aCaseMode);
   end;
 
 
@@ -5622,7 +5523,7 @@ implementation
     p: Integer;
     strLen, subLen: Integer;
   begin
-    Require('aReplacement', aReplacement).IsNotNull;
+    Contract.Requires('aReplacement', aReplacement).IsNotNull;
 
     aResult := aString;
 
@@ -5653,7 +5554,7 @@ implementation
                                     var   aResult: UnicodeString;
                                           aCaseMode: TCaseSensitivity): Boolean;
   begin
-    result := ReplaceLast(aString, aSubstring, Wide(aReplacement), aResult, aCaseMode);
+    result := ReplaceLast(aString, aSubstring, FromAnsi(aReplacement), aResult, aCaseMode);
   end;
 
 
@@ -5669,7 +5570,7 @@ implementation
   begin
     aResult := aString;
 
-    result := HasLength(aString, strLen);
+    result := IsNotEmpty(aString, strLen);
     if NOT result then
       EXIT;
 
@@ -5678,7 +5579,7 @@ implementation
     begin
       subLen := Length(aSubstring);
 
-      if HasLength(aReplacement, replaceLen) then
+      if IsNotEmpty(aReplacement, replaceLen) then
       begin
         result := NOT (aReplacement = aSubstring);
         if NOT result then
@@ -5712,7 +5613,7 @@ implementation
                                           aReplacement: AnsiChar;
                                           aCaseMode: TCaseSensitivity): UnicodeString;
   begin
-    ReplaceLast(aString, Wide(aChar), Wide(aReplacement), result, aCaseMode);
+    ReplaceLast(aString, FromAnsi(aChar), FromAnsi(aReplacement), result, aCaseMode);
   end;
 
 
@@ -5732,7 +5633,7 @@ implementation
                                     const aReplacement: UnicodeString;
                                           aCaseMode: TCaseSensitivity): UnicodeString;
   begin
-    ReplaceLast(aString, Wide(aChar), aReplacement, result, aCaseMode);
+    ReplaceLast(aString, FromAnsi(aChar), aReplacement, result, aCaseMode);
   end;
 
 
@@ -5752,7 +5653,7 @@ implementation
                                           aReplacement: AnsiChar;
                                           aCaseMode: TCaseSensitivity): UnicodeString;
   begin
-    ReplaceLast(aString, aSubstring, Wide(aReplacement), result, aCaseMode);
+    ReplaceLast(aString, aSubstring, FromAnsi(aReplacement), result, aCaseMode);
   end;
 
 
@@ -5784,7 +5685,7 @@ implementation
                                               aChar: AnsiChar;
                                               aReplacement: AnsiChar): UnicodeString;
   begin
-    result := ReplaceLast(aString, Wide(aChar), Wide(aReplacement), csIgnoreCase);
+    result := ReplaceLast(aString, FromAnsi(aChar), FromAnsi(aReplacement), csIgnoreCase);
   end;
 
 
@@ -5802,7 +5703,7 @@ implementation
                                               aChar: AnsiChar;
                                         const aReplacement: UnicodeString): UnicodeString;
   begin
-    result := ReplaceLast(aString, Wide(aChar), aReplacement, csIgnoreCase);
+    result := ReplaceLast(aString, FromAnsi(aChar), aReplacement, csIgnoreCase);
   end;
 
 
@@ -5820,7 +5721,7 @@ implementation
                                         const aSubstring: UnicodeString;
                                               aReplacement: AnsiChar): UnicodeString;
   begin
-    result := ReplaceLast(aString, aSubString, Wide(aReplacement), csIgnoreCase);
+    result := ReplaceLast(aString, aSubString, FromAnsi(aReplacement), csIgnoreCase);
   end;
 
 
@@ -5851,7 +5752,7 @@ implementation
                                               aReplacement: AnsiChar;
                                         var   aResult: UnicodeString): Boolean;
   begin
-    result := ReplaceLast(aString, Wide(aChar), Wide(aReplacement), aResult, csIgnoreCase);
+    result := ReplaceLast(aString, FromAnsi(aChar), FromAnsi(aReplacement), aResult, csIgnoreCase);
   end;
 
 
@@ -5871,7 +5772,7 @@ implementation
                                         const aReplacement: UnicodeString;
                                         var   aResult: UnicodeString): Boolean;
   begin
-    result := ReplaceLast(aString, Wide(aChar), aReplacement, aResult, csIgnoreCase);
+    result := ReplaceLast(aString, FromAnsi(aChar), aReplacement, aResult, csIgnoreCase);
   end;
 
 
@@ -5891,7 +5792,7 @@ implementation
                                               aReplacement: AnsiChar;
                                         var   aResult: UnicodeString): Boolean;
   begin
-    result := ReplaceLast(aString, aSubString, Wide(aReplacement), aResult, csIgnoreCase);
+    result := ReplaceLast(aString, aSubString, FromAnsi(aReplacement), aResult, csIgnoreCase);
   end;
 
 
@@ -5993,7 +5894,7 @@ implementation
   begin
     result := aString;
 
-    if NOT HasLength(aString, strLen) then
+    if IsEmpty(aString, strLen) then
       EXIT;
 
     i := 0;
@@ -6017,7 +5918,7 @@ implementation
   begin
     result := aString;
 
-    if NOT HasLength(aString, strLen) then
+    if IsEmpty(aString, strLen) then
       EXIT;
 
     i := 0;
@@ -6051,7 +5952,7 @@ implementation
   begin
     result := aString;
 
-    if NOT HasLength(aString, strLen) then
+    if IsEmpty(aString, strLen) then
       EXIT;
 
     i := Pred(strLen);
@@ -6072,7 +5973,7 @@ implementation
   begin
     result := aString;
 
-    if NOT HasLength(aString, strLen) then
+    if IsEmpty(aString, strLen) then
       EXIT;
 
     i := Pred(strLen);
@@ -6314,7 +6215,7 @@ implementation
   begin
     result := aString;
 
-    if NOT HasLength(result, len) then
+    if IsEmpty(result, len) then
       EXIT;
 
     prev      := result[1];
@@ -6347,25 +6248,30 @@ implementation
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class function WideFn.Titlecase(const aString: UnicodeString): UnicodeString;
   begin
-    result := Titlecase(aString, LowercaseWordsForTitlecase)
+    result := Titlecase(aString, LowercaseWordsForTitlecase);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class function WideFn.Titlecase(const aString: UnicodeString;
-                                  const aLower: TWideStringArray): UnicodeString;
-  begin
-    // TODO:
-  end;
+                                  const aLower: UnicodeStringArray): UnicodeString;
 
+    function ForceLower(const aString: UnicodeString): Boolean;
+    var
+      i: Integer;
+    begin
+      result := TRUE;
+      for i := Low(aLower) to High(aLower) do
+        if SameText(aString, aLower[i]) then
+          EXIT;
 
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WideFn.Titlecase(const aString: UnicodeString;
-                                        aLower: TWideStringList): UnicodeString;
+      result := FALSE;
+    end;
+
   var
     i: Integer;
-    pieces: TWideStringArray;
-    p: TCharIndexArray;
+    pieces: UnicodeStringArray;
+    p: CharIndexArray;
   begin
     result := Wide.Startcase(aString);
 
@@ -6375,7 +6281,7 @@ implementation
 
     for i := 0 to High(p) - 1 do
       if   Wide.IsAlphaNumeric(result[p[i] - 1])
-       and (aLower.IndexOf(pieces[i + 1]) <> -1) then
+       and ForceLower(pieces[i + 1]) then
         result[p[i] + 1] := Wide.Lowercase(result[p[i] + 1]);
   end;
 
@@ -6414,27 +6320,24 @@ implementation
 
 
 initialization
-  LowercaseWordsForTitlecase := TWideStringList.Create;
-  LowercaseWordsForTitlecase.Sorted := TRUE;
+  LowercaseWordsForTitlecase := Wide.AsArray([
+    'a',
+    'am',
+    'an',
+    'and',
+    'are',
+    'as',
+    'at',
+    'for',
+    'from',
+    'in',
+    'is',
+    'of',
+    'on',
+    'the',
+    'this',
+    'to',
+    'upon'
+  ]);
 
-  LowercaseWordsForTitlecase.Add('a');
-  LowercaseWordsForTitlecase.Add('am');
-  LowercaseWordsForTitlecase.Add('an');
-  LowercaseWordsForTitlecase.Add('and');
-  LowercaseWordsForTitlecase.Add('are');
-  LowercaseWordsForTitlecase.Add('as');
-  LowercaseWordsForTitlecase.Add('at');
-  LowercaseWordsForTitlecase.Add('for');
-  LowercaseWordsForTitlecase.Add('from');
-  LowercaseWordsForTitlecase.Add('in');
-  LowercaseWordsForTitlecase.Add('is');
-  LowercaseWordsForTitlecase.Add('of');
-  LowercaseWordsForTitlecase.Add('on');
-  LowercaseWordsForTitlecase.Add('the');
-  LowercaseWordsForTitlecase.Add('this');
-  LowercaseWordsForTitlecase.Add('to');
-  LowercaseWordsForTitlecase.Add('upon');
-
-finalization
-  LowercaseWordsForTitlecase.Free;
 end.

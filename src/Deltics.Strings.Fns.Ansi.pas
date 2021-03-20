@@ -10,7 +10,6 @@ interface
   uses
     SysUtils,
     Windows,
-    Deltics.Strings.Parsers.Ansi,
     Deltics.Strings.Types;
 
 
@@ -27,9 +26,7 @@ interface
       class procedure CopyToBuffer(const aString: AnsiString; aMaxBytes: Integer; aBuffer: Pointer; aOffset: Integer); overload;
 
     public
-      class function Parse: AnsiParserClass;
-
-      // Transcoding
+      // Transcoding
       class function Encode(const aString: String): AnsiString;
       class function FromAnsi(const aBuffer: PAnsiChar; aMaxLen: Integer = -1): AnsiString; overload;
       class function FromString(const aString: String): AnsiString;
@@ -42,8 +39,8 @@ interface
       class function AllocUtf8(const aSource: AnsiString): PUtf8Char;
       class procedure CopyToBuffer(const aString: AnsiString; aBuffer: Pointer); overload;
       class procedure CopyToBuffer(const aString: AnsiString; aBuffer: Pointer; aMaxChars: Integer); overload;
-      class procedure CopyToBufferOffset(const aString: AnsiString; aBuffer: Pointer; aByteOffset: Integer); overload;
-      class procedure CopyToBufferOffset(const aString: AnsiString; aBuffer: Pointer; aByteOffset: Integer; aMaxChars: Integer); overload;
+      class procedure CopyToBufferOffset(const aString: AnsiString; aBuffer: Pointer; aOffset: Integer); overload;
+      class procedure CopyToBufferOffset(const aString: AnsiString; aBuffer: Pointer; aOffset: Integer; aMaxChars: Integer); overload;
       class function FromBuffer(aBuffer: PAnsiChar; aLen: Integer = -1): AnsiString; overload;
       class function FromBuffer(aBuffer: PWideChar; aLen: Integer = -1): AnsiString; overload;
       class function Len(aBuffer: PAnsiChar): Integer;
@@ -60,9 +57,13 @@ interface
       class function Split(const aString: AnsiString; aChar: AnsiChar; var aLeft, aRight: AnsiString): Boolean; overload;
       class function Split(const aString: AnsiString; aChar: WideChar; var aLeft, aRight: AnsiString): Boolean; overload;
       class function Split(const aString, aDelim: AnsiString; var aLeft, aRight: AnsiString): Boolean; overload;
-      class function Split(const aString: AnsiString; aChar: AnsiChar; var aParts: TAnsiStringArray): Boolean; overload;
-      class function Split(const aString: AnsiString; aChar: WideChar; var aParts: TAnsiStringArray): Boolean; overload;
-      class function Split(const aString, aDelim: AnsiString; var aParts: TAnsiStringArray): Boolean; overload;
+      class function Split(const aString: AnsiString; aChar: AnsiChar; var aParts: AnsiStringArray): Boolean; overload;
+      class function Split(const aString: AnsiString; aChar: WideChar; var aParts: AnsiStringArray): Boolean; overload;
+      class function Split(const aString, aDelim: AnsiString; var aParts: AnsiStringArray): Boolean; overload;
+    {$ifNdef UNICODE}
+      class function Split(const aString: String; const aDelim: String; var aParts: StringArray): Integer; overload;
+    {$endif}
+
 
       // Assembling a string
       class function Concat(const aArray: array of AnsiString): AnsiString; overload;
@@ -71,16 +72,6 @@ interface
       class function StringOf(aChar: AnsiChar; aCount: Integer): AnsiString; overload;
       class function StringOf(aChar: WideChar; aCount: Integer): AnsiString; overload;
       class function StringOf(const aString: AnsiString; aCount: Integer): AnsiString; overload;
-
-      // Type conversions
-      class function AsBoolean(const aString: AnsiString): Boolean; overload;
-      class function AsBoolean(const aString: AnsiString; aDefault: Boolean): Boolean; overload;
-      class function AsInteger(const aString: AnsiString): Integer; overload;
-      class function AsInteger(const aString: AnsiString; aDefault: Integer): Integer; overload;
-      class function IsBoolean(const aString: AnsiString): Boolean; overload;
-      class function IsBoolean(const aString: AnsiString; var aValue: Boolean): Boolean; overload;
-      class function IsInteger(const aString: AnsiString): Boolean; overload;
-      class function IsInteger(const aString: AnsiString; var aValue: Integer): Boolean; overload;
 
       // Testing things about a string
       class function IsAlpha(aChar: AnsiChar): Boolean; overload;
@@ -150,12 +141,12 @@ interface
       class function FindLastText(const aString: AnsiString; aChar: AnsiChar; var aPos: Integer): Boolean; overload;
       class function FindLastText(const aString: AnsiString; aChar: WideChar; var aPos: Integer): Boolean; overload;
       class function FindLastText(const aString, aSubstring: AnsiString; var aPos: Integer): Boolean; overload;
-      class function FindAll(const aString: AnsiString; aChar: AnsiChar; var aPos: TCharIndexArray; aCaseMode: TCaseSensitivity = csCaseSensitive): Integer; overload;
-      class function FindAll(const aString: AnsiString; aChar: WideChar; var aPos: TCharIndexArray; aCaseMode: TCaseSensitivity = csCaseSensitive): Integer; overload;
-      class function FindAll(const aString, aSubstring: AnsiString; var aPos: TCharIndexArray; aCaseMode: TCaseSensitivity = csCaseSensitive): Integer; overload;
-      class function FindAllText(const aString: AnsiString; aChar: AnsiChar; var aPos: TCharIndexArray): Integer; overload;
-      class function FindAllText(const aString: AnsiString; aChar: WideChar; var aPos: TCharIndexArray): Integer; overload;
-      class function FindAllText(const aString, aSubstring: AnsiString; var aPos: TCharIndexArray): Integer; overload;
+      class function FindAll(const aString: AnsiString; aChar: AnsiChar; var aPos: CharIndexArray; aCaseMode: TCaseSensitivity = csCaseSensitive): Integer; overload;
+      class function FindAll(const aString: AnsiString; aChar: WideChar; var aPos: CharIndexArray; aCaseMode: TCaseSensitivity = csCaseSensitive): Integer; overload;
+      class function FindAll(const aString, aSubstring: AnsiString; var aPos: CharIndexArray; aCaseMode: TCaseSensitivity = csCaseSensitive): Integer; overload;
+      class function FindAllText(const aString: AnsiString; aChar: AnsiChar; var aPos: CharIndexArray): Integer; overload;
+      class function FindAllText(const aString: AnsiString; aChar: WideChar; var aPos: CharIndexArray): Integer; overload;
+      class function FindAllText(const aString, aSubstring: AnsiString; var aPos: CharIndexArray): Integer; overload;
 
       // Adding to a string
       class function Append(const aString: AnsiString; aChar: AnsiChar): AnsiString; overload;
@@ -438,7 +429,7 @@ implementation
     Deltics.Contracts,
     Deltics.Exchange,
     Deltics.Math,
-    Deltics.Pointers,
+    Deltics.Memory,
     Deltics.ReverseBytes,
     Deltics.Strings,
     Deltics.Strings.Fns.Utf8,
@@ -450,14 +441,6 @@ implementation
 
 
 { AnsiFn ------------------------------------------------------------------------------------------ }
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function AnsiFn.Parse: AnsiParserClass;
-  begin
-    result := AnsiParser;
-  end;
-
-
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class function AnsiFn.AddressOfIndex(const aString: AnsiString;
@@ -570,8 +553,8 @@ implementation
   var
     len: Integer;
   begin
-    Require('aBuffer', aBuffer).IsAssigned;
-    Require('aMaxBytes', aMaxBytes).IsPositiveOrZero;
+    Contract.Requires('aBuffer', aBuffer).IsAssigned;
+    Contract.Requires('aMaxBytes', aMaxBytes).IsPositiveOrZero;
 
     if  (aMaxBytes = 0)
      or NOT HasLength(aString, len) then
@@ -580,7 +563,7 @@ implementation
     if (aMaxBytes < len) then
       len := aMaxBytes;
 
-    FastCopy(aString, Memory.ByteOffset(aBuffer, aOffset), len);
+    FastCopy(aString, Memory.Offset(aBuffer, aOffset), len);
   end;
 
 
@@ -721,7 +704,7 @@ implementation
   var
     p, delimLen: Integer;
   begin
-    Require('aDelim', aDelim).IsNotEmpty.GetLength(delimLen);
+    Contract.Requires('aDelim', aDelim).IsNotEmpty.GetLength(delimLen);
 
     aLeft   := aString;
     aRight  := '';
@@ -738,10 +721,10 @@ implementation
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class function AnsiFn.Split(const aString: AnsiString;
                                     aChar: AnsiChar;
-                              var   aParts: TAnsiStringArray): Boolean;
+                              var   aParts: AnsiStringArray): Boolean;
   var
     i: Integer;
-    p: TCharIndexArray;
+    p: CharIndexArray;
     plen: Integer;
   begin
     result := FindAll(aString, aChar, p) > 0;
@@ -771,7 +754,7 @@ implementation
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class function AnsiFn.Split(const aString: AnsiString;
                                     aChar: WideChar;
-                              var   aParts: TAnsiStringArray): Boolean;
+                              var   aParts: AnsiStringArray): Boolean;
   begin
     result := Split(aString, Ansi(aChar), aParts);
   end;
@@ -780,13 +763,13 @@ implementation
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class function AnsiFn.Split(const aString: AnsiString;
                               const aDelim: AnsiString;
-                              var   aParts: TAnsiStringArray): Boolean;
+                              var   aParts: AnsiStringArray): Boolean;
   var
     i: Integer;
-    p: TCharIndexArray;
+    p: CharIndexArray;
     plen, delimLen: Integer;
   begin
-    Require('aDelim', aDelim).IsNotEmpty.GetLength(delimLen);
+    Contract.Requires('aDelim', aDelim).IsNotEmpty.GetLength(delimLen);
 
     result := FindAll(aString, aDelim, p) > 0;
     if NOT result then
@@ -812,7 +795,47 @@ implementation
   end;
 
 
+{$ifNdef UNICODE}
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
+  class function AnsiFn.Split(const aString: String;
+                              const aDelim: String;
+                              var   aParts: StringArray): Integer;
+  var
+    i: Integer;
+    p: CharIndexArray;
+    plen, delimLen: Integer;
+  begin
+    Contract.Requires('aDelim', aDelim).IsNotEmpty.GetLength(delimLen);
 
+    result := 0;
+    SetLength(aParts, 0);
+
+    if FindAll(aString, aDelim, p) = 0 then
+    begin
+      if aString <> '' then
+      begin
+        SetLength(aParts, 1);
+        aParts[0] := aString;
+        result    := 1;
+      end;
+
+      EXIT;
+    end;
+
+    plen := System.Length(p);
+    SetLength(aParts, plen + 1);
+
+    aParts[0] := self.Copy(aString, 1, p[0] - 1);
+    for i := 1 to Pred(plen) do
+      aParts[i] := self.Copy(aString, p[i - 1] + delimLen, p[i] - p[i - 1] - delimLen);
+
+    i := p[Pred(plen)] + delimLen;
+    aParts[plen] := self.Copy(aString, i, System.Length(aString) - i + delimLen);
+
+    result := Length(aParts);
+  end;
+{$endif}
+
 
 
 
@@ -867,7 +890,7 @@ implementation
   class function AnsiFn.FromUtf8(const aBuffer: PUtf8Char;
                                        aMaxLen: Integer): AnsiString;
   begin
-    Require('aMaxLen', aMaxLen).IsGreaterThanOrEqual(-1);
+    Contract.Requires('aMaxLen', aMaxLen).IsGreaterThanOrEqual(-1);
 
     // TODO: Can we do this more directly / efficiently ?
     result := Ansi.FromWide(Wide.FromUtf8(aBuffer, aMaxLen));
@@ -936,19 +959,19 @@ implementation
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class procedure AnsiFn.CopyToBufferOffset(const aString: AnsiString;
                                                   aBuffer: Pointer;
-                                                  aByteOffset: Integer);
+                                                  aOffset: Integer);
   begin
-    CopyToBuffer(aString, Length(aString), aBuffer, aByteOffset);
+    CopyToBuffer(aString, Length(aString), aBuffer, aOffset);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class procedure AnsiFn.CopyToBufferOffset(const aString: AnsiString;
                                                   aBuffer: Pointer;
-                                                  aByteOffset: Integer;
+                                                  aOffset: Integer;
                                                   aMaxChars: Integer);
   begin
-    CopyToBuffer(aString, aMaxChars, aBuffer, aByteOffset);
+    CopyToBuffer(aString, aMaxChars, aBuffer, aOffset);
   end;
 
 
@@ -1602,8 +1625,8 @@ implementation
   var
     chars: PAnsiChar absolute aString;
   begin
-    Require('aChar', aChar).IsNotNull;
-    Require('aCaseMode', aCaseMode in [csCaseSensitive, csIgnoreCase]);
+    Contract.Requires('aChar', aChar).IsNotNull;
+    Contract.Requires('aCaseMode', aCaseMode in [csCaseSensitive, csIgnoreCase]);
 
     case aCaseMode of
 
@@ -1636,7 +1659,7 @@ implementation
   var
     subLen: Integer;
   begin
-    Require('aSubstring', aSubstring).IsNotEmpty.GetLength(subLen);
+    Contract.Requires('aSubstring', aSubstring).IsNotEmpty.GetLength(subLen);
 
     result := (subLen <= System.Length(aString))
           and (CompareStringA(LOCALE_USER_DEFAULT, CASEMODE_FLAG[aCaseMode],
@@ -1649,7 +1672,7 @@ implementation
   class function AnsiFn.BeginsWithText(const aString: AnsiString;
                                              aChar: AnsiChar): Boolean;
   begin
-    Require('aChar', aChar).IsNotNull;
+    Contract.Requires('aChar', aChar).IsNotNull;
 
     result := (aString <> '')
           and (CompareStringA(LOCALE_USER_DEFAULT, NORM_IGNORECASE,
@@ -1672,7 +1695,7 @@ implementation
   var
     subLen: Integer;
   begin
-    Require('aSubstring', aSubstring).IsNotEmpty.GetLength(subLen);
+    Contract.Requires('aSubstring', aSubstring).IsNotEmpty.GetLength(subLen);
 
     result := (subLen <= System.Length(aString))
           and (CompareStringA(LOCALE_USER_DEFAULT, NORM_IGNORECASE,
@@ -1752,8 +1775,8 @@ implementation
     chars: PAnsiChar absolute aString;
     strLen: Integer;
   begin
-    Require('aChar', aChar).IsNotNull;
-    Require('aCaseMode', aCaseMode in [csCaseSensitive, csIgnoreCase]);
+    Contract.Requires('aChar', aChar).IsNotNull;
+    Contract.Requires('aCaseMode', aCaseMode in [csCaseSensitive, csIgnoreCase]);
 
     case aCaseMode of
 
@@ -1762,7 +1785,7 @@ implementation
 
       csIgnoreCase    : result := HasLength(aString, strLen)
                               and (CompareStringA(LOCALE_USER_DEFAULT, CASEMODE_FLAG[aCaseMode],
-                                                  PAnsiChar(Memory.ByteOffset(Pointer(aString), strLen - 1)), 1,
+                                                  PAnsiChar(Memory.Offset(Pointer(aString), strLen - 1)), 1,
                                                   @aChar, 1) = CSTR_EQUAL);
     else
       result := FALSE;
@@ -1787,12 +1810,12 @@ implementation
     strLen: Integer;
     subLen: Integer;
   begin
-    Require('aSubstring', aSubstring).IsNotEmpty.GetLength(subLen);
+    Contract.Requires('aSubstring', aSubstring).IsNotEmpty.GetLength(subLen);
 
     strLen := Length(aString);
     result := (subLen <= strLen)
           and (CompareStringA(LOCALE_USER_DEFAULT, CASEMODE_FLAG[aCaseMode],
-                              PAnsiChar(Memory.ByteOffset(Pointer(aString), strLen - subLen)), subLen,
+                              PAnsiChar(Memory.Offset(Pointer(aString), strLen - subLen)), subLen,
                               PAnsiChar(aSubstring), subLen) = CSTR_EQUAL);
   end;
 
@@ -1803,11 +1826,11 @@ implementation
   var
     strLen: Integer;
   begin
-    Require('aChar', aChar).IsNotNull;
+    Contract.Requires('aChar', aChar).IsNotNull;
 
     result := HasLength(aString, strLen)
           and (CompareStringA(LOCALE_USER_DEFAULT, NORM_IGNORECASE,
-                              PAnsiChar(Memory.ByteOffset(Pointer(aString), strLen - 1)), 1,
+                              PAnsiChar(Memory.Offset(Pointer(aString), strLen - 1)), 1,
                               @aChar, 1) = CSTR_EQUAL);
   end;
 
@@ -1827,12 +1850,12 @@ implementation
     strLen: Integer;
     subLen: Integer;
   begin
-    Require('aSubstring', aSubstring).IsNotEmpty.GetLength(subLen);
+    Contract.Requires('aSubstring', aSubstring).IsNotEmpty.GetLength(subLen);
 
     strLen := Length(aString);
     result := (subLen <= strLen)
           and (CompareStringA(LOCALE_USER_DEFAULT, NORM_IGNORECASE,
-                              PAnsiChar(Memory.ByteOffset(Pointer(aString), strLen - subLen)), subLen,
+                              PAnsiChar(Memory.Offset(Pointer(aString), strLen - subLen)), subLen,
                               PAnsiChar(aSubstring), subLen) = CSTR_EQUAL);
   end;
 
@@ -1981,7 +2004,7 @@ implementation
     first: PAnsiChar;
     curr: PAnsiChar;
   begin
-    Require('aChar', aChar).IsNotNull;
+    Contract.Requires('aChar', aChar).IsNotNull;
 
     curr   := NIL;
     first  := NIL;
@@ -1994,7 +2017,7 @@ implementation
         EXIT;
 
       first := Pointer(aString);
-      curr  := PAnsiChar(Memory.ByteOffset(first, pos));
+      curr  := PAnsiChar(Memory.Offset(first, pos));
       Dec(len, pos);
 
       if (aCaseMode = csCaseSensitive) or (NOT Ansi.IsAlpha(aChar)) then
@@ -2055,7 +2078,7 @@ implementation
     first: PAnsiChar;
     curr: PAnsiChar;
   begin
-    Require('aSubstring', aSubstring).IsNotEmpty.GetLength(subLen);
+    Contract.Requires('aSubstring', aSubstring).IsNotEmpty.GetLength(subLen);
 
     curr   := NIL;
     first  := NIL;
@@ -2068,7 +2091,7 @@ implementation
         EXIT;
 
       first := PAnsiChar(aString);
-      curr  := PAnsiChar(Memory.ByteOffset(first, pos));
+      curr  := PAnsiChar(Memory.Offset(first, pos));
       Dec(strLen, pos + subLen - 1);
 
       for i := 1 to strLen do
@@ -2130,7 +2153,7 @@ implementation
     first: PAnsiChar;
     curr: PAnsiChar;
   begin
-    Require('aChar', aChar).IsNotNull;
+    Contract.Requires('aChar', aChar).IsNotNull;
 
     curr   := NIL;
     first  := NIL;
@@ -2141,7 +2164,7 @@ implementation
 
       pos   := Min(aPos, len + 1);
       first := PAnsiChar(aString);
-      curr  := PAnsiChar(Memory.ByteOffset(first, pos - 2));
+      curr  := PAnsiChar(Memory.Offset(first, pos - 2));
       len   := pos - 1;
 
       if (aCaseMode = csCaseSensitive) or (NOT Ansi.IsAlpha(aChar)) then
@@ -2201,7 +2224,7 @@ implementation
     first: PAnsiChar;
     curr: PAnsiChar;
   begin
-    Require('aSubstring', aSubstring).IsNotEmpty.GetLength(subLen);
+    Contract.Requires('aSubstring', aSubstring).IsNotEmpty.GetLength(subLen);
 
     curr   := NIL;
     first  := NIL;
@@ -2213,7 +2236,7 @@ implementation
 
       aPos  := Min(aPos - 1, strLen - subLen + 1);
       first := PAnsiChar(aString);
-      curr  := PAnsiChar(Memory.ByteOffset(first, aPos - 1));
+      curr  := PAnsiChar(Memory.Offset(first, aPos - 1));
 
       for i := 1 to aPos do
       begin
@@ -2266,7 +2289,7 @@ implementation
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class function AnsiFn.FindAll(const aString: AnsiString;
                                       aChar: AnsiChar;
-                                var   aPos: TCharIndexArray;
+                                var   aPos: CharIndexArray;
                                       aCaseMode: TCaseSensitivity): Integer;
   var
     i: Integer;
@@ -2274,7 +2297,7 @@ implementation
     firstChar: PAnsiChar;
     currChar: PAnsiChar;
   begin
-    Require('aChar', aChar).IsNotNull;
+    Contract.Requires('aChar', aChar).IsNotNull;
 
     result := 0;
     SetLength(aPos, 0);
@@ -2326,7 +2349,7 @@ implementation
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class function AnsiFn.FindAll(const aString: AnsiString;
                                       aChar: WideChar;
-                                var   aPos: TCharIndexArray;
+                                var   aPos: CharIndexArray;
                                       aCaseMode: TCaseSensitivity): Integer;
   begin
     result := FindAll(aString, Ansi(aChar), aPos, aCaseMode);
@@ -2336,7 +2359,7 @@ implementation
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class function AnsiFn.FindAll(const aString: AnsiString;
                                 const aSubstring: AnsiString;
-                                var   aPos: TCharIndexArray;
+                                var   aPos: CharIndexArray;
                                       aCaseMode: TCaseSensitivity): Integer;
   var
     i: Integer;
@@ -2346,7 +2369,7 @@ implementation
     strLen: Integer;
     subLen: Integer;
   begin
-    Require('aSubstring', aSubstring).IsNotEmpty.GetLength(subLen);
+    Contract.Requires('aSubstring', aSubstring).IsNotEmpty.GetLength(subLen);
 
     result := 0;
     SetLength(aPos, 0);
@@ -2380,7 +2403,7 @@ implementation
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class function AnsiFn.FindAllText(const aString: AnsiString;
                                           aChar: AnsiChar;
-                                    var   aPos: TCharIndexArray): Integer;
+                                    var   aPos: CharIndexArray): Integer;
   begin
     result := FindAll(aString, aChar, aPos, csIgnoreCase);
   end;
@@ -2389,7 +2412,7 @@ implementation
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class function AnsiFn.FindAllText(const aString: AnsiString;
                                           aChar: WideChar;
-                                    var   aPos: TCharIndexArray): Integer;
+                                    var   aPos: CharIndexArray): Integer;
   begin
     result := FindAll(aString, Ansi(aChar), aPos, csIgnoreCase);
   end;
@@ -2398,7 +2421,7 @@ implementation
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class function AnsiFn.FindAllText(const aString: AnsiString;
                                     const aSubstring: AnsiString;
-                                    var   aPos: TCharIndexArray): Integer;
+                                    var   aPos: CharIndexArray): Integer;
   begin
     result := FindAll(aString, aSubstring, aPos, csIgnoreCase);
   end;
@@ -2409,8 +2432,8 @@ implementation
                                     aIndex: Integer;
                                     aLength: Integer);
   begin
-    Require('aIndex', aIndex).IsValidIndexForString(aString);
-    Require('aLength', aLength).IsPositiveOrZero;
+    Contract.Requires('aIndex', aIndex).IsValidIndexFor(aString);
+    Contract.Requires('aLength', aLength).IsPositiveOrZero;
 
     if aLength = 0 then
       EXIT;
@@ -2424,8 +2447,8 @@ implementation
                                          aIndex: INteger;
                                          aEndIndex: Integer);
   begin
-    Require('aIndex', aIndex).IsValidIndexForString(aString);
-    Require('aEndIndex', aEndIndex).IsValidIndexForString(aString);
+    Contract.Requires('aIndex', aIndex).IsValidIndexFor(aString);
+    Contract.Requires('aEndIndex', aEndIndex).IsValidIndexFor(aString);
 
     if aIndex > aEndIndex then
       Exchange(aIndex, aEndIndex);
@@ -2499,7 +2522,7 @@ implementation
                                         aCaseMode: TCaseSensitivity): Integer;
   var
     i: Integer;
-    idx: TCharIndexArray;
+    idx: CharIndexArray;
     subLen: Integer;
   begin
     result := FindAll(aString, aSubstring, idx, aCaseMode);
@@ -2519,7 +2542,7 @@ implementation
                                       aCaseMode: TCaseSensitivity): Integer;
   var
     i: Integer;
-    idx: TCharIndexArray;
+    idx: CharIndexArray;
   begin
     result := FindAll(aString, aChar, idx, aCaseMode);
     if result > 0 then
@@ -2639,7 +2662,7 @@ implementation
     copyChars: Integer;
     firstChar: Integer;
   begin
-    Require('aCount', aCount).IsPositiveOrZero;
+    Contract.Requires('aCount', aCount).IsPositiveOrZero;
 
     if (aCount = 0) or NOT HasLength(aString, copyChars) then
       EXIT;
@@ -2681,7 +2704,7 @@ implementation
   var
     len: Integer;
   begin
-    Require('aCount', aCount).IsPositiveOrZero;
+    Contract.Requires('aCount', aCount).IsPositiveOrZero;
 
     if (aCount > 0) and HasLength(aString, len) then
       SetLength(aString, len - aCount);
@@ -2921,8 +2944,8 @@ implementation
      or NOT HasLength(aString, strLen) then
       EXIT;
 
-    Require('aIndex', aIndex).IsValidIndexForString(aString);
-    Require('aIndex + aLength - 1', aIndex + aLength - 1).IsValidIndexForString(aString);
+    Contract.Requires('aIndex', aIndex).IsValidIndexFor(aString);
+    Contract.Requires('aIndex + aLength - 1', aIndex + aLength - 1).IsValidIndexFor(aString);
 
     aExtract := self.Copy(aString, aIndex, aLength);
     Delete(aString, aIndex, aLength);
@@ -2944,7 +2967,7 @@ implementation
                                      aCount: Integer;
                                  var aExtract: AnsiString): Boolean;
   begin
-    Require('aCount', aCount).IsPositiveOrZero;
+    Contract.Requires('aCount', aCount).IsPositiveOrZero;
 
     aExtract  := System.Copy(aString, 1, aCount);
     result    := NOT IsEmpty(aExtract);
@@ -3117,7 +3140,7 @@ implementation
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   class function AnsiFn.ExtractRight(var aString: AnsiString; aCount: Integer): AnsiString;
   begin
-    Require('aCount', aCount).IsPositiveOrZero;
+    Contract.Requires('aCount', aCount).IsPositiveOrZero;
 
     result := System.Copy(aString, Length(aString) - aCount + 1, aCount);
     SetLength(aString, Length(aString) - aCount);
@@ -3149,7 +3172,7 @@ implementation
   var
     strLen: Integer;
   begin
-    Require('aIndex', aIndex).IsPositiveOrZero;
+    Contract.Requires('aIndex', aIndex).IsPositiveOrZero;
 
     result := HasLength(aString, strLen) and (aIndex < strLen);
     if result then
@@ -3376,7 +3399,7 @@ implementation
   var
     subLen: Integer;
   begin
-    Require('aSubstring', aSubstring).IsNotEmpty.GetLength(subLen);
+    Contract.Requires('aSubstring', aSubstring).IsNotEmpty.GetLength(subLen);
 
     result := BeginsWith(aString, aSubstring, aCaseMode);
     if result then
@@ -3390,7 +3413,7 @@ implementation
   var
     subLen: Integer;
   begin
-    Require('aSubstring', aSubstring).IsNotEmpty.GetLength(subLen);
+    Contract.Requires('aSubstring', aSubstring).IsNotEmpty.GetLength(subLen);
 
     result := BeginsWith(aString, aSubstring, csIgnoreCase);
     if result then
@@ -3405,7 +3428,7 @@ implementation
   var
     subLen, strLen: Integer;
   begin
-    Require('aSubstring', aSubstring).IsNotEmpty.GetLength(subLen);
+    Contract.Requires('aSubstring', aSubstring).IsNotEmpty.GetLength(subLen);
 
     result := HasLength(aString, strLen)
           and EndsWith(aString, aSubstring, aCaseMode);
@@ -3421,7 +3444,7 @@ implementation
   var
     subLen, strLen: Integer;
   begin
-    Require('aSubstring', aSubstring).IsNotEmpty.GetLength(subLen);
+    Contract.Requires('aSubstring', aSubstring).IsNotEmpty.GetLength(subLen);
 
     result := HasLength(aString, strLen)
           and EndsWith(aString, aSubstring, csIgnoreCase);
@@ -3450,7 +3473,7 @@ implementation
                                    aStartPos, aLength: Integer;
                              var   aCopy: AnsiString): Boolean;
   begin
-    Require('aStartPos', aStartPos).IsNotLessThan(1);
+    Contract.Requires('aStartPos', aStartPos).IsNotLessThan(1);
 
     aCopy   := System.Copy(aString, aStartPos, aLength);
     result  := Length(aCopy) > 0;
@@ -3470,7 +3493,7 @@ implementation
                                        aIndex: Integer;
                                  var   aCopy: AnsiString): Boolean;
   begin
-    Require('aIndex', aIndex).IsNotLessThan(1);
+    Contract.Requires('aIndex', aIndex).IsNotLessThan(1);
 
     aCopy   := System.Copy(aString, aIndex, Length(aString) - aIndex + 1);
     result  := Length(aCopy) > 0;
@@ -3492,7 +3515,7 @@ implementation
                                         aEndPos: Integer;
                                   var   aCopy: AnsiString): Boolean;
   begin
-    Require('aStartPos', aStartPos).IsNotLessThan(1);
+    Contract.Requires('aStartPos', aStartPos).IsNotLessThan(1);
 
     aCopy   := System.Copy(aString, aStartPos, aEndPos - aStartPos + 1);
     result  := Length(aCopy) > 0;
@@ -3503,7 +3526,7 @@ implementation
   class function AnsiFn.CopyLeft(const aString: AnsiString;
                                     aCount: Integer): AnsiString;
   begin
-    Require('aCount', aCount).IsPositiveOrZero;
+    Contract.Requires('aCount', aCount).IsPositiveOrZero;
 
     result := System.Copy(aString, 1, aCount);
   end;
@@ -3544,7 +3567,7 @@ implementation
                                     aCount: Integer;
                               var   aCopy: AnsiString): Boolean;
   begin
-    Require('aCount', aCount).IsPositiveOrZero;
+    Contract.Requires('aCount', aCount).IsPositiveOrZero;
 
     aCopy   := System.Copy(aString, 1, aCount);
     result  := Length(aCopy) > 0;
@@ -3596,7 +3619,7 @@ implementation
   var
     p, delimLen: Integer;
   begin
-    Require('aDelimiter', aDelimiter).IsNotEmpty.GetLength(delimLen);
+    Contract.Requires('aDelimiter', aDelimiter).IsNotEmpty.GetLength(delimLen);
 
     if Find(aString, aDelimiter, p, aDelimiterCase) then
       case aDelimiterOption of
@@ -3675,7 +3698,7 @@ implementation
   class function AnsiFn.CopyRight(const aString: AnsiString;
                                     aCount: Integer): AnsiString;
   begin
-    Require('aCount', aCount).IsPositiveOrZero;
+    Contract.Requires('aCount', aCount).IsPositiveOrZero;
 
     result := System.Copy(aString, Length(aString) - aCount + 1, aCount);
   end;
@@ -3716,7 +3739,7 @@ implementation
                                     aCount: Integer;
                               var   aCopy: AnsiString): Boolean;
   begin
-    Require('aCount', aCount).IsPositiveOrZero;
+    Contract.Requires('aCount', aCount).IsPositiveOrZero;
 
     aCopy   := System.Copy(aString, Length(aString) - aCount + 1, aCount);
     result  := Length(aCopy) > 0;
@@ -3768,7 +3791,7 @@ implementation
   var
     p, delimLen: Integer;
   begin
-    Require('aDelimiter', aDelimiter).IsNotEmpty.GetLength(delimLen);
+    Contract.Requires('aDelimiter', aDelimiter).IsNotEmpty.GetLength(delimLen);
 
     if Find(aString, aDelimiter, p, aDelimiterCase) then
       case aDelimiterOption of
@@ -3942,7 +3965,7 @@ implementation
   var
     p: Integer;
   begin
-    Require('aReplacement', aReplacement).IsNotNull;
+    Contract.Requires('aReplacement', aReplacement).IsNotNull;
 
     aResult := aString;
     result := (aChar <> aReplacement) and Find(aString, aChar, p, aCaseMode);
@@ -4019,7 +4042,7 @@ implementation
     p: Integer;
     strLen, subLen: Integer;
   begin
-    Require('aReplacement', aReplacement).IsNotNull;
+    Contract.Requires('aReplacement', aReplacement).IsNotNull;
 
     aResult := aString;
 
@@ -4250,7 +4273,7 @@ implementation
                                          aCaseMode: TCaseSensitivity): Boolean;
   var
     i: Integer;
-    p: TCharIndexArray;
+    p: CharIndexArray;
   begin
     aResult := aString;
 
@@ -4280,7 +4303,7 @@ implementation
                                          aCaseMode: TCaseSensitivity): Boolean;
   var
     i, p: Integer;
-    pa: TCharIndexArray;
+    pa: CharIndexArray;
     strLen, replaceLen: Integer;
     occurs, nudge: Integer;
   begin
@@ -4337,11 +4360,11 @@ implementation
                                          aCaseMode: TCaseSensitivity): Boolean;
   var
     i, p: Integer;
-    pa: TCharIndexArray;
+    pa: CharIndexArray;
     strLen, subLen: Integer;
     occurs, nudge: Integer;
   begin
-    Require('aReplacement', aReplacement).IsNotNull;
+    Contract.Requires('aReplacement', aReplacement).IsNotNull;
 
     aResult := aString;
 
@@ -4392,7 +4415,7 @@ implementation
                                          aCaseMode: TCaseSensitivity): Boolean;
   var
     i, p: Integer;
-    pa: TCharIndexArray;
+    pa: CharIndexArray;
     strLen, subLen, replaceLen: Integer;
     occurs, nudge: Integer;
   begin
@@ -4673,7 +4696,7 @@ implementation
   var
     p: Integer;
   begin
-    Require('aReplacement', aReplacement).IsNotNull;
+    Contract.Requires('aReplacement', aReplacement).IsNotNull;
 
     aResult := aString;
 
@@ -4751,7 +4774,7 @@ implementation
     p: Integer;
     strLen, subLen: Integer;
   begin
-    Require('aReplacement', aReplacement).IsNotNull;
+    Contract.Requires('aReplacement', aReplacement).IsNotNull;
 
     aResult := aString;
 
@@ -5100,66 +5123,6 @@ implementation
     end
     else
       result := '';
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function AnsiFn.AsBoolean(const aString: AnsiString): Boolean;
-  begin
-    result := Parse.AsBoolean(PAnsiChar(aString), Length(aString));
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function AnsiFn.AsBoolean(const aString: AnsiString;
-                                        aDefault: Boolean): Boolean;
-  begin
-    result := Parse.AsBoolean(PAnsiChar(aString), Length(aString), aDefault);
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function AnsiFn.AsInteger(const aString: AnsiString): Integer;
-  begin
-    result := Parse.AsInteger(PAnsiChar(aString), Length(aString));
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function AnsiFn.AsInteger(const aString: AnsiString;
-                                        aDefault: Integer): Integer;
-  begin
-    result := Parse.AsInteger(PAnsiChar(aString), Length(aString), aDefault);
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function AnsiFn.IsBoolean(const aString: AnsiString): Boolean;
-  begin
-    result := Parse.IsBoolean(PAnsiChar(aString), Length(aString));
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function AnsiFn.IsBoolean(const aString: AnsiString;
-                                  var   aValue: Boolean): Boolean;
-  begin
-    result := Parse.IsBoolean(PAnsiChar(aString), Length(aString), aValue);
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function AnsiFn.IsInteger(const aString: AnsiString): Boolean;
-  begin
-    result := Parse.IsInteger(PAnsiChar(aString), Length(aString));
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function AnsiFn.IsInteger(const aString: AnsiString;
-                                  var   aValue: Integer): Boolean;
-  begin
-    result := Parse.IsInteger(PAnsiChar(aString), Length(aString), aValue);
   end;
 
 
@@ -5574,7 +5537,7 @@ implementation
   class function AnsiFn.LTrim(const aString: AnsiString;
                                     aCount: Integer): AnsiString;
   begin
-    Require('aCount', aCount).IsPositiveOrZero;
+    Contract.Requires('aCount', aCount).IsPositiveOrZero;
 
     result := aString;
     DeleteLeft(result, aCount);
@@ -5636,7 +5599,7 @@ implementation
   var
     len: Integer;
   begin
-    Require('aCount', aCount).IsPositiveOrZero;
+    Contract.Requires('aCount', aCount).IsPositiveOrZero;
 
     result := aString;
 
