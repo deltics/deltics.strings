@@ -14,7 +14,6 @@ uses
   Deltics.Strings.Fns.Utf8 in '..\src\Deltics.Strings.Fns.Utf8.pas',
   Deltics.Strings.Fns.Utf32 in '..\src\Deltics.Strings.Fns.Utf32.pas',
   Deltics.Strings.Fns.Wide in '..\src\Deltics.Strings.Fns.Wide.pas',
-  Deltics.Strings.StringBuilder in '..\src\Deltics.Strings.StringBuilder.pas',
   Deltics.Strings.Types in '..\src\Deltics.Strings.Types.pas',
   Deltics.Strings.Utils in '..\src\Deltics.Strings.Utils.pas',
   TestConsts in 'TestConsts.pas',

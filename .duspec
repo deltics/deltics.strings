@@ -28,7 +28,6 @@
         "src\\Deltics.Strings.Fns.Utf8.pas",
         "src\\Deltics.Strings.Fns.Utf32.pas",
         "src\\Deltics.Strings.Fns.Wide.pas",
-        "src\\Deltics.Strings.StringBuilder.pas",
         "src\\Deltics.Strings.Types.pas",
         "src\\Deltics.Strings.Utils.pas"
       ]
