@@ -67,9 +67,6 @@ interface
       class function Split(const aString: UnicodeString; const aChar: AnsiChar; var aParts: UnicodeStringArray): Integer; overload;
       class function Split(const aString: UnicodeString; const aChar: WideChar; var aParts: UnicodeStringArray): Integer; overload;
       class function Split(const aString, aDelim: UnicodeString; var aParts: UnicodeStringArray): Integer; overload;
-    {$ifdef UNICODE}
-      class function Split(const aString, aDelim: String; var aParts: StringArray): Integer; overload;
-    {$endif}
 
       // Assembling a string
       class function Concat(const aArray: array of UnicodeString): UnicodeString; overload;
@@ -3119,49 +3116,6 @@ implementation
 
     result := Length(aParts);
   end;
-
-
-{$ifdef UNICODE}
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function WideFn.Split(const aString: String;
-                              const aDelim: String;
-                              var   aParts: StringArray): Integer;
-  var
-    i: Integer;
-    p: CharIndexArray;
-    plen, delimLen: Integer;
-  begin
-    Contract.Requires('aDelim', aDelim).IsNotEmpty.GetLength(delimLen);
-
-    result := 0;
-    SetLength(aParts, 0);
-
-    if FindAll(aString, aDelim, p) = 0 then
-    begin
-      if aString <> '' then
-      begin
-        SetLength(aParts, 1);
-        aParts[0] := aString;
-        result    := 1;
-      end;
-
-      EXIT;
-    end;
-
-    plen := System.Length(p);
-    SetLength(aParts, plen + 1);
-
-    aParts[0] := self.Copy(aString, 1, p[0] - 1);
-    for i := 1 to Pred(plen) do
-      aParts[i] := self.Copy(aString, p[i - 1] + delimLen, p[i] - p[i - 1] - delimLen);
-
-    i := p[Pred(plen)] + delimLen;
-    aParts[plen] := self.Copy(aString, i, System.Length(aString) - i + delimLen);
-
-    result := Length(aParts);
-  end;
-{$endif}
-
 
 
 
